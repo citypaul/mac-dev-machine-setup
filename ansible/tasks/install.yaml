@@ -1,0 +1,8 @@
+- name: Install tmux
+  hosts: localhost
+  tasks:
+    # Update homebrew and upgrade all packages
+
+    - community.general.homebrew:
+        name: tmux
+        state: latest
