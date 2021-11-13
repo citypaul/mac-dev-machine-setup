@@ -1,0 +1,22 @@
+- name: Install core packages via brew casks
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+  ignore_errors: yes
+  with_items:
+    - dash
+    - docker
+    - dropbox
+    - google-chrome
+    - graphql-playground
+    - iterm2
+    - insomnia
+    - ngrok
+    - postico
+    - parallels
+    - postman
+    - insomnia
+    - slack
+    - visual-studio-code
+    - vlc
+    - zoomus
+    - fantastical
