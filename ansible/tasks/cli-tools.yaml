@@ -13,6 +13,7 @@
         "watchman",
         "tree",
         "curl",
+        "htop",
       ]
   tags:
     - install
