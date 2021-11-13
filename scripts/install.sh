@@ -9,6 +9,7 @@ fi
 if ! command -v ansible &> /dev/null
 then
     brew install ansible
+    ansible-galaxy collection install community.general
     exit
 fi
 
