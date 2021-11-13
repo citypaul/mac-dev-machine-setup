@@ -14,6 +14,7 @@
         "tree",
         "curl",
         "htop",
+        "thefuck",
       ]
   tags:
     - install
