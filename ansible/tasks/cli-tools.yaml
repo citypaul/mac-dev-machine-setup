@@ -1,4 +1,4 @@
-- name: Install productivity packages
+- name: Install useful cli packages
   community.general.homebrew:
     name:
       [
