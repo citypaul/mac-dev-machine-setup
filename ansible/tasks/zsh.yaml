@@ -1,0 +1,17 @@
+- name: Install zsh
+  community.general.homebrew:
+    name: ["zsh"]
+  tags:
+    - install
+    - productivity
+    - cli
+    - zsh
+
+- name: Install bash autocompletion
+  community.general.homebrew:
+    name: ["bash-completion"]
+  tags:
+    - install
+    - productivity
+    - cli
+    - zsh

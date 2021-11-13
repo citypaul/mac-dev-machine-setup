@@ -17,3 +17,10 @@
     - install
     - productivity
     - cli
+
+- name: Better fzf shell integration
+  ansible.builtin.shell: $(brew --prefix)/opt/fzf/install
+  tags:
+    - install
+    - productivity
+    - cli

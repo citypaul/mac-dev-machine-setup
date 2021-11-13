@@ -24,3 +24,10 @@
     value: "true"
   tags:
     - git-personal
+- name: Add a setting to ~/.gitconfig
+  community.general.git_config:
+    name: core.editor
+    scope: global
+    value: vim
+  tags:
+    - git-personal
