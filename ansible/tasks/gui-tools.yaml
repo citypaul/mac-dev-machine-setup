@@ -5,6 +5,7 @@
   ignore_errors: yes
   with_items:
     - dash
+    - kap
     - docker
     - google-chrome
     - graphql-playground
