@@ -3,6 +3,14 @@
     name: git
     state: latest
 
+- name: Create global .gitignore
+  ansible.builtin.template:
+    src: ../templates/.gitignore_global
+    dest: ~/.gitignore_global
+    mode: "0644"
+  tags:
+    - git-personal
+
 - name: Git personal setup email
   git_config:
     name: user.email
@@ -24,10 +32,17 @@
     value: "true"
   tags:
     - git-personal
-- name: Add a setting to ~/.gitconfig
+- name: Set vim as default git editor
   community.general.git_config:
     name: core.editor
     scope: global
     value: vim
+  tags:
+    - git-personal
+- name: Set global git ignore
+  community.general.git_config:
+    name: core.excludesfile
+    scope: global
+    value: ~/.global_gitignore
   tags:
     - git-personal
