@@ -17,3 +17,10 @@
     value: "Paul Hammond"
   tags:
     - git-personal
+- name: Git set pull to rebase
+  git_config:
+    name: pull.rebase
+    scope: global
+    value: "true"
+  tags:
+    - git-personal
