@@ -12,6 +12,7 @@
         "yarn",
         "watchman",
         "tree",
+        "curl",
       ]
   tags:
     - install
