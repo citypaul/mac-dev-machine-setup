@@ -11,3 +11,10 @@
   community.general.mas:
     id: 411643860
     state: present
+
+- name: Install Bear
+  tags:
+    - app-store
+  community.general.mas:
+    id: 1091189122
+    state: present
