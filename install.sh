@@ -13,4 +13,4 @@ then
     ansible-galaxy collection install community.general
 fi
 
-ansible-playbook local.yaml
+ansible-playbook local.yaml -K

@@ -3,6 +3,7 @@
     name: "{{ item }}"
     state: present
   ignore_errors: yes
+  become: yes
   with_items:
     - dash
     - docker
