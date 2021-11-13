@@ -4,3 +4,10 @@
   community.general.mas:
     id: 441258766
     state: present
+
+- name: Install DaisyDisk
+  tags:
+    - app-store
+  community.general.mas:
+    id: 411643860
+    state: present
