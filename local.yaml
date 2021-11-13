@@ -12,8 +12,9 @@
     - include: ansible/tasks/git-setup.yaml
     - include: ansible/tasks/cli-tools.yaml
     - include: ansible/tasks/gui-tools.yaml
-    - include: ansible/tasks/app-store-apps.yaml
+    - include: ansible/tasks/dock.yaml
     - include: ansible/tasks/zsh.yaml
+    - include: ansible/tasks/app-store-apps.yaml
     # - include: tasks/ssh.yml
     # - include: tasks/core-setup.yml
     # - include: tasks/node-setup.yml

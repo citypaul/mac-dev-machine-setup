@@ -1,0 +1,26 @@
+- name: Install dockutil
+  community.general.homebrew:
+    name: ["dockutil"]
+  tags:
+    - install
+    - dock
+
+- name: Clear dock
+  shell: dockutil --remove all
+
+- name: Setup dock
+  shell: dockutil --add "{{ item }}"
+  with_items:
+    - /Applications/Visual Studio Code.app
+    - /Applications/Google Chrome.app
+    - /Applications/iTerm.app
+    - /Applications/Insomnia.app
+    - /Applications/Sourcetree.app
+    - /Applications/Slack.app
+    - /Applications/Fantastical.app
+    - /Applications/Spotify.app
+    - /Applications/Bear.app
+  ignore_errors: yes
+  tags:
+    - install
+    - dock
