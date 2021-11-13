@@ -22,8 +22,9 @@
     - spotify
     - dashlane
     - protonvpn
-    - parallels
     - sourcetree
+    - stats
+    - parallels
   tags:
     - install
     - gui
