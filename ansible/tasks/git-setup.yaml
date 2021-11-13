@@ -5,8 +5,8 @@
 
 - name: Create global .gitignore
   ansible.builtin.template:
-    src: ../templates/.gitignore_global
-    dest: ~/.gitignore_global
+    src: ../templates/.global_gitignore
+    dest: ~/.global_gitignore
     mode: "0644"
   tags:
     - git-personal
