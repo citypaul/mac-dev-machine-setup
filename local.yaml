@@ -10,7 +10,7 @@
         - core
   tasks:
     - include: ansible/tasks/git-setup.yaml
-    - include: ansible/tasks/productivity-tools.yaml
+    - include: ansible/tasks/cli-tools.yaml
     - include: ansible/tasks/gui-tools.yaml
     - include: ansible/tasks/app-store-apps.yaml
     # - include: tasks/ssh.yml
