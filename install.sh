@@ -13,4 +13,4 @@ then
     exit
 fi
 
-
+ansible-playbook local.yaml

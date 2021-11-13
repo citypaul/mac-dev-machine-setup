@@ -10,7 +10,7 @@
         - core
   tasks:
     - include: ansible/tasks/git-setup.yaml
-    - include: ansible/tasks/tmux.yaml
+    - include: ansible/tasks/productivity-tools.yaml
     # - include: tasks/ssh.yml
     # - include: tasks/core-setup.yml
     # - include: tasks/node-setup.yml

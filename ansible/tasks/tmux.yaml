@@ -1,4 +1,0 @@
-- name: Install tmux
-  community.general.homebrew:
-    name: tmux
-    state: latest

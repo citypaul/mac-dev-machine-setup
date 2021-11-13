@@ -1,3 +1,8 @@
+- name: Install latest Git
+  community.general.homebrew:
+    name: git
+    state: latest
+
 - name: Git personal setup email
   git_config:
     name: user.email
