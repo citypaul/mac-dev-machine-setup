@@ -11,6 +11,7 @@
         "wget",
         "yarn",
         "watchman",
+        "tree",
       ]
   tags:
     - install
