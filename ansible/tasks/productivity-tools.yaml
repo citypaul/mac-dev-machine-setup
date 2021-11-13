@@ -1,6 +1,17 @@
 - name: Install productivity packages
   community.general.homebrew:
-    name: ["tmux", "fzf", "ripgrep", "z", "gh", "shellcheck", "wget"]
+    name:
+      [
+        "tmux",
+        "fzf",
+        "ripgrep",
+        "z",
+        "gh",
+        "shellcheck",
+        "wget",
+        "yarn",
+        "watchman",
+      ]
   tags:
     - install
     - productivity
