@@ -13,4 +13,4 @@ then
     ansible-galaxy collection install community.general
 fi
 
-ansible-playbook local.yaml -K
+ansible-playbook local.yaml -K -e "ansible_become_pass=${SUDO_PASSWORD}"
