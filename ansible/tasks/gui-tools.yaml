@@ -23,3 +23,8 @@
     - dashlane
     - protonvpn
     - parallels
+    - sourcetree
+  tags:
+    - install
+    - gui
+    - productivity
