@@ -1,4 +1,15 @@
 #!/bin/bash
 
-sudo python get-pip.py
-sudo python -m pip install ansible
+if ! command -v brew &> /dev/null
+then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    exit
+fi
+
+if ! command -v ansible &> /dev/null
+then
+    brew install ansible
+    exit
+fi
+
+
