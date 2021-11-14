@@ -15,6 +15,8 @@
     - include: ansible/tasks/app-store-apps.yaml
     - include: ansible/tasks/dock.yaml
     - include: ansible/tasks/fonts.yaml
+    - include: ansible/tasks/themes.yaml
+    - include: ansible/tasks/dotfiles.yaml
     # - include: tasks/ssh.yml
     # - include: tasks/core-setup.yml
     # - include: tasks/node-setup.yml

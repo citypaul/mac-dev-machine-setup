@@ -50,3 +50,11 @@
     value: ~/.global_gitignore
   tags:
     - git-personal
+
+- name: Set global git default branch name
+  community.general.git_config:
+    name: init.defaultBranch
+    scope: global
+    value: main
+  tags:
+    - git-personal

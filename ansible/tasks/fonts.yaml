@@ -5,16 +5,13 @@
     - install
     - fonts
 
-- name: Installing Hack Nerd Font
+- name: Installing fonts
   homebrew_cask:
-    name: font-hack-nerd-font
-  tags:
-    - install
-    - fonts
-
-- name: Installing Fira code Font
-  homebrew_cask:
-    name: font-fira-code
+    name:
+      - font-hack-nerd-font
+      - font-fira-code
+      - font-meslo-lg-nerd-font
+      - font-meslo-for-powerline
   tags:
     - install
     - fonts

@@ -1,0 +1,29 @@
+- name: Install stow
+  community.general.homebrew:
+    name: ["stow"]
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+- name: Cloning .dotfiles
+  ansible.builtin.git:
+    repo: "git@github.com:citypaul/.dotfiles.git"
+    dest: "{{ lookup('env', 'HOME') }}/.dotfiles"
+    recursive: yes
+    update: yes
+    accept_hostkey: yes
+    version: main
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+
+- name: Stow dotfiles
+  shell: cd $HOME/.dotfiles && ./install.sh
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli

@@ -1,0 +1,12 @@
+- name: Cloning Dracula iterm theme
+  ansible.builtin.git:
+    repo: "git@github.com:dracula/iterm.git"
+    dest: ~/dracula.iterm-theme
+    recursive: yes
+    update: yes
+    accept_hostkey: yes
+    version: master
+  tags:
+    - install
+    - themes
+    - zsh
