@@ -7,9 +7,17 @@
     - cli
     - zsh
 
-- name: Install bash autocompletion
-  community.general.homebrew:
-    name: ["bash-completion"]
+- name: Install oh-my-zsh
+  shell: sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  ignore_errors: yes
+  tags:
+    - install
+    - productivity
+    - cli
+    - zsh
+
+- name: test
+  shell: echo "hello"
   tags:
     - install
     - productivity
