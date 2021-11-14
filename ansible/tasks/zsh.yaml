@@ -3,23 +3,44 @@
     name: ["zsh"]
   tags:
     - install
-    - productivity
-    - cli
     - zsh
+    - dotfiles
+    - productivity
+
+- name: Change shell to zsh
+  shell: chsh -s $(which zsh)
+  tags:
+    - install
+    - zsh
+    - dotfiles
+    - productivity
+  become: true
+
+- name: Check to see if oh-my-zsh is already installed
+  stat:
+    path: ~/.oh-my-zsh
+  register: oh_my_zsh
+  tags:
+    - install
+    - zsh
+    - dotfiles
+    - productivity
 
 - name: Install oh-my-zsh
   shell: sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-  ignore_errors: yes
   tags:
     - install
-    - productivity
-    - cli
     - zsh
+    - dotfiles
+    - productivity
+  when: oh_my_zsh.stat.exists == False
 
-- name: test
-  shell: echo "hello"
+- name: Install zsh-autosuggestions
+  ansible.builtin.git:
+    repo: "https://github.com/zsh-users/zsh-autosuggestions.git"
+    dest: "~/.oh-my-zsh/plugins/zsh-autosuggestions"
   tags:
     - install
-    - productivity
-    - cli
     - zsh
+    - dotfiles
+    - productivity
