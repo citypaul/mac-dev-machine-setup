@@ -1,4 +1,5 @@
 - name: Install Magnet
+  ignore_errors: yes
   tags:
     - app-store
   community.general.mas:
@@ -6,6 +7,7 @@
     state: present
 
 - name: Install DaisyDisk
+  ignore_errors: yes
   tags:
     - app-store
   community.general.mas:
@@ -13,6 +15,7 @@
     state: present
 
 - name: Install Bear
+  ignore_errors: yes
   tags:
     - app-store
   community.general.mas:
