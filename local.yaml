@@ -4,7 +4,6 @@
     - name: Update Brew
       community.general.homebrew:
         update_homebrew: yes
-        upgrade_all: yes
       tags:
         - install
         - core
