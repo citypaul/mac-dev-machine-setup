@@ -6,7 +6,7 @@
     - dock
 
 - name: Clear dock
-  shell: dockutil --remove all
+  shell: dockutil --remove all --no-restart
   tags:
     - install
     - dock
@@ -14,8 +14,8 @@
 - name: Setup dock
   shell: dockutil --add "{{ item }}"
   with_items:
-    - /Applications/Google Chrome.app
     - /Applications/Visual Studio Code.app
+    - /Applications/Google Chrome.app
     - /Applications/Slack.app
     - /Applications/iTerm.app
     - /Applications/Fantastical.app
