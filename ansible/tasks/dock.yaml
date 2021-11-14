@@ -7,18 +7,22 @@
 
 - name: Clear dock
   shell: dockutil --remove all
+  tags:
+    - install
+    - dock
 
 - name: Setup dock
   shell: dockutil --add "{{ item }}"
   with_items:
-    - /Applications/Visual Studio Code.app
     - /Applications/Google Chrome.app
-    - /Applications/iTerm.app
-    - /Applications/Insomnia.app
-    - /Applications/Sourcetree.app
+    - /Applications/Visual Studio Code.app
     - /Applications/Slack.app
+    - /Applications/iTerm.app
     - /Applications/Fantastical.app
     - /Applications/Spotify.app
+    - /Applications/Sourcetree.app
+    - /Applications/ProtonVPN.app
+    - /Applications/Insomnia.app
     - /Applications/Bear.app
   ignore_errors: yes
   tags:
