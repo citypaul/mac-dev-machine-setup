@@ -1,0 +1,20 @@
+- name: Tapping homebrew/cask-fonts
+  homebrew_tap:
+    name: homebrew/cask-fonts
+  tags:
+    - install
+    - fonts
+
+- name: Installing Hack Nerd Font
+  homebrew_cask:
+    name: font-hack-nerd-font
+  tags:
+    - install
+    - fonts
+
+- name: Installing Fira code Font
+  homebrew_cask:
+    name: font-fira-code
+  tags:
+    - install
+    - fonts
