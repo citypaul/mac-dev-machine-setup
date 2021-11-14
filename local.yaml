@@ -8,9 +8,6 @@
       tags:
         - install
         - core
-  handlers:
-    - name: Restart dock
-      shell: "/usr/bin/killall Dock"
   tasks:
     - include: ansible/tasks/git-setup.yaml
     - include: ansible/tasks/cli-tools.yaml

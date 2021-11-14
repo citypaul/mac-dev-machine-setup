@@ -25,8 +25,12 @@
     - /Applications/Insomnia.app
     - /Applications/Bear.app
   ignore_errors: yes
-  notify:
-    - Restart dock
+  tags:
+    - install
+    - dock
+
+- name: Restart dock
+  shell: "/usr/bin/killall Dock"
   tags:
     - install
     - dock
