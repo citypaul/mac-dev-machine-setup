@@ -17,4 +17,5 @@
     - include: ansible/tasks/fonts.yaml
     - include: ansible/tasks/themes.yaml
     - include: ansible/tasks/osx.yaml
+    - include: ansible/tasks/iterm.yaml
     - include: ansible/tasks/dotfiles.yaml

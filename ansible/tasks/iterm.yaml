@@ -1,0 +1,9 @@
+- name: Create dynamic profile for iTerm2
+  ansible.builtin.template:
+    src: ../templates/iterm-dynamic-profile.json
+    dest: ~/Library/Application Support/iTerm2/DynamicProfiles/iterm-dynamic-profile.json
+    mode: "0644"
+  tags:
+    - install
+    - iterm
+    - productivity
