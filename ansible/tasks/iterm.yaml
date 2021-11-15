@@ -1,5 +1,15 @@
+- name: Create iTerm2 Dynamic Profile directory if it doesn't exist
+  ansible.builtin.file:
+    path: ~/Library/Application Support/iTerm2/DynamicProfiles
+    state: directory
+    mode: "0755"
+  tags:
+    - install
+    - iterm
+    - productivity
+
 - name: Create dynamic profile for iTerm2
-  ansible.builtin.template:
+  template:
     src: ../templates/iterm-dynamic-profile.json
     dest: ~/Library/Application Support/iTerm2/DynamicProfiles/iterm-dynamic-profile.json
     mode: "0644"
