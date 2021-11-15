@@ -51,6 +51,14 @@
   tags:
     - git-personal
 
+- name: Set git fetch to always prune
+  community.general.git_config:
+    name: fetch.prune
+    scope: global
+    value: "true"
+  tags:
+    - git-personal
+
 - name: Set global git default branch name
   community.general.git_config:
     name: init.defaultBranch
