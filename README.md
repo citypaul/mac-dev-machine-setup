@@ -6,6 +6,14 @@ To run, it should just be a case of running `./install.sh`
 
 ## To setup the iterm theme
 
-The Dracula iterm theme at this point in time still needs to be installed manually through the iterm gui. [Follow these instructions to complete the installation](https://draculatheme.com/iterm).
+To setup the iterm theme, you will need to go to iterm -> Preferences and select "Profiles". The "Paul iterm theme" profile should be there. Select, click "Other Actions" and click "Set as Default":
 
-The theme is cloned into `~/dracula.iterm-theme`.
+![iterm theme instructions](./docs/screenshots/choose-iterm-theme.png)
+
+Look how lovely it looks:
+
+![iterm theme](./docs/screenshots/iterm-theme.png)
+
+And here is how Tmux looks:
+
+![tmux theme](./docs/screenshots/tmux-theme.png)
