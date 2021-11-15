@@ -17,6 +17,7 @@
         "thefuck",
         "mas",
         "starship",
+        "ansible-lint",
       ]
   tags:
     - install
