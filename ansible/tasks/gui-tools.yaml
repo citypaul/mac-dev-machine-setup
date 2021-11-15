@@ -4,11 +4,8 @@
     state: present
   ignore_errors: yes
   with_items:
-    - dash
-    - kap
     - docker
     - google-chrome
-    - graphql-playground
     - iterm2
     - insomnia
     - ngrok
@@ -22,6 +19,8 @@
     - protonvpn
     - sourcetree
     - stats
+    - dozer
+    - kap
     - parallels
   tags:
     - install
