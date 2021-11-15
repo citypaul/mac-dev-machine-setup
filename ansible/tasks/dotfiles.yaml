@@ -39,6 +39,17 @@
 
 - name: Stow dotfiles
   shell: cd $HOME/.dotfiles && ./install.sh
+  changed_when: true
+  register: dotfiles_done
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+
+- name: Source tmux
+  command: tmux source ~/.tmux.conf
+  when: dotfiles_done
   tags:
     - install
     - dotfiles

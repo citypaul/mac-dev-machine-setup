@@ -45,7 +45,8 @@
     - osx
 
 - name: Restart finder
-  shell: killall Finder
+  changed_when: true
+  command: killall Finder
   tags:
     - install
     - osx

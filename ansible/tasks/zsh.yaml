@@ -9,6 +9,7 @@
 
 - name: Change shell to zsh
   shell: chsh -s $(which zsh)
+  changed_when: true
   tags:
     - install
     - zsh
@@ -33,12 +34,13 @@
     - zsh
     - dotfiles
     - productivity
-  when: oh_my_zsh.stat.exists == False
+  when: not oh_my_zsh.stat.exists
 
 - name: Install zsh-autosuggestions
   ansible.builtin.git:
     repo: "https://github.com/zsh-users/zsh-autosuggestions.git"
     dest: "~/.oh-my-zsh/plugins/zsh-autosuggestions"
+    version: master
   tags:
     - install
     - zsh
