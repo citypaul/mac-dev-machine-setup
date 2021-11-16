@@ -21,7 +21,6 @@
     - ansible-lint
     - httpie
     - jq
-
   tags:
     - install
     - productivity
