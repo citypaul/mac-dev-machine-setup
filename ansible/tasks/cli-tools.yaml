@@ -18,6 +18,7 @@
         "mas",
         "starship",
         "ansible-lint",
+        "httpie",
       ]
   tags:
     - install
