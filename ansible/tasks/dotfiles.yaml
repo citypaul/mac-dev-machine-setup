@@ -58,6 +58,7 @@
 
 - name: Source tmux
   command: tmux source ~/.tmux.conf
+  ignore_errors: true
   when: tmux_conf_exists.stat.exists
   tags:
     - install
