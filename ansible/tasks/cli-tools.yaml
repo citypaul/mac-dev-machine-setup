@@ -22,6 +22,8 @@
     - httpie
     - jq
     - ranger
+    - spotify-tui
+    - gitui
   tags:
     - install
     - productivity
