@@ -2,7 +2,7 @@
   "Profiles": [
     {
       "Name": "Paul iTerm theme",
-      "Guid": "f0f20203-2c63-4b75-a58a-a4fa572e45bx",
+      "Guid": "f0f20203-2c63-4b75-a58a-a4fa572e45by",
       "Ansi 6 Color": {
         "Green Component": 0.9137254901960784,
         "Blue Component": 0.99215686274509807,
@@ -15,7 +15,7 @@
         "Red Component": 0.74117647058823533
       },
       "Custom Directory": "No",
-      "Normal Font": "MesloLGMDZ-RegularForPowerline 16",
+      "Normal Font": "MesloLGMDZ-RegularForPowerline 14",
       "Bold Color": {
         "Green Component": 0.90237069129943848,
         "Blue Component": 0.90237069129943848,
@@ -55,7 +55,12 @@
         "Red Component": 0.31372549019607843
       },
       "Ambiguous Double Width": false,
-      "Jobs to Ignore": ["rlogin", "ssh", "slogin", "telnet"],
+      "Jobs to Ignore": [
+        "rlogin",
+        "ssh",
+        "slogin",
+        "telnet"
+      ],
       "Ansi 15 Color": {
         "Green Component": 1,
         "Blue Component": 1,
