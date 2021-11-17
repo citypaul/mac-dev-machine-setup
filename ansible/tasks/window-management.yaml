@@ -1,0 +1,11 @@
+# Yabai is currently not working on M1 Macs. Keep checking this PR: https://github.com/koekeishiya/yabai/issues/725
+# - name: Install yabai window manager
+#   community.general.homebrew:
+#     name: "{{ item }}"
+#     state: present
+#   with_items:
+#     - koekeishiya/formulae/yabai
+#   tags:
+#     - install
+#     - productivity
+#     - window-manager
