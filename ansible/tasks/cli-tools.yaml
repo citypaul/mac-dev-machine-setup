@@ -23,7 +23,7 @@
     - jq
     - ranger
     - spotify-tui
-    - gitui
+    - lazygit
   tags:
     - install
     - productivity
