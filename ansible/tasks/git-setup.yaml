@@ -35,11 +35,11 @@
   tags:
     - git-personal
 
-- name: Set vim as default git editor
+- name: Set nvim as default git editor
   community.general.git_config:
     name: core.editor
     scope: global
-    value: vim
+    value: nvim
   tags:
     - git-personal
 
