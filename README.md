@@ -6,14 +6,14 @@ To run, it should just be a case of running `./install.sh`
 
 ## To setup the iterm theme
 
-To setup the iterm theme, you will need to go to iterm -> Preferences and select "Profiles". The "Paul iterm theme" profile should be there. Select, click "Other Actions" and click "Set as Default":
+To setup the iterm theme, you will need to go to iterm -> Preferences and select "Profiles". The "Mac Dev Environment" profile should be there. Select, click "Other Actions" and click "Set as Default":
 
 ![iterm theme instructions](./docs/screenshots/choose-iterm-theme.png)
 
 Look how lovely it looks:
 
-![iterm theme](./docs/screenshots/iterm-theme.png)
+![iterm theme](./docs/screenshots/iterm-theme-example.png)
 
 And here is how Tmux looks:
 
-![tmux theme](./docs/screenshots/tmux-theme.png)
+![tmux theme](./docs/screenshots/tmux-theme-example.png)
