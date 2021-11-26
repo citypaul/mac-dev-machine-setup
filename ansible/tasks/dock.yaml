@@ -23,7 +23,6 @@
     - /Applications/Sourcetree.app
     - /Applications/ProtonVPN.app
     - /Applications/Insomnia.app
-    - /Applications/Sequel Ace.app
     - /Applications/Bear.app
   ignore_errors: yes
   tags:
