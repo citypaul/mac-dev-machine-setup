@@ -4,7 +4,7 @@
     - app-store
   community.general.mas:
     id: 441258766
-    state: present
+    state: latest
 
 - name: Install DaisyDisk
   ignore_errors: yes
@@ -12,7 +12,7 @@
     - app-store
   community.general.mas:
     id: 411643860
-    state: present
+    state: latest
 
 - name: Install Bear
   ignore_errors: yes
@@ -20,4 +20,4 @@
     - app-store
   community.general.mas:
     id: 1091189122
-    state: present
+    state: latest

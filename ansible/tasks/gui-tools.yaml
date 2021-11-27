@@ -1,7 +1,7 @@
 - name: Install core packages via brew casks
   community.general.homebrew_cask:
     name: "{{ item }}"
-    state: present
+    state: latest
   ignore_errors: yes
   with_items:
     - docker
