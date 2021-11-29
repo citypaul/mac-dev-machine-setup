@@ -24,6 +24,7 @@
     - ranger
     - spotify-tui
     - lazygit
+    - glances
   tags:
     - install
     - productivity
