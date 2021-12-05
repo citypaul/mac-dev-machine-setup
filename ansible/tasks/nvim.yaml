@@ -1,7 +1,7 @@
 - name: Install neovim
   community.general.homebrew:
     name: neovim
-    state: present
+    state: latest
   tags:
     - install
     - productivity
