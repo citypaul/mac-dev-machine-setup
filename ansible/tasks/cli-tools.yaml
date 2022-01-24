@@ -25,6 +25,7 @@
     - spotify-tui
     - lazygit
     - glances
+    - tldr
   tags:
     - install
     - productivity
