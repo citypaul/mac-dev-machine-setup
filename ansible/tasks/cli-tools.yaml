@@ -27,6 +27,7 @@
     - glances
     - tldr
     - lazydocker
+    - fd
   tags:
     - install
     - productivity
