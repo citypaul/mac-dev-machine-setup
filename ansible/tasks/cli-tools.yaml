@@ -26,6 +26,7 @@
     - lazygit
     - glances
     - tldr
+    - lazydocker
   tags:
     - install
     - productivity
