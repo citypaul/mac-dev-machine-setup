@@ -21,6 +21,7 @@
     - stats
     - parallels
     - aldente
+    - fig
   tags:
     - install
     - gui
