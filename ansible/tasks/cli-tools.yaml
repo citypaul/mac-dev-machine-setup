@@ -28,6 +28,7 @@
     - tldr
     - lazydocker
     - fd
+    - asciinema
   tags:
     - install
     - productivity
