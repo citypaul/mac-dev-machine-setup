@@ -4,7 +4,6 @@
   tags:
     - install
     - zsh
-    - dotfiles
     - productivity
 
 - name: Change shell to zsh
@@ -13,7 +12,6 @@
   tags:
     - install
     - zsh
-    - dotfiles
     - productivity
   become: true
 
@@ -24,7 +22,6 @@
   tags:
     - install
     - zsh
-    - dotfiles
     - productivity
 
 - name: Install oh-my-zsh
@@ -32,7 +29,6 @@
   tags:
     - install
     - zsh
-    - dotfiles
     - productivity
   when: not oh_my_zsh.stat.exists
 
@@ -44,5 +40,4 @@
   tags:
     - install
     - zsh
-    - dotfiles
     - productivity
