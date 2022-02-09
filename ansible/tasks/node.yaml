@@ -1,0 +1,16 @@
+- name: Install nvm
+  community.general.homebrew:
+    name: nvm
+    state: latest
+  tags:
+    - install
+    - node
+
+- name: Install latest lts version of node
+  ansible.builtin.shell: |
+    source ~/.zshrc
+    nvm install --lts
+    nvm alias default
+  tags:
+    - install
+    - node
