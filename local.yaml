@@ -20,4 +20,5 @@
     - include: ansible/tasks/iterm.yaml
     - include: ansible/tasks/nvim.yaml
     - include: ansible/tasks/node.yaml
+    - include: ansible/tasks/python.yaml
     - include: ansible/tasks/dotfiles.yaml
