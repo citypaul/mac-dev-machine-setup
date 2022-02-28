@@ -1,8 +1,0 @@
-- name: Install Python
-  community.general.homebrew:
-    name: python
-    state: latest
-  tags:
-    - install
-    - productivity
-    - python
