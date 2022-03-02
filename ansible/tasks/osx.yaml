@@ -1,21 +1,45 @@
-- name: Show status bar in finder
-  osx_defaults:
-    domain: com.apple.finder
-    key: ShowStatusBar
-    type: bool
-    value: true
-    state: present
+- name: Setup finder settings
+  shell: "{{ item }}"
+  with_items:
+    # Show Path bar in Finder
+    - defaults write com.apple.finder ShowPathbar -bool true
+    # Show Status bar in Finder
+    - defaults write com.apple.finder ShowStatusBar -bool true
+
+    # Show icons for hard drives, servers, and removable media on the desktop
+    - defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true
+    - defaults write com.apple.finder ShowHardDrivesOnDesktop -bool true
+    - defaults write com.apple.finder ShowMountedServersOnDesktop -bool true
+    - defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
+
+    # Show absolute path in finder's title bar.
+    - defaults write com.apple.finder _FXShowPosixPathInTitle -bool YES
+
+    # Show the ~/Library folder
+    - chflags nohidden ~/Library
+
+    # Set default Finder location to home folder (~/)
+    - defaults write com.apple.finder NewWindowTarget -string "PfLo"
+    - defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}"
+
+    # Use list view in all Finder windows by default
+    # Four-letter codes for the other view modes: `icnv`, `clmv`, `Flwv`
+    - defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+
+    # Use current directory as default search scope in Finder
+    - defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+
+    # show all filename extensions
+    - defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+
+    # Disable ext change warning
+    - defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
   tags:
     - install
     - osx
 
-- name: Show path bar in finder
-  osx_defaults:
-    domain: com.apple.finder
-    key: ShowPathBar
-    type: bool
-    value: true
-    state: present
+- name: Configure terminal to open in same directory by default
+  shell: defaults write com.apple.Terminal NewTabWorkingDirectoryBehavior -bool true
   tags:
     - install
     - osx
