@@ -24,6 +24,7 @@
     - /Applications/ProtonVPN.app
     - /Applications/Insomnia.app
     - /Applications/Bear.app
+    - /Applications/Authy Desktop.app
   ignore_errors: yes
   tags:
     - install
