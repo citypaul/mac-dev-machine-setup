@@ -40,3 +40,10 @@
     - install
     - productivity
     - cli
+
+- name: Github dashboard extension
+  ansible.builtin.shell: gh extension install dlvhdr/gh-dash
+  tags:
+    - install
+    - productivity
+    - cli
