@@ -50,9 +50,17 @@
     - productivity
     - cli
 
-- name: Github dashboard extension
+- name: Install Github dashboard extension
   ansible.builtin.shell: gh extension install dlvhdr/gh-dash
   when: github_dash is failed
+  tags:
+    - install
+    - productivity
+    - cli
+
+- name: Upgrade Github dashboard extension
+  ansible.builtin.shell: gh extension upgrade dlvhdr/gh-dash
+  when: github_dash is succeeded
   tags:
     - install
     - productivity
