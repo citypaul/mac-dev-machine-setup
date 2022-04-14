@@ -41,8 +41,18 @@
     - productivity
     - cli
 
+- name: Check if github dashboard cli tool is installed already
+  ansible.builtin.shell: gh extension list | grep gh-dash
+  register: github_dash
+  ignore_errors: true
+  tags:
+    - install
+    - productivity
+    - cli
+
 - name: Github dashboard extension
   ansible.builtin.shell: gh extension install dlvhdr/gh-dash
+  when: github_dash is failed
   tags:
     - install
     - productivity
