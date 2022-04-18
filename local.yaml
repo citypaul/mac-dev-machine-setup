@@ -8,6 +8,7 @@
         - install
         - core
   tasks:
+    - include: ansible/tasks/python.yaml
     - include: ansible/tasks/git-setup.yaml
     - include: ansible/tasks/cli-tools.yaml
     - include: ansible/tasks/gui-tools.yaml
