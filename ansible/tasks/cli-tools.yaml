@@ -30,6 +30,7 @@
     - fd
     - asciinema
     - gource
+    - ffmpeg
   tags:
     - install
     - productivity
