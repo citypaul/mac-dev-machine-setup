@@ -29,6 +29,7 @@
     - lazydocker
     - fd
     - asciinema
+    - gource
   tags:
     - install
     - productivity
