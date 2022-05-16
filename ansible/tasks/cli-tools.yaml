@@ -31,6 +31,7 @@
     - asciinema
     - gource
     - exa
+    - bat
   tags:
     - install
     - productivity
