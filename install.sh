@@ -13,4 +13,4 @@ then
 fi
 
 ansible-galaxy collection install community.general
-ansible-playbook local.yaml -K
+ansible-playbook local.yaml -K --ask-vault-pass

@@ -1,5 +1,9 @@
 - hosts: localhost
 
+  vars:
+    source_key: "./.ssh/id_rsa"
+    dest_key: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
+    personal: "{{ lookup('env', 'HOME') }}/personal"
   pre_tasks:
     - name: Update Brew
       community.general.homebrew:
@@ -22,3 +26,4 @@
     - include: ansible/tasks/nvim.yaml
     - include: ansible/tasks/node.yaml
     - include: ansible/tasks/dotfiles.yaml
+    - include: ansible/tasks/ssh.yaml
