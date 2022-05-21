@@ -1,7 +1,30 @@
-- name: Import gpg key
+- name: Copy (and decrypt) gpg key
+  copy:
+    src: "./.gpg_keys/private.key"
+    dest: "./.gpg_keys/private.key-decrypted"
+    mode: 0600
+  tags:
+    - install
+    - gpg
+    - ssh
+
+- name: Import gpg private key
   ansible.builtin.shell: |
-    gpg --import "{{ source_gpg_private_key }}"
-    gpg --import "{{ source_gpg_public_key }}"
+    gpg --import --batch "./.gpg_keys/private.key-decrypted"
+  tags:
+    - install
+    - gpg
+    - ssh
+
+- name: Import gpg public key
+  ansible.builtin.shell: gpg --import "{{ source_gpg_public_key }}"
+  tags:
+    - install
+    - gpg
+    - ssh
+
+- name: Delete temporary key
+  ansible.builtin.shell: rm "./.gpg_keys/private.key-decrypted"
   tags:
     - install
     - gpg
