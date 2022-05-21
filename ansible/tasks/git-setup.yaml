@@ -2,6 +2,8 @@
   community.general.homebrew:
     name: git
     state: latest
+  tags:
+    - git-personal
 
 - name: Create global .gitignore
   ansible.builtin.template:
@@ -64,5 +66,13 @@
     name: init.defaultBranch
     scope: global
     value: main
+  tags:
+    - git-personal
+
+- name: Set global git gpg key
+  community.general.git_config:
+    name: user.signingkey
+    scope: global
+    value: 9B227B4E172B3C9E
   tags:
     - git-personal
