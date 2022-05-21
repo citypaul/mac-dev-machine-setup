@@ -1,0 +1,8 @@
+- name: Import gpg key
+  ansible.builtin.shell: |
+    gpg --import "{{ source_gpg_private_key }}"
+    gpg --import "{{ source_gpg_public_key }}"
+  tags:
+    - install
+    - gpg
+    - ssh

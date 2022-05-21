@@ -1,9 +1,10 @@
 - hosts: localhost
 
   vars:
-    source_key: "./.ssh/id_rsa"
-    dest_key: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
-    personal: "{{ lookup('env', 'HOME') }}/personal"
+    source_ssh_key: "./.ssh/id_rsa"
+    dest_ssh_key: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
+    source_gpg_private_key: "./.gpg_keys/private.key"
+    source_gpg_public_key: "./.gpg_keys/public.key"
   pre_tasks:
     - name: Update Brew
       community.general.homebrew:
@@ -12,6 +13,8 @@
         - install
         - core
   tasks:
+    - include: ansible/tasks/ssh.yaml
+    - include: ansible/tasks/gpg.yaml
     - include: ansible/tasks/git-setup.yaml
     - include: ansible/tasks/cli-tools.yaml
     - include: ansible/tasks/gui-tools.yaml
@@ -26,4 +29,3 @@
     - include: ansible/tasks/nvim.yaml
     - include: ansible/tasks/node.yaml
     - include: ansible/tasks/dotfiles.yaml
-    - include: ansible/tasks/ssh.yaml
