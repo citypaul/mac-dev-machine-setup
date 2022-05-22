@@ -22,6 +22,12 @@ And here is how Tmux looks:
 
 [Refer to these docs](https://samuelsson.dev/sign-git-commits-on-github-with-gpg-in-macos/)
 
+After running the `install.sh` script, you will need to manually run:
+
+`gpgconf --kill gpg-agent`
+
+And then do a commit. This will store the gpg key in the keychain so you don't have to keep adding the password every time.
+
 ## To setup personal .ssh key:
 
 Run `./install-personal-ssh-key.sh`.
