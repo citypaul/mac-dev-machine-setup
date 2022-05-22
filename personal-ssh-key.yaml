@@ -1,0 +1,7 @@
+- hosts: localhost
+
+  vars:
+    source_ssh_key: "./.ssh/id_rsa"
+    dest_ssh_key: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
+  tasks:
+    - include: ansible/tasks/ssh.yaml

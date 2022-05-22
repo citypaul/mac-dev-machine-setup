@@ -1,8 +1,6 @@
 - hosts: localhost
 
   vars:
-    source_ssh_key: "./.ssh/id_rsa"
-    dest_ssh_key: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
     source_gpg_private_key: "./.gpg_keys/private.key"
     source_gpg_public_key: "./.gpg_keys/public.key"
   pre_tasks:
@@ -13,7 +11,6 @@
         - install
         - core
   tasks:
-    - include: ansible/tasks/ssh.yaml
     - include: ansible/tasks/gpg.yaml
     - include: ansible/tasks/git-setup.yaml
     - include: ansible/tasks/cli-tools.yaml

@@ -17,3 +17,11 @@ Look how lovely it looks:
 And here is how Tmux looks:
 
 ![tmux theme](./docs/screenshots/tmux-theme-example.png)
+
+## Understanding how GPG keys in Git work
+
+[Refer to these docs](https://samuelsson.dev/sign-git-commits-on-github-with-gpg-in-macos/)
+
+## To setup personal .ssh key:
+
+Run `./install-personal-ssh-key.sh`.
