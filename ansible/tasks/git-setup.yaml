@@ -76,3 +76,11 @@
     value: 5016355A88C64BE0
   tags:
     - git-personal
+
+- name: Set global git always gpgsign
+  community.general.git_config:
+    name: user.gpgsign
+    scope: global
+    value: "true"
+  tags:
+    - git-personal
