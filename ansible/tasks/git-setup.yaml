@@ -73,6 +73,6 @@
   community.general.git_config:
     name: user.signingkey
     scope: global
-    value: 9B227B4E172B3C9E
+    value: 5016355A88C64BE0
   tags:
     - git-personal
