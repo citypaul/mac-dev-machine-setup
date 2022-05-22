@@ -79,7 +79,7 @@
 
 - name: Set global git always gpgsign
   community.general.git_config:
-    name: user.gpgsign
+    name: commit.gpgsign
     scope: global
     value: "true"
   tags:
