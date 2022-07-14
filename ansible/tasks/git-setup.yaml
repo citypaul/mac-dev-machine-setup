@@ -84,3 +84,11 @@
     value: "true"
   tags:
     - git-personal
+
+- name: Set autoSetupRemote to true to automatically set upstream branch on push
+  community.general.git_config:
+    name: push.autoSetupRemote
+    scope: global
+    value: "true"
+  tags:
+    - git-personal
