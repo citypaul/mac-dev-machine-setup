@@ -33,6 +33,7 @@
     - exa
     - bat
     - gnupg
+    - postgres
   tags:
     - install
     - productivity
