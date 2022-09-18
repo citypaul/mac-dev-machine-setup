@@ -35,6 +35,7 @@
     - gnupg
     - postgres
     - youtube-dl
+    - pwgen
   tags:
     - install
     - productivity
