@@ -12,6 +12,10 @@
       - font-fira-code
       - font-meslo-lg-nerd-font
       - font-meslo-for-powerline
+      - font-monocraft
+      - font-iosevka
+      - font-iosevka-nerd-font
+      - font-jetbrains-mono
   tags:
     - install
     - fonts
