@@ -18,7 +18,6 @@
     - thefuck
     - mas
     - starship
-    - ansible-lint
     - httpie
     - jq
     - ranger
@@ -33,7 +32,6 @@
     - exa
     - bat
     - gnupg
-    - postgres
     - youtube-dl
     - pwgen
   tags:

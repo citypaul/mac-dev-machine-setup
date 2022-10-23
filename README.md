@@ -30,4 +30,4 @@ And then do a commit. This will store the gpg key in the keychain so you don't h
 
 ## To setup personal .ssh key:
 
-Run `./install-personal-ssh-key.sh`.
+Run `./install-keys.sh`.
