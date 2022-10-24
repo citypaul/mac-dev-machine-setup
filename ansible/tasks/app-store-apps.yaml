@@ -21,3 +21,11 @@
   community.general.mas:
     id: 1091189122
     state: latest
+
+- name: Install MeetingBar
+  ignore_errors: yes
+  tags:
+    - app-store
+  community.general.mas:
+    id: 1532419400
+    state: latest
