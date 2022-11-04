@@ -2,6 +2,7 @@
   community.general.homebrew_cask:
     name: "{{ item }}"
     state: latest
+    greedy: yes
   ignore_errors: yes
   with_items:
     - docker
