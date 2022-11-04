@@ -12,5 +12,6 @@ then
     brew install ansible
 fi
 
+ansible-galaxy install elliotweiser.osx-command-line-tools
 ansible-galaxy collection install community.general
 ansible-playbook local.yaml -K 
