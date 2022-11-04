@@ -1,5 +1,6 @@
 - hosts: localhost
-
+  roles:
+    - { role: elliotweiser.osx-command-line-tools }
   vars:
     source_gpg_private_key: "./.gpg_keys/private.key"
     source_gpg_public_key: "./.gpg_keys/public.key"
@@ -12,10 +13,10 @@
         - core
   tasks:
     - include: ansible/tasks/git-setup.yaml
+    - include: ansible/tasks/app-store-apps.yaml
     - include: ansible/tasks/cli-tools.yaml
     - include: ansible/tasks/gui-tools.yaml
     - include: ansible/tasks/zsh.yaml
-    - include: ansible/tasks/app-store-apps.yaml
     # dock is disabled until this issue is fixed: https://github.com/kcrawford/dockutil/issues/127
     # - include: ansible/tasks/dock.yaml
     - include: ansible/tasks/fonts.yaml

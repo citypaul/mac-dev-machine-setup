@@ -34,6 +34,30 @@
 
     # Disable ext change warning
     - defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+
+    # Set a blazingly fast keyboard repeat rate
+    - defaults write NSGlobalDomain KeyRepeat -int 0
+
+    # Finder: empty Trash securely by default
+    - defaults write com.apple.finder EmptyTrashSecurely -bool true
+
+    # Panels
+    # ----------------------------------------------------------------------
+
+    # Panels: disable the “Are you sure you want to open this application?” dialog
+    - defaults write com.apple.LaunchServices LSQuarantine -bool false
+
+    # Panels: enable full keyboard access for all controls (e.g. enable Tab in modal dialogs)
+    - defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
+
+    # Misc
+    # ----------------------------------------------------------------------
+
+    # Misc: disable Dictionary results
+    - defaults write com.apple.spotlight DictionaryLookupEnabled -bool false
+
+    # Misc: disable auto-correct
+    - defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
   tags:
     - install
     - osx
@@ -55,8 +79,6 @@
     - install
     - osx
 
-# - name: map Esc(ape) to Caps Lock
-#   command: hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x700000029}]}'
 - name: Set automatic software updates to true
   osx_defaults:
     domain: /Library/Preferences/com.apple.SoftwareUpdate

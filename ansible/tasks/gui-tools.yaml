@@ -2,6 +2,7 @@
   community.general.homebrew_cask:
     name: "{{ item }}"
     state: latest
+    greedy: yes
   ignore_errors: yes
   with_items:
     - docker
@@ -23,7 +24,6 @@
     - aldente
     - bartender
     - authy
-    - warp
     - cheatsheet
     - imageoptim
     - raycast
@@ -32,8 +32,8 @@
     - tabby
     - gas-mask
     - unclack
-    - camo-studio
     - shottr
+    - little-snitch
   tags:
     - install
     - gui
