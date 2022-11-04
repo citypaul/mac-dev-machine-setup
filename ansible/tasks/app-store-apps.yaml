@@ -29,3 +29,11 @@
   community.general.mas:
     id: 1532419400
     state: latest
+
+- name: Install Xcode
+  ignore_errors: yes
+  tags:
+    - app-store
+  community.general.mas:
+    id: 497799835
+    state: latest

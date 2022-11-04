@@ -34,6 +34,8 @@
     - gnupg
     - youtube-dl
     - pwgen
+    - rustup-init
+    - xcodes
   tags:
     - install
     - productivity
