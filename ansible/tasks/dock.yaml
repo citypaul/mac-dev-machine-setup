@@ -1,6 +1,7 @@
 - name: Install dockutil
+  ignore_errors: yes
   community.general.homebrew:
-    name: ["dockutil"]
+    name: ["hpedrorodrigues/tools/dockutil"]
   tags:
     - install
     - dock
@@ -12,19 +13,25 @@
     - dock
 
 - name: Setup dock
-  shell: dockutil --add "{{ item }}" --no-restart
+  shell: dockutil --add {{ item }} --no-restart
   with_items:
-    - /Applications/Visual Studio Code.app
-    - /Applications/Google Chrome.app
-    - /Applications/Slack.app
+    - /Applications/Visual\ Studio\ Code.app
     - /Applications/iTerm.app
-    - /Applications/Fantastical.app
-    - /Applications/Spotify.app
-    - /Applications/Sourcetree.app
-    - /Applications/ProtonVPN.app
     - /Applications/Insomnia.app
+    - /Applications/Sourcetree.app
+    - "'' --type small-spacer --section apps --after SourceTree"
+    - /Applications/Google\ Chrome.app
+    - /Applications/Firefox.app
+    - "'' --type small-spacer --section apps --after Firefox"
+    - /Applications/Slack.app
+    - /Applications/Fantastical.app
     - /Applications/Bear.app
-    - /Applications/Authy Desktop.app
+    - /Applications/Shottr.app
+    - "'' --type small-spacer --section apps --after Shottr"
+    - /Applications/Authy\ Desktop.app
+    - /Applications/ProtonVPN.app
+    - "'' --type small-spacer --section apps --after ProtonVPN"
+    - /Applications/Spotify.app
   ignore_errors: yes
   tags:
     - install

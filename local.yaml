@@ -17,8 +17,7 @@
     - include: ansible/tasks/cli-tools.yaml
     - include: ansible/tasks/gui-tools.yaml
     - include: ansible/tasks/zsh.yaml
-    # dock is disabled until this issue is fixed: https://github.com/kcrawford/dockutil/issues/127
-    # - include: ansible/tasks/dock.yaml
+    - include: ansible/tasks/dock.yaml
     - include: ansible/tasks/fonts.yaml
     - include: ansible/tasks/themes.yaml
     - include: ansible/tasks/osx.yaml
