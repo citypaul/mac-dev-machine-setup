@@ -1,0 +1,43 @@
+- name: Install Security Tools
+  community.general.homebrew_cask:
+    name: "{{item}}"
+    state: latest
+  ignore_errors: yes
+  with_items:
+    - 1password
+    - 1password-cli
+    - authy
+    - little-snitch
+  tags:
+    - install
+    - ssh
+    - gui
+    - security
+# - name: 1Password can be SSH Agent
+#   ansible.builtin.pause:
+#     prompt: "Have you configured 1Password to be SSH Agent (y/n)?"
+#     echo: no
+#   tags:
+#     - ssh
+#     - security
+# - name: Use 1Password SSH Agent
+#   ansible.builtin.template:
+#     src: ../templates/ssh_config.j2
+#     dest: ~/.ssh/config
+#   tags:
+#     - ssh
+#     - security
+# - name: Install personal public SSH Key
+#   copy:
+#     src: "./.ssh/{{ personal_public_ssh_key }}"
+#     dest: "{{ lookup('env', 'HOME') }}/.ssh/{{ personal_public_ssh_key }}"
+#   tags:
+#     - ssh
+#     - security
+# - name: Install work public SSH Key
+#   copy:
+#     src: "./.ssh/{{ work_public_ssh_key }}"
+#     dest: "{{ lookup('env', 'HOME') }}/.ssh/{{ work_public_ssh_key }}"
+#   tags:
+#     - ssh
+#     - security
