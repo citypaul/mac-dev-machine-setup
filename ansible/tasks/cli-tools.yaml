@@ -35,6 +35,7 @@
     - youtube-dl
     - pwgen
     - rustup-init
+    - pnpm
   tags:
     - install
     - productivity
