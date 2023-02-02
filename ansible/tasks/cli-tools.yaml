@@ -36,6 +36,7 @@
     - pwgen
     - rustup-init
     - pnpm
+    - zellij
   tags:
     - install
     - productivity
