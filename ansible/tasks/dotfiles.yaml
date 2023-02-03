@@ -36,6 +36,14 @@
     - dotfiles
     - stow
     - cli
+    
+- name: Remove existing dotfiles
+  shell: rm -rf $HOME/.dotfiles
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
 
 - name: Stow dotfiles
   shell: cd $HOME/.dotfiles && ./install.sh
