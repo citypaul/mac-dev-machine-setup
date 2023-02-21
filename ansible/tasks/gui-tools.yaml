@@ -3,7 +3,7 @@
     name: "{{ item }}"
     state: latest
     greedy: yes
-  ignore_errors: yes
+  ignore_errors: true
   with_items:
     - docker
     - google-chrome
@@ -36,7 +36,20 @@
     - amethyst
     - discord
     - vincelwt-chatgpt
-    - alacritty
+  tags:
+    - install
+    - gui
+    - productivity
+
+# See below for an explanation of the --no-quarantine option for alacritty
+# https://github.com/alacritty/alacritty/issues/4673#issuecomment-771291615
+
+- name: Install alacritty with '--no-quarantine' option
+  community.general.homebrew_cask:
+    name: alacritty
+    state: latest
+    greedy: yes
+    install_options: "no-quarantine"
   tags:
     - install
     - gui
