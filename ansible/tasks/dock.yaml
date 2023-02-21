@@ -17,6 +17,7 @@
   with_items:
     - /Applications/Visual\ Studio\ Code.app
     - /Applications/iTerm.app
+    - /Applications/Alacritty.app
     - /Applications/Insomnia.app
     - /Applications/Sourcetree.app
     - "'' --type small-spacer --section apps --after SourceTree"
