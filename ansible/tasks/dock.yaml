@@ -15,25 +15,18 @@
 - name: Setup dock
   shell: dockutil --add {{ item }} --no-restart
   with_items:
-    - /Applications/Visual\ Studio\ Code.app
-    - /Applications/iTerm.app
+    - /Applications/Slack.app
+    - /Applications/Spotify.app
+    - /Applications/Fantastical.app
+    - "'' --type small-spacer --section apps --after Fantastical"
     - /Applications/Alacritty.app
-    - /Applications/Insomnia.app
-    - /Applications/Sourcetree.app
-    - "'' --type small-spacer --section apps --after SourceTree"
+    - /Applications/Visual\ Studio\ Code.app
+    - "'' --type small-spacer --section apps --after VSCode"
     - /Applications/Google\ Chrome.app
     - /Applications/Firefox.app
     - "'' --type small-spacer --section apps --after Firefox"
-    - /Applications/Slack.app
-    - /Applications/Discord.app
-    - /Applications/Fantastical.app
-    - /Applications/Bear.app
-    - /Applications/Shottr.app
-    - "'' --type small-spacer --section apps --after Shottr"
-    - /Applications/Authy\ Desktop.app
-    - /Applications/ProtonVPN.app
-    - "'' --type small-spacer --section apps --after ProtonVPN"
-    - /Applications/Spotify.app
+    - /Applications/Insomnia.app
+    - /Applications/Sourcetree.app
   ignore_errors: yes
   tags:
     - install
