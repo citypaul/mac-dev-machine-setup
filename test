@@ -1,0 +1,17 @@
+Sleep 10.5s
+Type "ls"
+Enter
+Sleep 1m14s
+Type "gco"
+Backspace 3
+Sleep 4.5s
+Type "gb"
+Sleep 1s
+Enter
+Sleep 23s
+Type "info"
+Enter
+Sleep 46s
+Type "vhs"
+Backspace 3
+

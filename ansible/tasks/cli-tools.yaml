@@ -38,6 +38,7 @@
     - pnpm
     - zellij
     - vhs
+    - neofetch
   tags:
     - install
     - productivity
