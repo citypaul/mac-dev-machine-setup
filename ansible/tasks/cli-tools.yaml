@@ -37,6 +37,7 @@
     - rustup-init
     - pnpm
     - zellij
+    - vhs
   tags:
     - install
     - productivity
