@@ -23,6 +23,7 @@
     - /Applications/Alacritty.app
     - /Applications/Visual\ Studio\ Code.app
     - "'' --type small-spacer --section apps --after VSCode"
+    - /Applications/Arc.app
     - /Applications/Google\ Chrome.app
     - /Applications/Firefox.app
     - "'' --type small-spacer --section apps --after Firefox"
