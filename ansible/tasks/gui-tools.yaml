@@ -5,38 +5,38 @@
     greedy: yes
   ignore_errors: true
   with_items:
-    # - docker
-    # - google-chrome
-    # - firefox
-    # - iterm2
-    # - insomnia
-    # - ngrok
-    # - postman
-    # - slack
-    # - visual-studio-code
-    # - vlc
-    # - zoom
-    # - fantastical
-    # - spotify
-    # - protonvpn
-    # - sourcetree
-    # - stats
-    # - parallels
-    # - aldente
-    # - bartender
-    # - cheatsheet
-    # - imageoptim
-    # - raycast
-    # - obsidian
-    # - silentknight
-    # - tabby
-    # - gas-mask
-    # - unclack
-    # - shottr
-    # - amethyst
-    # - discord
-    # - vincelwt-chatgpt
-    # - balsamiq-wireframes
+    - docker
+    - google-chrome
+    - firefox
+    - iterm2
+    - insomnia
+    - ngrok
+    - postman
+    - slack
+    - visual-studio-code
+    - vlc
+    - zoom
+    - fantastical
+    - spotify
+    - protonvpn
+    - sourcetree
+    - stats
+    - parallels
+    - aldente
+    - bartender
+    - cheatsheet
+    - imageoptim
+    - raycast
+    - obsidian
+    - silentknight
+    - tabby
+    - gas-mask
+    - unclack
+    - shottr
+    - amethyst
+    - discord
+    - vincelwt-chatgpt
+    - balsamiq-wireframes
     - arc
   tags:
     - install
