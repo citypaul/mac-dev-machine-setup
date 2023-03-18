@@ -1,4 +1,4 @@
-- name: Install core packages via brew casks
+- name: Install Gui tools via brew casks
   community.general.homebrew_cask:
     name: "{{ item }}"
     state: latest
