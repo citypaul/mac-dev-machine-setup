@@ -4,5 +4,5 @@
     source_ssh_key: "./.ssh/id_rsa"
     dest_ssh_key: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
   tasks:
-    - include: ansible/tasks/gpg.yaml
-    - include: ansible/tasks/ssh.yaml
+    - import_tasks: ansible/tasks/gpg.yaml
+    - import_tasks: ansible/tasks/ssh.yaml

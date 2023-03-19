@@ -12,17 +12,17 @@
         - install
         - core
   tasks:
-    - include: ansible/tasks/git-setup.yaml
-    - include: ansible/tasks/app-store-apps.yaml
-    - include: ansible/tasks/cli-tools.yaml
-    - include: ansible/tasks/gui-tools.yaml
-    - include: ansible/tasks/zsh.yaml
-    - include: ansible/tasks/dock.yaml
-    - include: ansible/tasks/fonts.yaml
-    - include: ansible/tasks/themes.yaml
-    - include: ansible/tasks/osx.yaml
-    - include: ansible/tasks/iterm.yaml
-    - include: ansible/tasks/nvim.yaml
-    - include: ansible/tasks/security.yaml
-    - include: ansible/tasks/dotfiles.yaml
-    - include: ansible/tasks/node.yaml
+    - import_tasks: ansible/tasks/git-setup.yaml
+    - import_tasks: ansible/tasks/app-store-apps.yaml
+    - import_tasks: ansible/tasks/cli-tools.yaml
+    - import_tasks: ansible/tasks/gui-tools.yaml
+    - import_tasks: ansible/tasks/zsh.yaml
+    - import_tasks: ansible/tasks/dock.yaml
+    - import_tasks: ansible/tasks/fonts.yaml
+    - import_tasks: ansible/tasks/themes.yaml
+    - import_tasks: ansible/tasks/osx.yaml
+    - import_tasks: ansible/tasks/iterm.yaml
+    - import_tasks: ansible/tasks/nvim.yaml
+    - import_tasks: ansible/tasks/security.yaml
+    - import_tasks: ansible/tasks/dotfiles.yaml
+    - import_tasks: ansible/tasks/node.yaml
