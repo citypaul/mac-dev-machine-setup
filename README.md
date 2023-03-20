@@ -4,6 +4,12 @@ This repo will automatically setup a new mac so I don't have to go through the f
 
 To run, it should just be a case of running `./install.sh`
 
+## Alacritty Terminal
+
+Here's how it looks running Zellij:
+
+![alacritty theme](./docs/screenshots/alacritty-zellij.png)
+
 ## To setup the iterm theme
 
 To setup the iterm theme, you will need to go to iterm -> Preferences and select "Profiles". The "Mac Dev Environment" profile should be there. Select, click "Other Actions" and click "Set as Default":
