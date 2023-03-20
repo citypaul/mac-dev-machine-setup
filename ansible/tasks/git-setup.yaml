@@ -17,7 +17,7 @@
   git_config:
     name: user.email
     scope: global
-    value: "paul.hammond@gmail.com"
+    value: "{{ git_email }}"
   tags:
     - git-personal
 
@@ -25,7 +25,7 @@
   git_config:
     name: user.name
     scope: global
-    value: "Paul Hammond"
+    value: "{{ git_name }}"
   tags:
     - git-personal
 

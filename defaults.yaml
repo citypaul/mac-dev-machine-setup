@@ -1,0 +1,77 @@
+git_email: paul.hammond@gmail.com
+git_name: Paul Hammond
+
+dotfiles_repo: https://github.com/citypaul/.dotfiles.git
+
+cli_packages:
+  - asciinema
+  - bat
+  - curl
+  - exa
+  - fd
+  - fzf
+  - gh
+  - glances
+  - gnupg
+  - gource
+  - htop
+  - httpie
+  - jq
+  - lazydocker
+  - lazygit
+  - mas
+  - neofetch
+  - pnpm
+  - pwgen
+  - ranger
+  - ripgrep
+  - rustup-init
+  - shellcheck
+  - spotify-tui
+  - starship
+  - thefuck
+  - tldr
+  - tmux
+  - tree
+  - vhs
+  - watchman
+  - wget
+  - yarn
+  - youtube-dl
+  - z
+  - zellij
+
+gui_packages:
+  - aldente
+  - amethyst
+  - arc
+  - balsamiq-wireframes
+  - bartender
+  - cheatsheet
+  - discord
+  - docker
+  - fantastical
+  - firefox
+  - gas-mask
+  - google-chrome
+  - imageoptim
+  - insomnia
+  - iterm2
+  - ngrok
+  - obsidian
+  - parallels
+  - postman
+  - protonvpn
+  - raycast
+  - shottr
+  - silentknight
+  - slack
+  - sourcetree
+  - spotify
+  - stats
+  - tabby
+  - unclack
+  - vincelwt-chatgpt
+  - visual-studio-code
+  - vlc
+  - zoom

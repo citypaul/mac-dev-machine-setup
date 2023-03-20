@@ -2,43 +2,7 @@
   community.general.homebrew:
     name: "{{ item }}"
     state: latest
-  with_items:
-    - tmux
-    - fzf
-    - ripgrep
-    - z
-    - gh
-    - shellcheck
-    - wget
-    - yarn
-    - watchman
-    - tree
-    - curl
-    - htop
-    - thefuck
-    - mas
-    - starship
-    - httpie
-    - jq
-    - ranger
-    - spotify-tui
-    - lazygit
-    - glances
-    - tldr
-    - lazydocker
-    - fd
-    - asciinema
-    - gource
-    - exa
-    - bat
-    - gnupg
-    - youtube-dl
-    - pwgen
-    - rustup-init
-    - pnpm
-    - zellij
-    - vhs
-    - neofetch
+  with_items: "{{ cli_packages }}"
   tags:
     - install
     - productivity
