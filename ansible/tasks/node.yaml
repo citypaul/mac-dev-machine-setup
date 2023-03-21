@@ -14,3 +14,11 @@
   tags:
     - install
     - node
+
+- name: Install Github CoPilot cli globally with npm
+  ansible.builtin.shell: |
+    source ~/.zshrc
+    npm install -g @githubnext/github-copilot-cli
+  tags:
+    - install
+    - node
