@@ -28,3 +28,4 @@
     - import_tasks: ansible/tasks/security.yaml
     - import_tasks: ansible/tasks/dotfiles.yaml
     - import_tasks: ansible/tasks/node.yaml
+    - import_tasks: ansible/tasks/rust.yaml
