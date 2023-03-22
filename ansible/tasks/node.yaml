@@ -11,6 +11,17 @@
     source ~/.zshrc
     nvm install --lts
     nvm alias default
+  args:
+    executable: /bin/zsh
+  tags:
+    - install
+    - node
+
+- name: Check if github-copilot-cli is installed
+  ansible.builtin.command: github-copilot-cli --version
+  register: github_copilot_cli_check
+  ignore_errors: true
+  changed_when: false
   tags:
     - install
     - node
@@ -19,6 +30,9 @@
   ansible.builtin.shell: |
     source ~/.zshrc
     npm install -g @githubnext/github-copilot-cli
+  args:
+    executable: /bin/zsh
+  when: github_copilot_cli_check.rc != 0
   tags:
     - install
     - node
