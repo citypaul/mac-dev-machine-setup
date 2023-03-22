@@ -1,31 +1,20 @@
-- name: Install Magnet
-  ignore_errors: yes
+- name: Install apps from App Store
   tags:
     - app-store
+  vars:
+    apps:
+      - id: 441258766
+        name: Magnet
+      - id: 411643860
+        name: DaisyDisk
+      - id: 1091189122
+        name: Bear
+      - id: 1532419400
+        name: MeetingBar
   community.general.mas:
-    id: 441258766
+    id: "{{ item.id }}"
     state: latest
-
-- name: Install DaisyDisk
-  ignore_errors: yes
-  tags:
-    - app-store
-  community.general.mas:
-    id: 411643860
-    state: latest
-
-- name: Install Bear
-  ignore_errors: yes
-  tags:
-    - app-store
-  community.general.mas:
-    id: 1091189122
-    state: latest
-
-- name: Install MeetingBar
-  ignore_errors: yes
-  tags:
-    - app-store
-  community.general.mas:
-    id: 1532419400
-    state: latest
+  loop: "{{ apps }}"
+  loop_control:
+    loop_var: item
+    label: "{{ item.name }}"

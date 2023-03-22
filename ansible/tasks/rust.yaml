@@ -1,5 +1,5 @@
 - name: Check if Rust is installed
-  command: "rustc --version"
+  ansible.builtin.shell: rustc --version >/dev/null 2>&1
   register: rust_installed
   ignore_errors: true
   tags:
@@ -15,3 +15,15 @@
     - productivity
     - rust
   when: not rust_installed.rc == 0
+  register: rust_install_output
+  changed_when: "'Rust appears to be installed now' in rust_install_output.stdout"
+  notify: print_rust_install_output
+
+- name: Print Rust already installed message
+  debug:
+    msg: "Rust is already installed."
+  when: not rust_install_output.changed
+  tags:
+    - install
+    - productivity
+    - rust
