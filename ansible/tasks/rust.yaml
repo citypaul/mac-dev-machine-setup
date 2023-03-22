@@ -1,0 +1,7 @@
+- name: Install rust
+  ansible.builtin.shell: |
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  tags:
+    - install
+    - productivity
+    - rust
