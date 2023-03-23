@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 if ! command -v brew &>/dev/null; then
     /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
