@@ -112,6 +112,13 @@
         - { name: "color.diff-highlight.oldHighlight", value: "red bold 52" }
         - { name: "color.diff-highlight.newNormal", value: "green bold" }
         - { name: "color.diff-highlight.newHighlight", value: "green bold 22" }
+        - { name: "color.diff.meta", value: "11" }
+        - { name: "color.diff.frag", value: "magenta bold" }
+        - { name: "color.diff.func", value: "146 bold" }
+        - { name: "color.diff.commit", value: "yellow bold" }
+        - { name: "color.diff.old", value: "red bold" }
+        - { name: "color.diff.new", value: "green bold" }
+        - { name: "color.diff.whitespace", value: "red reverse" }
 
   tags:
     - git-personal
