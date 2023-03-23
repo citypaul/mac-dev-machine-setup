@@ -71,5 +71,47 @@
         scope: global
         value: "true"
 
+    - name: Install diff-so-fancy
+      community.general.homebrew:
+        name: diff-so-fancy
+        state: latest
+
+    - name: Set Git aliases
+      ansible.builtin.git_config:
+        name: alias.{{ item.name }}
+        scope: global
+        value: "{{ item.value }}"
+      loop:
+        - { name: "co", value: "checkout" }
+        - { name: "br", value: "branch" }
+        - { name: "ci", value: "commit" }
+        - { name: "st", value: "status" }
+        - { name: "last", value: "log -1 HEAD" }
+        - { name: "unstage", value: "reset HEAD --" }
+        - { name: "lg", value: "log --oneline --decorate --graph --all" }
+
+    - name: Enable colorized output
+      ansible.builtin.git_config:
+        name: color.ui
+        scope: global
+        value: auto
+
+    - name: Improve git diff output
+      ansible.builtin.git_config:
+        name: core.pager
+        scope: global
+        value: "diff-so-fancy | less --tabs=4 -RFX"
+
+    - name: Set diff-so-fancy colors
+      ansible.builtin.git_config:
+        name: "{{ item.name }}"
+        scope: global
+        value: "{{ item.value }}"
+      loop:
+        - { name: "color.diff-highlight.oldNormal", value: "red bold" }
+        - { name: "color.diff-highlight.oldHighlight", value: "red bold 52" }
+        - { name: "color.diff-highlight.newNormal", value: "green bold" }
+        - { name: "color.diff-highlight.newHighlight", value: "green bold 22" }
+
   tags:
     - git-personal
