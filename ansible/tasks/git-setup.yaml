@@ -1,94 +1,75 @@
-- name: Install latest Git
-  community.general.homebrew:
-    name: git
-    state: latest
-  tags:
-    - git-personal
+- name: Git personal setup
+  block:
+    - name: Install latest Git
+      community.general.homebrew:
+        name: git
+        state: latest
 
-- name: Create global .gitignore
-  ansible.builtin.template:
-    src: ../templates/.global_gitignore
-    dest: ~/.global_gitignore
-    mode: "0644"
-  tags:
-    - git-personal
+    - name: Create global .gitignore
+      ansible.builtin.template:
+        src: ../templates/.global_gitignore
+        dest: ~/.global_gitignore
+        mode: "0644"
 
-- name: Git personal setup email
-  git_config:
-    name: user.email
-    scope: global
-    value: "{{ git_email }}"
-  tags:
-    - git-personal
+    - name: Git personal setup email
+      ansible.builtin.git_config:
+        name: user.email
+        scope: global
+        value: "{{ git_email }}"
 
-- name: Git personal setup name
-  git_config:
-    name: user.name
-    scope: global
-    value: "{{ git_name }}"
-  tags:
-    - git-personal
+    - name: Git personal setup name
+      ansible.builtin.git_config:
+        name: user.name
+        scope: global
+        value: "{{ git_name }}"
 
-- name: Git set pull to rebase
-  git_config:
-    name: pull.rebase
-    scope: global
-    value: "true"
-  tags:
-    - git-personal
+    - name: Git set pull to rebase
+      ansible.builtin.git_config:
+        name: pull.rebase
+        scope: global
+        value: "true"
 
-- name: Set nvim as default git editor
-  community.general.git_config:
-    name: core.editor
-    scope: global
-    value: nvim
-  tags:
-    - git-personal
+    - name: Set nvim as default git editor
+      ansible.builtin.git_config:
+        name: core.editor
+        scope: global
+        value: nvim
 
-- name: Set global git ignore
-  community.general.git_config:
-    name: core.excludesfile
-    scope: global
-    value: ~/.global_gitignore
-  tags:
-    - git-personal
+    - name: Set global git ignore
+      ansible.builtin.git_config:
+        name: core.excludesfile
+        scope: global
+        value: ~/.global_gitignore
 
-- name: Set git fetch to always prune
-  community.general.git_config:
-    name: fetch.prune
-    scope: global
-    value: "true"
-  tags:
-    - git-personal
+    - name: Set git fetch to always prune
+      ansible.builtin.git_config:
+        name: fetch.prune
+        scope: global
+        value: "true"
 
-- name: Set global git default branch name
-  community.general.git_config:
-    name: init.defaultBranch
-    scope: global
-    value: main
-  tags:
-    - git-personal
+    - name: Set global git default branch name
+      ansible.builtin.git_config:
+        name: init.defaultBranch
+        scope: global
+        value: main
 
-- name: Set global git gpg key
-  community.general.git_config:
-    name: user.signingkey
-    scope: global
-    value: 5016355A88C64BE0
-  tags:
-    - git-personal
+    - name: Set global git gpg key
+      ansible.builtin.git_config:
+        name: user.signingkey
+        scope: global
+        value: 5016355A88C64BE0
 
-- name: Set global git always gpgsign
-  community.general.git_config:
-    name: commit.gpgsign
-    scope: global
-    value: "true"
-  tags:
-    - git-personal
+    - name: Set global git always gpgsign
+      ansible.builtin.git_config:
+        name: commit.gpgsign
+        scope: global
+        value: "true"
 
-- name: Set autoSetupRemote to true to automatically set upstream branch on push
-  community.general.git_config:
-    name: push.autoSetupRemote
-    scope: global
-    value: "true"
+    - name: Set autoSetupRemote to true to automatically set upstream branch on push
+      ansible.builtin.git_config:
+        name: push.autoSetupRemote
+        scope: global
+        value: "true"
+
   tags:
     - git-personal
