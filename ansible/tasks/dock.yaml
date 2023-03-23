@@ -1,41 +1,43 @@
-- name: Install dockutil
-  ignore_errors: yes
-  community.general.homebrew:
-    name: ["hpedrorodrigues/tools/dockutil"]
-  tags:
-    - install
-    - dock
+- name: Configure dock
+  block:
+    - name: Install dockutil
+      community.general.homebrew_cask:
+        name: ["hpedrorodrigues/tools/dockutil"]
+        state: latest
+      tags:
+        - install
+        - dock
 
-- name: Clear dock
-  shell: dockutil --remove all --no-restart
-  tags:
-    - install
-    - dock
+    - name: Clear dock
+      shell: dockutil --remove all --no-restart
+      tags:
+        - install
+        - dock
 
-- name: Setup dock
-  shell: dockutil --add {{ item }} --no-restart
-  with_items:
-    - /Applications/Slack.app
-    - /Applications/Spotify.app
-    - /Applications/Fantastical.app
-    - "'' --type small-spacer --section apps --after Fantastical"
-    - /Applications/Raycast.app
-    - /Applications/Alacritty.app
-    - /Applications/Visual\ Studio\ Code.app
-    - "'' --type small-spacer --section apps --after VSCode"
-    - /Applications/Arc.app
-    - /Applications/Google\ Chrome.app
-    - /Applications/Firefox.app
-    - "'' --type small-spacer --section apps --after Firefox"
-    - /Applications/Insomnia.app
-    - /Applications/Sourcetree.app
-  ignore_errors: yes
-  tags:
-    - install
-    - dock
+    - name: Setup dock
+      shell: dockutil --add {{ item }} --no-restart
+      with_items:
+        - /Applications/Slack.app
+        - /Applications/Spotify.app
+        - /Applications/Fantastical.app
+        - "'' --type small-spacer --section apps --after Fantastical"
+        - /Applications/Raycast.app
+        - /Applications/Alacritty.app
+        - /Applications/Visual\ Studio\ Code.app
+        - "'' --type small-spacer --section apps --after VSCode"
+        - /Applications/Arc.app
+        - /Applications/Google\ Chrome.app
+        - /Applications/Firefox.app
+        - "'' --type small-spacer --section apps --after Firefox"
+        - /Applications/Insomnia.app
+        - /Applications/Sourcetree.app
+      ignore_errors: yes
+      tags:
+        - install
+        - dock
 
-- name: Restart dock
-  shell: "/usr/bin/killall Dock"
-  tags:
-    - install
-    - dock
+    - name: Restart dock
+      shell: "/usr/bin/killall Dock"
+      tags:
+        - install
+        - dock
