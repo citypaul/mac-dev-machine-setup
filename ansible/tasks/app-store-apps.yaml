@@ -18,3 +18,4 @@
   loop_control:
     loop_var: item
     label: "{{ item.name }}"
+  ignore_errors: true
