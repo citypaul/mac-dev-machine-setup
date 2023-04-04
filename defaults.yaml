@@ -48,6 +48,7 @@ gui_packages:
   - cheatsheet
   - discord
   - docker
+  - dropbox
   - fantastical
   - firefox
   - gas-mask
