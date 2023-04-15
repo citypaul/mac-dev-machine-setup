@@ -21,6 +21,7 @@ cli_packages:
   - lazydocker
   - lazygit
   - mas
+  - navi
   - neofetch
   - pnpm
   - pwgen
