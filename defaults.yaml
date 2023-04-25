@@ -47,6 +47,7 @@ gui_packages:
   - balsamiq-wireframes
   - bartender
   - cheatsheet
+	- devtoys
   - discord
   - docker
   - dropbox
