@@ -63,6 +63,7 @@ gui_packages:
   - obsidian
   - orbstack
   - parallels
+  - pgadmin4
   - postman
   - protonvpn
   - raycast
