@@ -24,7 +24,7 @@
     state: latest
     greedy: yes
   ignore_errors: true
-  with_items: "{{ alternate_gui_versions }}"
+  with_items: "{{ alternate_gui_packages }}"
   tags:
     - install
     - gui
