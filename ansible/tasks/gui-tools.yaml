@@ -1,3 +1,11 @@
+- name: Tapping homebrew/cask-versions to get alternate versions
+  homebrew_tap:
+    name: homebrew/cask-versions
+  tags:
+    - install
+    - gui
+    - productivity
+
 - name: Install Gui tools via brew casks
   community.general.homebrew_cask:
     name: "{{ item }}"
@@ -5,6 +13,18 @@
     greedy: yes
   ignore_errors: true
   with_items: "{{ gui_packages }}"
+  tags:
+    - install
+    - gui
+    - productivity
+
+- name: Install alternative Gui tools via brew casks
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+    state: latest
+    greedy: yes
+  ignore_errors: true
+  with_items: "{{ alternate_gui_versions }}"
   tags:
     - install
     - gui
