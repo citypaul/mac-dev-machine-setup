@@ -24,6 +24,7 @@
         - /Applications/Raycast.app
         - /Applications/Alacritty.app
         - /Applications/Visual\ Studio\ Code.app
+        - /Applications/Visual\ Studio\ Code\ -\ Insiders.app
         - /Applications/Orbstack.app
         - "'' --type small-spacer --section apps --after VSCode"
         - /Applications/Arc.app
