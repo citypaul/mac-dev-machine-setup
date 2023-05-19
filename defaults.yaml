@@ -80,3 +80,6 @@ gui_packages:
   - visual-studio-code
   - vlc
   - zoom
+
+alternate_gui_packages:
+  - visual-studio-code-insiders
