@@ -43,19 +43,15 @@ cli_packages:
   - zellij
 
 gui_packages:
-  - aldente
-  - amethyst
   - arc
   - balsamiq-wireframes
   - bartender
-  - cheatsheet
   - devtoys
   - discord
   - docker
   - dropbox
   - fantastical
   - firefox
-  - gas-mask
   - google-chrome
   - imageoptim
   - insomnia
@@ -64,7 +60,6 @@ gui_packages:
   - obs
   - obsidian
   - orbstack
-  - parallels
   - pgadmin4
   - postman
   - protonvpn
@@ -75,7 +70,6 @@ gui_packages:
   - sourcetree
   - spotify
   - stats
-  - tabby
   - unclack
   - visual-studio-code
   - vlc
