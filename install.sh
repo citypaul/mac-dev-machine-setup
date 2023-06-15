@@ -10,6 +10,12 @@ if ! command -v brew &>/dev/null; then
 
     echo "eval $(/opt/homebrew/bin/brew shellenv)" >>~/.bashrc
     eval "$(/opt/homebrew/bin/brew shellenv)"
+else
+    # If Homebrew is installed, upgrade to the latest version
+    brew update && brew upgrade || {
+        echo "Homebrew upgrade failed"
+        exit 1
+    }
 fi
 
 (
@@ -20,16 +26,22 @@ fi
             echo "Ansible installation failed"
             exit 1
         }
+    else
+        # If Ansible is installed, upgrade to the latest version
+        brew upgrade ansible || {
+            echo "Ansible upgrade failed"
+            exit 1
+        }
     fi
 
     # Install required Ansible roles and collections
-    ansible-galaxy install elliotweiser.osx-command-line-tools || {
-        echo "Failed to install elliotweiser.osx-command-line-tools role"
+    ansible-galaxy install --force elliotweiser.osx-command-line-tools || {
+        echo "Failed to install or upgrade elliotweiser.osx-command-line-tools role"
         exit 1
     }
 
-    ansible-galaxy collection install community.general || {
-        echo "Failed to install community.general collection"
+    ansible-galaxy collection install --force community.general || {
+        echo "Failed to install or upgrade community.general collection"
         exit 1
     }
 
