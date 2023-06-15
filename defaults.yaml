@@ -71,6 +71,7 @@ gui_packages:
   - spotify
   - stats
   - unclack
+  - utm
   - visual-studio-code
   - vlc
   - zoom
