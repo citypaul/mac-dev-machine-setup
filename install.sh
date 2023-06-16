@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 read -p "Would you like to update brew, ansible and ansible extensions to the latest versions? [y/N]: " update_choice
 
