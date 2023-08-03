@@ -6,6 +6,7 @@ dotfiles_repo: https://github.com/citypaul/.dotfiles.git
 cli_packages:
   - asciinema
   - bat
+  - broot
   - curl
   - deno
   - exa
