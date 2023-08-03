@@ -31,7 +31,6 @@ cli_packages:
   - shellcheck
   - starship
   - terraform
-  - thefuck
   - tldr
   - tmux
   - tree
