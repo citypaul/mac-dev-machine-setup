@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 
-read -p "Would you like to update brew, ansible and ansible extensions to the latest versions? [y/N]: " update_choice
+echo -n "Would you like to update brew, ansible and ansible extensions to the latest versions? [y/N]: "
+read update_choice
 
 # Check if Homebrew is installed, and install it if not
 if ! command -v brew &>/dev/null; then
@@ -10,7 +11,7 @@ if ! command -v brew &>/dev/null; then
         exit 1
     }
 
-    echo "eval $(/opt/homebrew/bin/brew shellenv)" >>~/.bashrc
+    echo "eval $(/opt/homebrew/bin/brew shellenv)" >>~/.zshrc
     eval "$(/opt/homebrew/bin/brew shellenv)"
 elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
     # If Homebrew is installed, upgrade to the latest version
@@ -21,7 +22,7 @@ elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
 fi
 
 (
-    source "$HOME/.bashrc"
+    source "$HOME/.zshrc"
     # Check if Ansible is installed, and install it if not
     if ! command -v ansible &>/dev/null; then
         brew install ansible || {
