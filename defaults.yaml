@@ -40,8 +40,8 @@ cli_packages:
   - wget
   - yarn
   - yt-dlp
-  - z
   - zellij
+  - zoxide
 
 gui_packages:
   - arc
