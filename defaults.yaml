@@ -64,6 +64,7 @@ gui_packages:
   - postman
   - protonvpn
   - raycast
+  - recipeui
   - shottr
   - silentknight
   - slack

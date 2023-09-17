@@ -32,6 +32,8 @@
         - /Applications/Google\ Chrome.app
         - /Applications/Firefox.app
         - "'' --type small-spacer --section apps --after Firefox"
+        - /Applications/Postman.app
+        - /Applications/Recipeui.app
         - /Applications/Insomnia.app
         - /Applications/Sourcetree.app
       ignore_errors: yes
