@@ -7,3 +7,14 @@
     - productivity
     - cli
     - nvim
+
+- name: Setup NvChad Neovim Configuration
+  git:
+    repo: "https://github.com/NvChad/NvChad"
+    dest: "~/.config/nvim"
+    depth: 1
+  tags:
+    - install
+    - productivity
+    - cli
+    - nvim
