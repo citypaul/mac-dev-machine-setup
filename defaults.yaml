@@ -17,6 +17,7 @@ cli_packages:
   - gnupg
   - gource
   - graphviz
+  - hurl
   - htop
   - httpie
   - jq
@@ -54,7 +55,6 @@ gui_packages:
   - firefox
   - google-chrome
   - hoppscotch
-  - hurl
   - imageoptim
   - insomnia
   - iterm2
