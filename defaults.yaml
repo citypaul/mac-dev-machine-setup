@@ -53,6 +53,8 @@ gui_packages:
   - fantastical
   - firefox
   - google-chrome
+  - hoppscotch
+  - hurl
   - imageoptim
   - insomnia
   - iterm2
