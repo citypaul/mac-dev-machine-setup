@@ -55,7 +55,6 @@ gui_packages:
   - firefox
   - google-chrome
   - imageoptim
-  - insomnia
   - iterm2
   - ngrok
   - obs
@@ -72,6 +71,7 @@ gui_packages:
   - sourcetree
   - spotify
   - stats
+  - tableplus
   - unclack
   - utm
   - visual-studio-code

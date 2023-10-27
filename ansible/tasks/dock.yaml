@@ -34,7 +34,7 @@
         - "'' --type small-spacer --section apps --after Firefox"
         - /Applications/Postman.app
         - /Applications/Recipeui.app
-        - /Applications/Insomnia.app
+        - /Applications/TablePlus.app
         - /Applications/Sourcetree.app
       ignore_errors: yes
       tags:
