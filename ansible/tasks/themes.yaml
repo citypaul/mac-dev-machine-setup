@@ -10,3 +10,16 @@
     - install
     - themes
     - zsh
+
+- name: Cloning Catppuccin alacritty theme
+  ansible.builtin.git:
+    repo: "https://github.com/catppuccin/alacritty.git"
+    dest: ~/.config/alacritty/catppuccin
+    recursive: yes
+    update: yes
+    accept_hostkey: yes
+    version: main
+  tags:
+    - install
+    - themes
+    - zsh
