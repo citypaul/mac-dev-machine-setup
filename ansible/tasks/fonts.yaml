@@ -16,6 +16,7 @@
       - font-iosevka
       - font-iosevka-nerd-font
       - font-jetbrains-mono
+      - font-pt-mono
   tags:
     - install
     - fonts
