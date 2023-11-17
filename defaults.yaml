@@ -4,6 +4,7 @@ git_name: Paul Hammond
 dotfiles_repo: https://github.com/citypaul/.dotfiles.git
 
 cli_packages:
+  - adr-tools
   - asciinema
   - bat
   - broot
