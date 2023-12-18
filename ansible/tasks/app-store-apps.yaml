@@ -11,6 +11,8 @@
         name: Bear
       - id: 1532419400
         name: MeetingBar
+      - id: 45762243
+        name: Yoink
   community.general.mas:
     id: "{{ item.id }}"
     state: latest

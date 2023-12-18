@@ -12,6 +12,7 @@ cli_packages:
   - deno
   - exa
   - fd
+  - fswatch
   - fzf
   - gh
   - glances
