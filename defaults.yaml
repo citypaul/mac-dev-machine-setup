@@ -10,6 +10,7 @@ cli_packages:
   - broot
   - curl
   - deno
+  - entr
   - exa
   - fd
   - fswatch
