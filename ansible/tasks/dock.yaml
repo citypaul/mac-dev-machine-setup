@@ -32,6 +32,7 @@
         - /Applications/Google\ Chrome.app
         - /Applications/Firefox.app
         - "'' --type small-spacer --section apps --after Firefox"
+        - /Applications/Bruno.app
         - /Applications/Postman.app
         - /Applications/Recipeui.app
         - /Applications/TablePlus.app
