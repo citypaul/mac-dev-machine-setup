@@ -50,6 +50,7 @@ gui_packages:
   - arc
   - balsamiq-wireframes
   - bartender
+  - bruno
   - devtoys
   - discord
   - docker
