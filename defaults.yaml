@@ -16,6 +16,7 @@ cli_packages:
   - fswatch
   - fzf
   - gh
+  - gifsicle
   - glances
   - gnupg
   - gource
