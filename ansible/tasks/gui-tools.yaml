@@ -11,6 +11,7 @@
     name: "{{ item }}"
     state: latest
     greedy: yes
+    install_options: force
   ignore_errors: true
   with_items: "{{ gui_packages }}"
   tags:
