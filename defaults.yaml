@@ -62,6 +62,7 @@ gui_packages:
   - google-chrome
   - imageoptim
   - iterm2
+  - meetingbar
   - ngrok
   - obs
   - obsidian
