@@ -58,6 +58,12 @@
 
     # Misc: disable auto-correct
     - defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+
+    # Notifications Center
+    # ----------------------------------------------------------------------
+    # Extend the banner time to 20 seconds
+    - defaults write com.apple.notificationcenterui bannerTime 20
+
   tags:
     - install
     - osx
