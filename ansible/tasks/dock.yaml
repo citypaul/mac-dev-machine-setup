@@ -1,8 +1,8 @@
 - name: Configure dock
   block:
     - name: Install dockutil
-      community.general.homebrew_cask:
-        name: ["hpedrorodrigues/tools/dockutil"]
+      community.general.homebrew:
+        name: ["dockutil"]
         state: latest
       tags:
         - install
