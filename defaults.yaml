@@ -82,6 +82,7 @@ gui_packages:
   - utm
   - visual-studio-code
   - vlc
+  - zed
   - zoom
   - zotero
 
