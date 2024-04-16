@@ -2,7 +2,7 @@
   block:
     - name: Install dockutil
       community.general.homebrew:
-        name: ["dockutil"]
+        name: dockutil
         state: latest
       tags:
         - install
@@ -36,6 +36,7 @@
         - /Applications/Bruno.app
         - /Applications/TablePlus.app
         - /Applications/Sourcetree.app
+        - /Applications/Rewind.app
       ignore_errors: yes
       tags:
         - install
