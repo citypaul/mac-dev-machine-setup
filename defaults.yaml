@@ -71,6 +71,7 @@ gui_packages:
   - postman
   - protonvpn
   - raycast
+  - redisinsight
   - rewind
   - shottr
   - silentknight
