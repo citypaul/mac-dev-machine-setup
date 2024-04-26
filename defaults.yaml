@@ -24,7 +24,6 @@ cli_packages:
   - graphviz
   - hurl
   - htop
-  - httpie
   - jq
   - lazydocker
   - lazygit
@@ -60,6 +59,7 @@ gui_packages:
   - fantastical
   - firefox
   - google-chrome
+  - httpie
   - imageoptim
   - iterm2
   - meetingbar
