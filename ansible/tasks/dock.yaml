@@ -4,6 +4,9 @@
       community.general.homebrew:
         name: dockutil
         state: latest
+        greedy: yes
+        install_options: force
+      ignore_errors: true
       tags:
         - install
         - dock
