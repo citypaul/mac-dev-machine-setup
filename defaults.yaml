@@ -46,6 +46,7 @@ cli_packages:
   - yt-dlp
   - zellij
   - zoxide
+  - zsh-syntax-highlighting
 
 gui_packages:
   - arc
