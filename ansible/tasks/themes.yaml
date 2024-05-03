@@ -31,7 +31,7 @@
     recursive: yes
     update: yes
     accept_hostkey: yes
-    version: main
+    version: master
   tags:
     - install
     - themes
