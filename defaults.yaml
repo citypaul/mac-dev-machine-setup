@@ -19,6 +19,7 @@ cli_packages:
   - gh
   - gifsicle
   - glances
+  - glow
   - gnupg
   - gource
   - graphviz
