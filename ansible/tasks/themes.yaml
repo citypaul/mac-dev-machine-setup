@@ -23,3 +23,16 @@
     - install
     - themes
     - zsh
+
+- name: Cloning Alacritty themes
+  ansible.builtin.git:
+    repo: "https://github.com/alacritty/alacritty-theme.git"
+    dest: ~/.config/alacritty/themes
+    recursive: yes
+    update: yes
+    accept_hostkey: yes
+    version: main
+  tags:
+    - install
+    - themes
+    - zsh
