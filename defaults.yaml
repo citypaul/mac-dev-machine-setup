@@ -22,6 +22,7 @@ cli_packages:
   - glow
   - gnupg
   - gource
+  - graphicsmagick
   - graphviz
   - hurl
   - htop
