@@ -37,6 +37,7 @@ cli_packages:
   - pwgen
   - ripgrep
   - shellcheck
+  - shortcat
   - starship
   - terraform
   - tldr
