@@ -57,6 +57,7 @@ gui_packages:
   - balsamiq-wireframes
   - bartender
   - bruno
+  - chatgpt
   - devtoys
   - discord
   - docker
