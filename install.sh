@@ -21,17 +21,31 @@ elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
     }
 fi
 
+# Check if pipx is installed, and install it if not
+if ! command -v pipx &>/dev/null; then
+    pip install --user pipx || {
+        echo "pipx installation failed"
+        exit 1
+    }
+elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
+    # If pipx is installed, upgrade to the latest version
+    pipx upgrade pipx || {
+        echo "pipx upgrade failed"
+        exit 1
+    }
+fi
+
 (
     source "$HOME/.zshrc"
     # Check if Ansible is installed, and install it if not
     if ! command -v ansible &>/dev/null; then
-        brew install ansible || {
+        pipx install ansible --include-deps && pipx ensurepath && source "$HOME/.zshrc" || {
             echo "Ansible installation failed"
             exit 1
         }
     elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
         # If Ansible is installed, upgrade to the latest version
-        brew upgrade ansible || {
+        pipx upgrade ansible || {
             echo "Ansible upgrade failed"
             exit 1
         }
