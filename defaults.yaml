@@ -78,7 +78,6 @@ gui_packages:
   - protonvpn
   - raycast
   - redisinsight
-  - rewind
   - shottr
   - silentknight
   - slack
@@ -98,4 +97,5 @@ alternate_gui_packages:
 
 packages_to_remove_if_installed:
   - bartender
+  - rewind
   - zotero
