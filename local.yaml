@@ -16,7 +16,6 @@
     - import_tasks: ansible/tasks/cli-tools.yaml
     - import_tasks: ansible/tasks/gui-tools.yaml
     - import_tasks: ansible/tasks/zsh.yaml
-    - import_tasks: ansible/tasks/dock.yaml
     - import_tasks: ansible/tasks/fonts.yaml
     - import_tasks: ansible/tasks/themes.yaml
     - import_tasks: ansible/tasks/osx.yaml
@@ -27,3 +26,4 @@
     - import_tasks: ansible/tasks/node.yaml
     - import_tasks: ansible/tasks/rust.yaml
     - import_tasks: ansible/tasks/remove-unwanted-packages.yaml
+    - import_tasks: ansible/tasks/dock.yaml

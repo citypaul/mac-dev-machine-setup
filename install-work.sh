@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 
+# shellcheck disable=SC1091
 source ./setup.sh
 
 # Run the Ansible playbook

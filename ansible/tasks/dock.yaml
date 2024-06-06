@@ -39,7 +39,6 @@
         - /Applications/Bruno.app
         - /Applications/TablePlus.app
         - /Applications/Sourcetree.app
-        - /Applications/Rewind.app
       ignore_errors: yes
       tags:
         - install

@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 echo -n "Would you like to update brew, ansible and ansible extensions to the latest versions? [y/N]: "
-read update_choice
+read -r update_choice
 
 # Check if Homebrew is installed, and install it if not
 if ! command -v brew &>/dev/null; then
