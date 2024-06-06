@@ -76,9 +76,4 @@ fi
         exit 1
     }
 
-    # Run the Ansible playbook
-    ansible-playbook local.yaml -K || {
-        echo "Failed to execute Ansible playbook"
-        exit 1
-    }
 )
