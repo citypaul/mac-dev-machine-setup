@@ -21,6 +21,20 @@ elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
     }
 fi
 
+# Check if pip is installed, and install it if not
+if ! command -v pip &>/dev/null; then
+    curl -sSL https://bootstrap.pypa.io/get-pip.py | python || {
+        echo "pip installation failed"
+        exit 1
+    }
+elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
+    # If pip is installed, upgrade to the latest version
+    pip install --upgrade pip || {
+        echo "pip upgrade failed"
+        exit 1
+    }
+fi
+
 # Check if pipx is installed, and install it if not
 if ! command -v pipx &>/dev/null; then
     pip install --user pipx || {
