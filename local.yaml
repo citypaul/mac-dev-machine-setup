@@ -26,3 +26,4 @@
     - import_tasks: ansible/tasks/dotfiles.yaml
     - import_tasks: ansible/tasks/node.yaml
     - import_tasks: ansible/tasks/rust.yaml
+    - import_tasks: ansible/tasks/remove-unwanted-packages.yaml

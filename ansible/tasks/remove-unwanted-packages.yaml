@@ -1,0 +1,10 @@
+- name: Remove unwanted packages
+  community.general.homebrew:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ packages_to_remove_if_installed }}"
+  ignore_errors: yes
+  tags:
+    - install
+    - core
+    - remove

@@ -55,7 +55,6 @@ cli_packages:
 gui_packages:
   - arc
   - balsamiq-wireframes
-  - bartender
   - bruno
   - chatgpt
   - devtoys
@@ -65,6 +64,7 @@ gui_packages:
   - fantastical
   - firefox
   - google-chrome
+  - hiddenbar
   - httpie
   - imageoptim
   - iterm2
@@ -92,7 +92,10 @@ gui_packages:
   - vlc
   - zed
   - zoom
-  - zotero
 
 alternate_gui_packages:
   - visual-studio-code-insiders
+
+packages_to_remove_if_installed:
+  - bartender
+  - zotero
