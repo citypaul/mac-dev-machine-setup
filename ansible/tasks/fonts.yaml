@@ -18,6 +18,7 @@
       - font-meslo-lg-nerd-font
       - font-monocraft
       - font-pt-mono
+  ignore_errors: true
   tags:
     - install
     - fonts
