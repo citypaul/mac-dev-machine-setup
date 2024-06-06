@@ -75,7 +75,6 @@ gui_packages:
   - orbstack
   - pgadmin4
   - postman
-  - protonvpn
   - raycast
   - redisinsight
   - shottr
@@ -92,10 +91,16 @@ gui_packages:
   - zed
   - zoom
 
+gui_packages_personal:
+  - protonvpn
+
 alternate_gui_packages:
   - visual-studio-code-insiders
 
-packages_to_remove_if_installed:
+gui_packages_to_remove_if_installed:
   - bartender
   - rewind
   - zotero
+
+gui_packages_to_remove_if_installed_work:
+  - protonvpn

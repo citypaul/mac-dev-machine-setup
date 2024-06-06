@@ -19,6 +19,17 @@
     - gui
     - productivity
 
+- name: Install personal Gui tools via brew casks
+  homebrew_cask:
+    name: "{{ item }}"
+    state: latest
+    greedy: yes
+    install_options: force
+  ignore_errors: true
+  with_items: "{{ gui_packages_personal }}"
+  tags:
+    - personal
+
 - name: Install alternative Gui tools via brew casks
   homebrew_cask:
     name: "{{ item }}"

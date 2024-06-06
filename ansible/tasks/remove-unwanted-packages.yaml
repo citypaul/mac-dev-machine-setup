@@ -1,10 +1,19 @@
 - name: Remove unwanted packages
-  community.general.homebrew:
+  community.general.homebrew_cask:
     name: "{{ item }}"
     state: absent
-  loop: "{{ packages_to_remove_if_installed }}"
-  ignore_errors: yes
+    install_options: force
+  loop: "{{ gui_packages_to_remove_if_installed }}"
   tags:
     - install
     - core
     - remove
+
+- name: Remove unwanted gui packages from work machine
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+    state: absent
+    install_options: force
+  loop: "{{ gui_packages_to_remove_if_installed_work }}"
+  tags:
+    - work
