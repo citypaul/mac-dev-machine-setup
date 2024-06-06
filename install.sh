@@ -21,9 +21,23 @@ elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
     }
 fi
 
+# Check if python is installed, and install it if not
+if ! command -v python &>/dev/null; then
+    brew install python3 || {
+        echo "python installation failed"
+        exit 1
+    }
+elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
+    # If python is installed, upgrade to the latest version
+    brew upgrade python3 || {
+        echo "python upgrade failed"
+        exit 1
+    }
+fi
+
 # Check if pip is installed, and install it if not
 if ! command -v pip &>/dev/null; then
-    curl -sSL https://bootstrap.pypa.io/get-pip.py | python || {
+    curl -sSL https://bootstrap.pypa.io/get-pip.py | python3 || {
         echo "pip installation failed"
         exit 1
     }
