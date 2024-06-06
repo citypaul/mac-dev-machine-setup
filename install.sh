@@ -22,7 +22,7 @@ elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
 fi
 
 # Check if python is installed, and install it if not
-if ! command -v python &>/dev/null; then
+if ! command -v python3 &>/dev/null; then
     brew install python3 || {
         echo "python installation failed"
         exit 1
@@ -35,29 +35,15 @@ elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
     }
 fi
 
-# Check if pip is installed, and install it if not
-if ! command -v pip &>/dev/null; then
-    curl -sSL https://bootstrap.pypa.io/get-pip.py | python3 || {
-        echo "pip installation failed"
-        exit 1
-    }
-elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
-    # If pip is installed, upgrade to the latest version
-    pip install --upgrade pip || {
-        echo "pip upgrade failed"
-        exit 1
-    }
-fi
-
 # Check if pipx is installed, and install it if not
 if ! command -v pipx &>/dev/null; then
-    pip install --user pipx || {
+    brew install pipx || {
         echo "pipx installation failed"
         exit 1
     }
 elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
     # If pipx is installed, upgrade to the latest version
-    pipx upgrade pipx || {
+    brew upgrade pipx || {
         echo "pipx upgrade failed"
         exit 1
     }
