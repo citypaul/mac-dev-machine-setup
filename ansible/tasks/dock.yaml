@@ -23,7 +23,6 @@
         - /Applications/Slack.app
         - /Applications/Spotify.app
         - /Applications/Fantastical.app
-        - /Applications/Obsidian.app
         - "'' --type small-spacer --section apps --after Obsidian"
         - /Applications/Raycast.app
         - /Applications/Alacritty.app
@@ -43,6 +42,19 @@
       tags:
         - install
         - dock
+        - work
+
+    - name: Add dock items specific to personal machine
+      shell: dockutil --add {{ item }} --no-restart
+      with_items:
+        - "'' --type small-spacer --section apps --after Sourcetree"
+        - /Applications/ChatGPT.app
+        - /Applications/Obsidian.app
+      ignore_errors: yes
+      tags:
+        - install
+        - dock
+        - personal
 
     - name: Restart dock
       shell: "/usr/bin/killall Dock"
