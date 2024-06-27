@@ -79,7 +79,6 @@ gui_packages:
   - redisinsight
   - shottr
   - silentknight
-  - slack
   - sourcetree
   - spotify
   - stats

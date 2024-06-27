@@ -13,6 +13,8 @@
         name: MeetingBar
       - id: 457622435
         name: Yoink
+      - id: 803453959
+        name: Slack
   community.general.mas:
     id: "{{ item.id }}"
     state: latest
