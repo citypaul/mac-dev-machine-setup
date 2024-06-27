@@ -1,6 +1,7 @@
 - name: Install apps from App Store
   tags:
     - app-store
+    - install
   vars:
     apps:
       - id: 441258766
