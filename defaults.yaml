@@ -58,7 +58,6 @@ gui_packages:
   - bruno
   - chatgpt
   - devtoys
-  - discord
   - docker
   - dropbox
   - fantastical
@@ -92,6 +91,7 @@ gui_packages:
 
 gui_packages_personal:
   - protonvpn
+    - discord
 
 alternate_gui_packages:
   - visual-studio-code-insiders

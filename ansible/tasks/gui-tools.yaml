@@ -1,11 +1,3 @@
-- name: Tapping homebrew/cask-versions to get alternate versions
-  homebrew_tap:
-    name: homebrew/cask-versions
-  tags:
-    - install
-    - gui
-    - productivity
-
 - name: Install Gui tools via brew casks
   homebrew_cask:
     name: "{{ item }}"
