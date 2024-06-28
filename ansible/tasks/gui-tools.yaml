@@ -22,18 +22,6 @@
   tags:
     - personal
 
-- name: Install alternative Gui tools via brew casks
-  homebrew_cask:
-    name: "{{ item }}"
-    state: latest
-    greedy: yes
-  ignore_errors: true
-  with_items: "{{ alternate_gui_packages }}"
-  tags:
-    - install
-    - gui
-    - productivity
-
 # See below for an explanation of the --no-quarantine option for alacritty
 # https://github.com/alacritty/alacritty/issues/4673#issuecomment-771291615
 

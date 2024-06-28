@@ -82,6 +82,7 @@ gui_packages:
   - unclack
   - utm
   - visual-studio-code
+  - visual-studio-code@insiders
   - vlc
   - zed
   - zoom
@@ -92,9 +93,6 @@ gui_packages_personal:
   - dropbox
   - shottr
   - silentknight
-
-alternate_gui_packages:
-  - visual-studio-code-insiders
 
 gui_packages_to_remove_if_installed:
   - bartender
