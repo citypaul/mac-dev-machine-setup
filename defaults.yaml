@@ -59,7 +59,6 @@ gui_packages:
   - chatgpt
   - devtoys
   - docker
-  - dropbox
   - fantastical
   - firefox
   - google-chrome
@@ -76,8 +75,6 @@ gui_packages:
   - postman
   - raycast
   - redisinsight
-  - shottr
-  - silentknight
   - sourcetree
   - spotify
   - stats
@@ -91,7 +88,10 @@ gui_packages:
 
 gui_packages_personal:
   - protonvpn
-    - discord
+  - discord
+  - dropbox
+  - shottr
+  - silentknight
 
 alternate_gui_packages:
   - visual-studio-code-insiders
