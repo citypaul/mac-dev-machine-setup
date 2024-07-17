@@ -72,8 +72,10 @@ fi
 if ! command -v pipx &>/dev/null; then
     brew install pipx || handle_error "pipx installation failed"
 elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
-    # If pipx is installed, upgrade to the latest version
-    brew upgrade pipx || handle_error "pipx upgrade failed"
+    # If pipx is installed and user chose to update, upgrade to the latest version
+    brew upgrade pipx || echo "pipx is already at the latest version"
+else
+    echo "pipx is already installed. Skipping installation/upgrade."
 fi
 
 # Ensure pipx is in PATH
