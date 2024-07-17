@@ -1,6 +1,11 @@
 #!/bin/zsh
 
-if ! source ./setup.sh; then
+# Ensure this script runs in zsh
+if [ -n "$BASH_VERSION" ]; then
+    exec /bin/zsh "$0" "$@"
+fi
+
+if ! zsh ./setup.sh; then
     echo "Failed to execute setup.sh"
     exit 1
 fi
@@ -13,7 +18,7 @@ else
 fi
 
 # Run the Ansible playbook
-ansible-playbook local.yaml -K --tags install,personal || {
+zsh -c 'ansible-playbook local.yaml -K --tags install,personal' || {
   echo "Failed to execute Ansible playbook"
   exit 1
 }
