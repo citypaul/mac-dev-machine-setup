@@ -106,6 +106,14 @@ fi
 # Ensure pipx binaries are in PATH
 export PATH="$HOME/.local/bin:$PATH"
 
+# Check and update .zsh_profile
+if [ -f ~/.zsh_profile ]; then
+    if grep -q "/opt/homebrew/etc/profile.d/z.sh" ~/.zsh_profile; then
+        sed -i '' '/\/opt\/homebrew\/etc\/profile.d\/z.sh/d' ~/.zsh_profile
+        echo '[ -f /opt/homebrew/etc/profile.d/z.sh ] && source /opt/homebrew/etc/profile.d/z.sh' >> ~/.zsh_profile
+    fi
+fi
+
 # Install required Ansible roles and collections
 if [[ "$update_choice" =~ ^[Yy]$ ]]; then
     ansible-galaxy install --force elliotweiser.osx-command-line-tools || handle_error "Failed to install or upgrade elliotweiser.osx-command-line-tools role"
