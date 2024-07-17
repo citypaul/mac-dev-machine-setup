@@ -229,3 +229,28 @@ coverage/
 # Aider AI
 
 .aider*
+
+# Local configuration files
+*.local
+config.local.js
+config.local.ts
+
+# TypeScript and JavaScript build outputs
+*.js.map
+*.d.ts
+lib/
+build/
+
+# Logs
+*.log.*
+.log/
+
+# Package manager lock files (uncomment if you want to ignore globally)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
