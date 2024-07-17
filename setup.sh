@@ -16,18 +16,26 @@ handle_error() {
 
 # Check if Homebrew is installed, and install it if not
 if ! command -v brew &>/dev/null; then
+    echo "Homebrew not found. Installing Homebrew..."
     HOMEBREW_INSTALL_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
     /bin/bash -c "$(curl -fsSL ${HOMEBREW_INSTALL_URL})" || handle_error "Homebrew installation failed"
 
-    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+    # Check if Homebrew is already in PATH
+    if ! grep -q '/opt/homebrew/bin/brew shellenv' ~/.zshrc; then
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+    fi
     eval "$(/opt/homebrew/bin/brew shellenv)"
 
     # Ensure Homebrew is in the PATH
     if ! command -v brew &>/dev/null; then
         handle_error "Homebrew installation succeeded but it's not in the PATH. Please restart your terminal and run the script again."
     fi
-elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
-    # If Homebrew is installed, upgrade to the latest version
+else
+    echo "Homebrew is already installed."
+fi
+
+if [[ "$update_choice" =~ ^[Yy]$ ]]; then
+    echo "Updating and upgrading Homebrew..."
     brew update && brew upgrade || handle_error "Homebrew upgrade failed"
 fi
 
