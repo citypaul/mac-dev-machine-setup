@@ -2,7 +2,7 @@
   community.general.homebrew:
     name: "{{ item }}"
     state: latest
-  with_items: "{{ cli_packages }}"
+  with_items: "{{ cli_packages | reject('equalto', 'exa') | list + ['eza'] }}"
   tags:
     - install
     - productivity
