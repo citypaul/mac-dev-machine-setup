@@ -5,6 +5,9 @@ if ! source ./setup.sh; then
     exit 1
 fi
 
+# Ensure the updated PATH is available
+source ~/.zshrc
+
 # Run the Ansible playbook
 ansible-playbook local.yaml -K --tags install,personal || {
   echo "Failed to execute Ansible playbook"

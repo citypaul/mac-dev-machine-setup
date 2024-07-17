@@ -87,18 +87,24 @@ elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
     brew upgrade pipx || handle_error "pipx upgrade failed"
 fi
 
-(
-    source "$HOME/.zshrc"
-    # Check if Ansible is installed, and install it if not
-    if ! command -v ansible &>/dev/null; then
-        pipx install ansible --include-deps && pipx ensurepath && source "$HOME/.zshrc" || handle_error "Ansible installation failed"
-    elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
-        # If Ansible is installed, upgrade to the latest version
-        pipx upgrade ansible || handle_error "Ansible upgrade failed"
-    fi
+# Ensure pipx is in PATH
+eval "$(pipx ensurepath)"
 
-    # Install required Ansible roles and collections
-    ansible-galaxy install ${update_choice:+--force} elliotweiser.osx-command-line-tools || handle_error "Failed to install or upgrade elliotweiser.osx-command-line-tools role"
+# Install or upgrade Ansible
+if ! command -v ansible &>/dev/null; then
+    pipx install --include-deps ansible || handle_error "Ansible installation failed"
+elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
+    pipx upgrade ansible || handle_error "Ansible upgrade failed"
+fi
 
-    ansible-galaxy collection install ${update_choice:+--force} community.general || handle_error "Failed to install or upgrade community.general collection"
-)
+# Verify Ansible installation
+if ! command -v ansible &>/dev/null; then
+    handle_error "Ansible installation failed. Please check your system and try again."
+fi
+
+# Install required Ansible roles and collections
+ansible-galaxy install ${update_choice:+--force} elliotweiser.osx-command-line-tools || handle_error "Failed to install or upgrade elliotweiser.osx-command-line-tools role"
+ansible-galaxy collection install ${update_choice:+--force} community.general || handle_error "Failed to install or upgrade community.general collection"
+
+# Ensure Ansible binaries are in PATH
+export PATH="$HOME/.local/bin:$PATH"
