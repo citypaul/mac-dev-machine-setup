@@ -103,27 +103,33 @@ else
     if [[ "$update_choice" =~ ^[Yy]$ ]]; then
         echo "Updating Ansible..."
         pipx upgrade --include-deps ansible || echo "Ansible is already at the latest version"
-    else
-        echo -n "Would you like to force reinstall Ansible? [y/N]: "
-        read -r reinstall_choice
-        if [[ "$reinstall_choice" =~ ^[Yy]$ ]]; then
-            echo "Force reinstalling Ansible..."
-            pipx uninstall ansible
-            pipx install --include-deps ansible || handle_error "Ansible reinstallation failed"
-        fi
     fi
 fi
 
+# Ensure pipx binaries are in PATH
+export PATH="$HOME/.local/bin:$PATH"
+
 # Verify Ansible installation and version
-ansible_version=$(ansible --version | head -n1 | awk '{print $2}')
+if ! command -v ansible &>/dev/null; then
+    handle_error "Ansible installation failed. Please check your system and try again."
+fi
+
+ansible_version=$(ansible --version 2>/dev/null | head -n1 | awk '{print $2}')
 if [ -z "$ansible_version" ]; then
-    handle_error "Ansible installation or reinstallation failed. Please check your system and try again."
+    handle_error "Failed to get Ansible version. Please check your installation."
 else
     echo "Ansible version $ansible_version is installed."
 fi
 
-# Ensure Ansible is in PATH
-export PATH="$HOME/.local/bin:$PATH"
+# Add Ansible binary path to .zshrc if not already present
+ansible_bin_path=$(dirname $(which ansible))
+if ! grep -q "$ansible_bin_path" ~/.zshrc; then
+    echo "export PATH=\"$ansible_bin_path:\$PATH\"" >> ~/.zshrc
+    echo "Added Ansible binary path to .zshrc"
+fi
+
+# Source .zshrc to update current session
+source ~/.zshrc
 
 # Ensure pipx binaries are in PATH
 export PATH="$HOME/.local/bin:$PATH"
