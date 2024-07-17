@@ -1,5 +1,8 @@
 #!/usr/bin/env zsh
 
+# Ensure necessary directories exist
+mkdir -p ~/.ssh ~/.gnupg
+
 echo -n "Would you like to update brew, ansible and ansible extensions to the latest versions? [y/N]: "
 read -r update_choice
 

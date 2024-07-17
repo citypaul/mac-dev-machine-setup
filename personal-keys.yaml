@@ -6,5 +6,20 @@
     source_ssh_key: "./.ssh/id_rsa"
     dest_ssh_key: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
   tasks:
+    - name: Ensure .ssh and .gnupg directories exist
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0700'
+      loop:
+        - "{{ lookup('env', 'HOME') }}/.ssh"
+        - "{{ lookup('env', 'HOME') }}/.gnupg"
+
     - import_tasks: ansible/tasks/gpg.yaml
     - import_tasks: ansible/tasks/ssh.yaml
+
+    - name: Set correct permissions for SSH key
+      file:
+        path: "{{ dest_ssh_key }}"
+        mode: '0600'
+      when: dest_ssh_key is file
