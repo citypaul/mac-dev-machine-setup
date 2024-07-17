@@ -33,23 +33,36 @@ fi
 
 # Function to add Python to PATH
 add_python_to_path() {
-    if ! grep -q 'export PATH="/opt/homebrew/opt/python@3.11/libexec/bin:$PATH"' ~/.zshrc; then
-        echo 'export PATH="/opt/homebrew/opt/python@3.11/libexec/bin:$PATH"' >> ~/.zshrc
+    local python_path="/opt/homebrew/opt/python@3.11/libexec/bin"
+    if ! echo $PATH | grep -q $python_path; then
+        export PATH="$python_path:$PATH"
     fi
-    export PATH="/opt/homebrew/opt/python@3.11/libexec/bin:$PATH"
+    if ! grep -q "export PATH=\"$python_path:\$PATH\"" ~/.zshrc; then
+        echo "export PATH=\"$python_path:\$PATH\"" >> ~/.zshrc
+    fi
 }
 
-# Check if python3 is installed, and install it if not
-if ! command -v python3 &>/dev/null; then
-    echo "Python 3 is not installed. Installing..."
-    brew install python@3.11 || handle_error "Python installation failed"
-    add_python_to_path
-    if ! command -v python3 &>/dev/null; then
-        handle_error "Python 3 installation succeeded but it's not in the PATH. Please restart your terminal and run the script again."
+# Function to install or upgrade Python
+install_or_upgrade_python() {
+    if brew list python@3.11 &>/dev/null; then
+        echo "Upgrading Python 3.11..."
+        brew upgrade python@3.11 || handle_error "Python upgrade failed"
+    else
+        echo "Installing Python 3.11..."
+        brew install python@3.11 || handle_error "Python installation failed"
     fi
-elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
-    # If python is installed, upgrade to the latest version
-    brew upgrade python@3.11 || handle_error "Python upgrade failed"
+    add_python_to_path
+    source ~/.zshrc
+}
+
+# Check if python3 is installed and working correctly
+if ! command -v python3 &>/dev/null || ! python3 --version | grep -q "Python 3.11"; then
+    install_or_upgrade_python
+fi
+
+# Verify Python installation
+if ! command -v python3 &>/dev/null; then
+    handle_error "Python 3 installation failed. Please check your system and try again."
 fi
 
 # Ensure pip is installed and up to date
@@ -60,6 +73,11 @@ add_python_to_path
 
 # Reload shell configuration
 source ~/.zshrc
+
+# Verify pip installation
+if ! command -v pip3 &>/dev/null; then
+    handle_error "pip3 installation failed. Please check your system and try again."
+fi
 
 # Check if pipx is installed, and install it if not
 if ! command -v pipx &>/dev/null; then
