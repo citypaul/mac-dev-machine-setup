@@ -95,13 +95,26 @@ fi
 export PATH="$HOME/.local/bin:$PATH"
 
 # Install or upgrade Ansible using pipx
-if ! command -v ansible &>/dev/null || [[ "$update_choice" =~ ^[Yy]$ ]]; then
-    pipx install --include-deps ansible || pipx upgrade --include-deps ansible || handle_error "Ansible installation/upgrade failed"
+if ! command -v ansible &>/dev/null; then
+    echo "Ansible not found. Installing Ansible..."
+    pipx install --include-deps ansible || handle_error "Ansible installation failed"
+elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
+    echo "Updating Ansible..."
+    pipx upgrade --include-deps ansible || echo "Ansible is already at the latest version"
+else
+    echo "Ansible is already installed. Skipping installation/upgrade."
+    echo -n "Would you like to force reinstall Ansible? [y/N]: "
+    read -r reinstall_choice
+    if [[ "$reinstall_choice" =~ ^[Yy]$ ]]; then
+        echo "Force reinstalling Ansible..."
+        pipx uninstall ansible
+        pipx install --include-deps ansible || handle_error "Ansible reinstallation failed"
+    fi
 fi
 
 # Verify Ansible installation
 if ! command -v ansible &>/dev/null; then
-    handle_error "Ansible installation failed. Please check your system and try again."
+    handle_error "Ansible installation or reinstallation failed. Please check your system and try again."
 fi
 
 # Ensure pipx binaries are in PATH
