@@ -94,28 +94,36 @@ fi
 # Ensure pipx is in PATH
 export PATH="$HOME/.local/bin:$PATH"
 
-# Install or upgrade Ansible using pipx
+# Install, upgrade, or verify Ansible using pipx
 if ! command -v ansible &>/dev/null; then
     echo "Ansible not found. Installing Ansible..."
     pipx install --include-deps ansible || handle_error "Ansible installation failed"
-elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
-    echo "Updating Ansible..."
-    pipx upgrade --include-deps ansible || echo "Ansible is already at the latest version"
 else
-    echo "Ansible is already installed. Skipping installation/upgrade."
-    echo -n "Would you like to force reinstall Ansible? [y/N]: "
-    read -r reinstall_choice
-    if [[ "$reinstall_choice" =~ ^[Yy]$ ]]; then
-        echo "Force reinstalling Ansible..."
-        pipx uninstall ansible
-        pipx install --include-deps ansible || handle_error "Ansible reinstallation failed"
+    echo "Ansible is already installed."
+    if [[ "$update_choice" =~ ^[Yy]$ ]]; then
+        echo "Updating Ansible..."
+        pipx upgrade --include-deps ansible || echo "Ansible is already at the latest version"
+    else
+        echo -n "Would you like to force reinstall Ansible? [y/N]: "
+        read -r reinstall_choice
+        if [[ "$reinstall_choice" =~ ^[Yy]$ ]]; then
+            echo "Force reinstalling Ansible..."
+            pipx uninstall ansible
+            pipx install --include-deps ansible || handle_error "Ansible reinstallation failed"
+        fi
     fi
 fi
 
-# Verify Ansible installation
-if ! command -v ansible &>/dev/null; then
+# Verify Ansible installation and version
+ansible_version=$(ansible --version | head -n1 | awk '{print $2}')
+if [ -z "$ansible_version" ]; then
     handle_error "Ansible installation or reinstallation failed. Please check your system and try again."
+else
+    echo "Ansible version $ansible_version is installed."
 fi
+
+# Ensure Ansible is in PATH
+export PATH="$HOME/.local/bin:$PATH"
 
 # Ensure pipx binaries are in PATH
 export PATH="$HOME/.local/bin:$PATH"
