@@ -31,14 +31,19 @@ elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
     brew update && brew upgrade || handle_error "Homebrew upgrade failed"
 fi
 
+# Function to add Python to PATH
+add_python_to_path() {
+    if ! grep -q 'export PATH="/opt/homebrew/opt/python@3.11/libexec/bin:$PATH"' ~/.zshrc; then
+        echo 'export PATH="/opt/homebrew/opt/python@3.11/libexec/bin:$PATH"' >> ~/.zshrc
+    fi
+    export PATH="/opt/homebrew/opt/python@3.11/libexec/bin:$PATH"
+}
+
 # Check if python3 is installed, and install it if not
 if ! command -v python3 &>/dev/null; then
     echo "Python 3 is not installed. Installing..."
     brew install python@3.11 || handle_error "Python installation failed"
-    # Ensure python3 is in the PATH
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-    export PATH="/opt/homebrew/opt/python@3.11/libexec/bin:$PATH"
-    source ~/.zshrc
+    add_python_to_path
     if ! command -v python3 &>/dev/null; then
         handle_error "Python 3 installation succeeded but it's not in the PATH. Please restart your terminal and run the script again."
     fi
@@ -50,8 +55,10 @@ fi
 # Ensure pip is installed and up to date
 python3 -m ensurepip --upgrade || handle_error "pip installation/upgrade failed"
 
-# Add Python to PATH permanently
-echo 'export PATH="/opt/homebrew/opt/python@3.11/libexec/bin:$PATH"' >> ~/.zshrc
+# Add Python to PATH (if not already added)
+add_python_to_path
+
+# Reload shell configuration
 source ~/.zshrc
 
 # Check if pipx is installed, and install it if not
