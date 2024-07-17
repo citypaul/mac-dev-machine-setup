@@ -31,9 +31,15 @@ elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
     brew update && brew upgrade || handle_error "Homebrew upgrade failed"
 fi
 
-# Check if python is installed, and install it if not
+# Check if python3 is installed, and install it if not
 if ! command -v python3 &>/dev/null; then
+    echo "Python 3 is not installed. Installing..."
     brew install python3 || handle_error "Python installation failed"
+    # Ensure python3 is in the PATH
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+    if ! command -v python3 &>/dev/null; then
+        handle_error "Python 3 installation succeeded but it's not in the PATH. Please restart your terminal and run the script again."
+    fi
 elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
     # If python is installed, upgrade to the latest version
     brew upgrade python3 || handle_error "Python upgrade failed"
