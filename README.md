@@ -63,7 +63,17 @@ This repository contains Ansible playbooks and scripts to automatically set up a
 
 ## Troubleshooting
 
-- If you encounter issues with Python, try running the installation script again.
+- If you encounter issues with Python, try the following steps:
+  1. Run the installation script again.
+  2. Manually install Python using Homebrew:
+     ```
+     brew install python@3.11
+     ```
+  3. Add Python to your PATH manually:
+     ```
+     echo 'export PATH="/opt/homebrew/opt/python@3.11/libexec/bin:$PATH"' >> ~/.zshrc
+     source ~/.zshrc
+     ```
 - If Homebrew is installed but not recognized, restart your terminal and run the script again.
 - If certain tools are not recognized after installation, try sourcing your `.zshrc` file:
   ```
