@@ -34,16 +34,20 @@ fi
 # Check if python3 is installed, and install it if not
 if ! command -v python3 &>/dev/null; then
     echo "Python 3 is not installed. Installing..."
-    brew install python3 || handle_error "Python installation failed"
+    brew install python@3.11 || handle_error "Python installation failed"
     # Ensure python3 is in the PATH
     eval "$(/opt/homebrew/bin/brew shellenv)"
+    export PATH="/opt/homebrew/opt/python@3.11/libexec/bin:$PATH"
     if ! command -v python3 &>/dev/null; then
         handle_error "Python 3 installation succeeded but it's not in the PATH. Please restart your terminal and run the script again."
     fi
 elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
     # If python is installed, upgrade to the latest version
-    brew upgrade python3 || handle_error "Python upgrade failed"
+    brew upgrade python@3.11 || handle_error "Python upgrade failed"
 fi
+
+# Ensure pip is installed and up to date
+python3 -m ensurepip --upgrade || handle_error "pip installation/upgrade failed"
 
 # Check if pipx is installed, and install it if not
 if ! command -v pipx &>/dev/null; then
