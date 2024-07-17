@@ -71,9 +71,6 @@ fi
 # Ensure pipx is in PATH
 eval "$(pipx ensurepath)"
 
-# Install or upgrade pip using pipx
-pipx install pip || pipx upgrade pip || handle_error "pip installation/upgrade failed"
-
 # Install or upgrade Ansible using pipx
 if ! command -v ansible &>/dev/null || [[ "$update_choice" =~ ^[Yy]$ ]]; then
     pipx install --include-deps ansible || pipx upgrade --include-deps ansible || handle_error "Ansible installation/upgrade failed"
@@ -84,7 +81,7 @@ if ! command -v ansible &>/dev/null; then
     handle_error "Ansible installation failed. Please check your system and try again."
 fi
 
-# Add pipx binary directory to PATH
+# Ensure pipx binaries are in PATH
 export PATH="$HOME/.local/bin:$PATH"
 
 # Install required Ansible roles and collections

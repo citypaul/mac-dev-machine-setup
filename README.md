@@ -63,15 +63,22 @@ This repository contains Ansible playbooks and scripts to automatically set up a
 
 ## Troubleshooting
 
-- If you encounter issues with Python, try the following steps:
-  1. Run the installation script again.
-  2. Manually install Python using Homebrew:
+- If you encounter issues with Python or pip, try the following steps:
+  1. Ensure you have the latest version of Homebrew:
      ```
-     brew install python@3.11
+     brew update && brew upgrade
      ```
-  3. Add Python to your PATH manually:
+  2. Reinstall Python using Homebrew:
      ```
-     echo 'export PATH="/opt/homebrew/opt/python@3.11/libexec/bin:$PATH"' >> ~/.zshrc
+     brew reinstall python
+     ```
+  3. Install pipx if it's not already installed:
+     ```
+     brew install pipx
+     pipx ensurepath
+     ```
+  4. Restart your terminal or source your `.zshrc`:
+     ```
      source ~/.zshrc
      ```
 - If Homebrew is installed but not recognized, restart your terminal and run the script again.
@@ -81,6 +88,7 @@ This repository contains Ansible playbooks and scripts to automatically set up a
   ```
 - In some cases, you may need to run the installation script multiple times to ensure all components are properly installed and configured.
 - If you encounter permission issues, ensure you have the necessary rights to install software on your system.
+- If you see an "externally-managed-environment" error, make sure you're using pipx to install Python packages as described in the setup script.
 
 ## Additional Resources
 
