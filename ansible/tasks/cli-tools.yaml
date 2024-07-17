@@ -15,11 +15,3 @@
     - productivity
     - cli
 
-- name: Install Github CoPilot CLI
-  ansible.builtin.shell: |
-    gh extension install github/gh-copilot
-    gh extension upgrade gh-copilot
-  tags:
-    - install
-    - productivity
-    - cli
