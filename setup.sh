@@ -60,20 +60,6 @@ if ! command -v python3 &>/dev/null; then
     handle_error "Python 3 installation failed. Please check your system and try again."
 fi
 
-# Ensure pip is installed and up to date
-python3 -m ensurepip --upgrade || handle_error "pip installation/upgrade failed"
-
-# Add Python to PATH (if not already added)
-add_python_to_path
-
-# Reload shell configuration
-source ~/.zshrc
-
-# Verify pip installation
-if ! command -v pip3 &>/dev/null; then
-    handle_error "pip3 installation failed. Please check your system and try again."
-fi
-
 # Check if pipx is installed, and install it if not
 if ! command -v pipx &>/dev/null; then
     brew install pipx || handle_error "pipx installation failed"
@@ -85,15 +71,21 @@ fi
 # Ensure pipx is in PATH
 eval "$(pipx ensurepath)"
 
-# Install or upgrade Ansible
+# Install or upgrade pip using pipx
+pipx install pip || pipx upgrade pip || handle_error "pip installation/upgrade failed"
+
+# Install or upgrade Ansible using pipx
 if ! command -v ansible &>/dev/null || [[ "$update_choice" =~ ^[Yy]$ ]]; then
-    pipx install --include-deps ansible || pipx upgrade ansible || handle_error "Ansible installation/upgrade failed"
+    pipx install --include-deps ansible || pipx upgrade --include-deps ansible || handle_error "Ansible installation/upgrade failed"
 fi
 
 # Verify Ansible installation
 if ! command -v ansible &>/dev/null; then
     handle_error "Ansible installation failed. Please check your system and try again."
 fi
+
+# Add pipx binary directory to PATH
+export PATH="$HOME/.local/bin:$PATH"
 
 # Install required Ansible roles and collections
 if [[ "$update_choice" =~ ^[Yy]$ ]]; then
