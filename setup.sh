@@ -110,17 +110,19 @@ fi
 export PATH="$HOME/.local/bin:$PATH"
 
 # Verify Ansible installation and version
+echo "Verifying Ansible installation..."
+ansible_path=$(find $HOME/.local/pipx -name ansible -type f 2>/dev/null | head -n 1)
+if [ -z "$ansible_path" ]; then
+    handle_error "Ansible not found. Installation may have failed."
+fi
+
+ansible_bin_path=$(dirname "$ansible_path")
+echo "Found Ansible at $ansible_path"
+echo "Adding Ansible binary path to PATH..."
+export PATH="$ansible_bin_path:$PATH"
+
 if ! command -v ansible &>/dev/null; then
-    echo "Ansible not found in PATH. Attempting to locate it..."
-    ansible_path=$(find $HOME/.local/pipx -name ansible -type f 2>/dev/null | head -n 1)
-    if [ -n "$ansible_path" ]; then
-        ansible_bin_path=$(dirname "$ansible_path")
-        echo "Found Ansible at $ansible_path"
-        echo "Adding Ansible binary path to PATH..."
-        export PATH="$ansible_bin_path:$PATH"
-    else
-        handle_error "Ansible installation failed. Please check your system and try again."
-    fi
+    handle_error "Ansible still not found in PATH after adding it. Please check your system."
 fi
 
 ansible_version=$(ansible --version 2>/dev/null | head -n1 | awk '{print $2}')
@@ -131,14 +133,21 @@ else
 fi
 
 # Add Ansible binary path to .zshrc if not already present
-ansible_bin_path=$(dirname $(which ansible))
 if ! grep -q "$ansible_bin_path" ~/.zshrc; then
     echo "export PATH=\"$ansible_bin_path:\$PATH\"" >> ~/.zshrc
     echo "Added Ansible binary path to .zshrc"
 fi
 
 # Source .zshrc to update current session
+echo "Sourcing .zshrc to update current session..."
 source ~/.zshrc
+
+# Verify Ansible is in PATH after sourcing .zshrc
+if ! command -v ansible &>/dev/null; then
+    handle_error "Ansible still not found in PATH after sourcing .zshrc. Please check your .zshrc file."
+fi
+
+echo "Ansible installation and PATH setup completed successfully."
 
 # Ensure pipx binaries are in PATH
 export PATH="$HOME/.local/bin:$PATH"
