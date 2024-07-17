@@ -1,9 +1,16 @@
-#!/usr/bin/env zsh
+#!/bin/bash
 
 set -e
 
 # Ensure necessary directories exist
 mkdir -p ~/.ssh ~/.gnupg
+
+# Set up the shell environment
+if [ -f /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -f /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
 
 echo -n "Would you like to update brew, ansible and ansible extensions to the latest versions? [y/N]: "
 read -r update_choice
