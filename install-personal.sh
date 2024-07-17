@@ -8,10 +8,8 @@ fi
 # Ensure the updated PATH is available
 if [ -f ~/.zshrc ]; then
     source ~/.zshrc
-elif [ -f ~/.bash_profile ]; then
-    source ~/.bash_profile
-elif [ -f ~/.profile ]; then
-    source ~/.profile
+else
+    echo "Warning: ~/.zshrc not found. Make sure zsh is properly set up."
 fi
 
 # Run the Ansible playbook

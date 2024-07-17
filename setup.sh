@@ -27,11 +27,15 @@ if ! command -v brew &>/dev/null; then
     HOMEBREW_INSTALL_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
     /bin/bash -c "$(curl -fsSL ${HOMEBREW_INSTALL_URL})" || handle_error "Homebrew installation failed"
 
-    # Check if Homebrew is already in PATH
-    if ! grep -q '/opt/homebrew/bin/brew shellenv' ~/.zshrc; then
+    # Add Homebrew to PATH in .zshrc
+    if [ -f /opt/homebrew/bin/brew ]; then
         echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+    elif [ -f /usr/local/bin/brew ]; then
+        echo 'eval "$(/usr/local/bin/brew shellenv)"' >> ~/.zshrc
     fi
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+
+    # Source .zshrc to update PATH
+    source ~/.zshrc
 
     # Ensure Homebrew is in the PATH
     if ! command -v brew &>/dev/null; then
@@ -55,6 +59,7 @@ add_python_to_path() {
     if ! grep -q "export PATH=\"$python_path:\$PATH\"" ~/.zshrc; then
         echo "export PATH=\"$python_path:\$PATH\"" >> ~/.zshrc
     fi
+    source ~/.zshrc
 }
 
 # Function to install or upgrade Python
