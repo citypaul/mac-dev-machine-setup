@@ -12,11 +12,13 @@ fi
 echo "Current shell: $SHELL"
 echo "Current PATH: $PATH"
 
+echo "Running setup.sh..."
 if ! zsh ./setup.sh; then
     echo "Failed to execute setup.sh"
     exit 1
 fi
 
+echo "setup.sh completed. Sourcing .zshrc..."
 # Ensure the updated PATH is available
 if [ -f ~/.zshrc ]; then
     source ~/.zshrc
@@ -31,14 +33,19 @@ echo "Updated PATH: $PATH"
 if ! command -v ansible-playbook &> /dev/null; then
     echo "Error: ansible-playbook command not found"
     echo "Current PATH: $PATH"
+    echo "Trying to find ansible-playbook..."
+    find $HOME/.local -name ansible-playbook -type f
     exit 1
 fi
 
+echo "ansible-playbook found. Running Ansible playbook..."
 # Run the Ansible playbook
-zsh -c 'ansible-playbook local.yaml -K --tags install,personal -vvv' || {
+ansible-playbook local.yaml -K --tags install,personal -vvv || {
   echo "Failed to execute Ansible playbook"
   exit 1
 }
+
+echo "Ansible playbook execution completed."
 
 # Disable verbose output
 set +x
