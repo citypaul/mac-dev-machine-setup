@@ -59,7 +59,7 @@ add_python_to_path() {
     if ! grep -q "export PATH=\"$python_path:\$PATH\"" ~/.zshrc; then
         echo "export PATH=\"$python_path:\$PATH\"" >> ~/.zshrc
     fi
-    source ~/.zshrc
+    zsh -c 'source ~/.zshrc'
 }
 
 # Function to install or upgrade Python
