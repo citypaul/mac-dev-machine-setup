@@ -35,7 +35,7 @@ if ! command -v brew &>/dev/null; then
     fi
 
     # Source .zshrc to update PATH
-    source ~/.zshrc
+    zsh -c 'source ~/.zshrc'
 
     # Ensure Homebrew is in the PATH
     if ! command -v brew &>/dev/null; then
