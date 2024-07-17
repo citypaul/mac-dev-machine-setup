@@ -44,19 +44,14 @@ add_python_to_path() {
 
 # Function to install or upgrade Python
 install_or_upgrade_python() {
-    if brew list python@3.11 &>/dev/null; then
-        echo "Upgrading Python 3.11..."
-        brew upgrade python@3.11 || handle_error "Python upgrade failed"
-    else
-        echo "Installing Python 3.11..."
-        brew install python@3.11 || handle_error "Python installation failed"
-    fi
+    echo "Installing or upgrading Python..."
+    brew install python || brew upgrade python || handle_error "Python installation/upgrade failed"
     add_python_to_path
     source ~/.zshrc
 }
 
 # Check if python3 is installed and working correctly
-if ! command -v python3 &>/dev/null || ! python3 --version | grep -q "Python 3.11"; then
+if ! command -v python3 &>/dev/null; then
     install_or_upgrade_python
 fi
 
@@ -91,10 +86,8 @@ fi
 eval "$(pipx ensurepath)"
 
 # Install or upgrade Ansible
-if ! command -v ansible &>/dev/null; then
-    pipx install --include-deps ansible || handle_error "Ansible installation failed"
-elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
-    pipx upgrade ansible || handle_error "Ansible upgrade failed"
+if ! command -v ansible &>/dev/null || [[ "$update_choice" =~ ^[Yy]$ ]]; then
+    pipx install --include-deps ansible || pipx upgrade ansible || handle_error "Ansible installation/upgrade failed"
 fi
 
 # Verify Ansible installation
@@ -103,8 +96,13 @@ if ! command -v ansible &>/dev/null; then
 fi
 
 # Install required Ansible roles and collections
-ansible-galaxy install ${update_choice:+--force} elliotweiser.osx-command-line-tools || handle_error "Failed to install or upgrade elliotweiser.osx-command-line-tools role"
-ansible-galaxy collection install ${update_choice:+--force} community.general || handle_error "Failed to install or upgrade community.general collection"
+if [[ "$update_choice" =~ ^[Yy]$ ]]; then
+    ansible-galaxy install --force elliotweiser.osx-command-line-tools || handle_error "Failed to install or upgrade elliotweiser.osx-command-line-tools role"
+    ansible-galaxy collection install --force community.general || handle_error "Failed to install or upgrade community.general collection"
+else
+    ansible-galaxy install elliotweiser.osx-command-line-tools || handle_error "Failed to install elliotweiser.osx-command-line-tools role"
+    ansible-galaxy collection install community.general || handle_error "Failed to install community.general collection"
+fi
 
 # Ensure Ansible binaries are in PATH
 export PATH="$HOME/.local/bin:$PATH"
