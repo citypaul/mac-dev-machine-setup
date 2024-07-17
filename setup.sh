@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 
 set -e
 
@@ -29,9 +29,9 @@ if ! command -v brew &>/dev/null; then
 
     # Add Homebrew to PATH in .zshrc
     if [ -f /opt/homebrew/bin/brew ]; then
-        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>~/.zshrc
     elif [ -f /usr/local/bin/brew ]; then
-        echo 'eval "$(/usr/local/bin/brew shellenv)"' >> ~/.zshrc
+        echo 'eval "$(/usr/local/bin/brew shellenv)"' >>~/.zshrc
     fi
 
     # Source .zshrc to update PATH
@@ -57,7 +57,7 @@ add_python_to_path() {
         export PATH="$python_path:$PATH"
     fi
     if ! grep -q "export PATH=\"$python_path:\$PATH\"" ~/.zshrc; then
-        echo "export PATH=\"$python_path:\$PATH\"" >> ~/.zshrc
+        echo "export PATH=\"$python_path:\$PATH\"" >>~/.zshrc
     fi
     zsh -c 'source ~/.zshrc'
 }
@@ -134,7 +134,7 @@ fi
 
 # Add Ansible binary path to .zshrc if not already present
 if ! grep -q "$ansible_bin_path" ~/.zshrc; then
-    echo "export PATH=\"$ansible_bin_path:\$PATH\"" >> ~/.zshrc
+    echo "export PATH=\"$ansible_bin_path:\$PATH\"" >>~/.zshrc
     echo "Added Ansible binary path to .zshrc"
 fi
 
@@ -156,7 +156,7 @@ export PATH="$HOME/.local/bin:$PATH"
 if [ -f ~/.zsh_profile ]; then
     if grep -q "/opt/homebrew/etc/profile.d/z.sh" ~/.zsh_profile; then
         sed -i '' '/\/opt\/homebrew\/etc\/profile.d\/z.sh/d' ~/.zsh_profile
-        echo '[ -f /opt/homebrew/etc/profile.d/z.sh ] && source /opt/homebrew/etc/profile.d/z.sh' >> ~/.zsh_profile
+        echo '[ -f /opt/homebrew/etc/profile.d/z.sh ] && source /opt/homebrew/etc/profile.d/z.sh' >>~/.zsh_profile
     fi
 fi
 
