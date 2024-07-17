@@ -11,8 +11,14 @@ if ! command -v brew &>/dev/null; then
         exit 1
     }
 
-    echo "eval $(/opt/homebrew/bin/brew shellenv)" >>~/.zshrc
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
     eval "$(/opt/homebrew/bin/brew shellenv)"
+
+    # Ensure Homebrew is in the PATH
+    if ! command -v brew &>/dev/null; then
+        echo "Homebrew installation succeeded but it's not in the PATH. Please restart your terminal and run the script again."
+        exit 1
+    fi
 elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
     # If Homebrew is installed, upgrade to the latest version
     brew update && brew upgrade || {

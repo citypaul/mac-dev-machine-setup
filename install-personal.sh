@@ -1,6 +1,9 @@
 #!/usr/bin/env zsh
 
-source ./setup.sh
+if ! source ./setup.sh; then
+    echo "Failed to execute setup.sh"
+    exit 1
+fi
 
 # Run the Ansible playbook
 ansible-playbook local.yaml -K --tags install,personal || {

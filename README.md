@@ -64,11 +64,13 @@ This repository contains Ansible playbooks and scripts to automatically set up a
 ## Troubleshooting
 
 - If you encounter issues with Python, try running the installation script again.
+- If Homebrew is installed but not recognized, restart your terminal and run the script again.
 - If certain tools are not recognized after installation, try sourcing your `.zshrc` file:
   ```
   source ~/.zshrc
   ```
 - In some cases, you may need to run the installation script multiple times to ensure all components are properly installed and configured.
+- If you encounter permission issues, ensure you have the necessary rights to install software on your system.
 
 ## Additional Resources
 
