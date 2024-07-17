@@ -83,6 +83,7 @@ fi
 # Check if pipx is installed, and install it if not
 if ! command -v pipx &>/dev/null; then
     brew install pipx || handle_error "pipx installation failed"
+    pipx ensurepath
 elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
     # If pipx is installed and user chose to update, upgrade to the latest version
     brew upgrade pipx || echo "pipx is already at the latest version"
@@ -91,7 +92,7 @@ else
 fi
 
 # Ensure pipx is in PATH
-eval "$(pipx ensurepath)"
+export PATH="$HOME/.local/bin:$PATH"
 
 # Install or upgrade Ansible using pipx
 if ! command -v ansible &>/dev/null || [[ "$update_choice" =~ ^[Yy]$ ]]; then
