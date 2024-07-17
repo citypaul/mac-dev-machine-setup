@@ -30,7 +30,7 @@ fi
 echo "Updated PATH: $PATH"
 
 # Check if ansible-playbook is available
-if ! command -v ansible-playbook &> /dev/null; then
+if ! command -v ansible-playbook &>/dev/null; then
     echo "Error: ansible-playbook command not found"
     echo "Current PATH: $PATH"
     echo "Trying to find ansible-playbook..."
@@ -40,9 +40,9 @@ fi
 
 echo "ansible-playbook found. Running Ansible playbook..."
 # Run the Ansible playbook
-ansible-playbook local.yaml -K --tags install,personal -vvv || {
-  echo "Failed to execute Ansible playbook"
-  exit 1
+ansible-playbook local.yaml -K --tags install,personal || {
+    echo "Failed to execute Ansible playbook"
+    exit 1
 }
 
 echo "Ansible playbook execution completed."

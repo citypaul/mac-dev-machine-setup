@@ -27,15 +27,11 @@ if ! command -v brew &>/dev/null; then
     HOMEBREW_INSTALL_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
     /bin/bash -c "$(curl -fsSL ${HOMEBREW_INSTALL_URL})" || handle_error "Homebrew installation failed"
 
-    # Add Homebrew to PATH in .zshrc
-    if [ -f /opt/homebrew/bin/brew ]; then
+    # Check if Homebrew is already in PATH
+    if ! grep -q '/opt/homebrew/bin/brew shellenv' ~/.zshrc; then
         echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>~/.zshrc
-    elif [ -f /usr/local/bin/brew ]; then
-        echo 'eval "$(/usr/local/bin/brew shellenv)"' >>~/.zshrc
     fi
-
-    # Source .zshrc to update PATH
-    zsh -c 'source ~/.zshrc'
+    eval "$(/opt/homebrew/bin/brew shellenv)"
 
     # Ensure Homebrew is in the PATH
     if ! command -v brew &>/dev/null; then
