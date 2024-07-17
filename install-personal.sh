@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 if ! source ./setup.sh; then
     echo "Failed to execute setup.sh"
