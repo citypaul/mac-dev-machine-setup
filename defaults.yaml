@@ -12,7 +12,6 @@ cli_packages:
   - curl
   - deno
   - entr
-  - exa
   - fd
   - fswatch
   - fzf
@@ -96,6 +95,7 @@ gui_packages_personal:
 
 gui_packages_to_remove_if_installed:
   - bartender
+  - exa
   - rewind
   - zotero
 
