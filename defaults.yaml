@@ -101,3 +101,6 @@ gui_packages_to_remove_if_installed:
 
 gui_packages_to_remove_if_installed_work:
   - protonvpn
+
+pipx_packages:
+  - aider-chat

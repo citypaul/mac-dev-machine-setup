@@ -1,0 +1,30 @@
+- name: Install and configure pipx
+  block:
+    - name: Ensure pipx is installed
+      ansible.builtin.package:
+        name: pipx
+        state: present
+      when: "'pipx' not in cli_packages"
+
+    - name: Determine pipx location
+      ansible.builtin.command: which pipx
+      register: pipx_location
+      changed_when: false
+      failed_when: false
+
+    - name: Set pipx executable path
+      ansible.builtin.set_fact:
+        pipx_executable: "{{ pipx_location.stdout if pipx_location.rc == 0 else ansible_env.HOME + '/.local/bin/pipx' }}"
+
+    - name: Install pipx packages
+      community.general.pipx:
+        name: "{{ item }}"
+        state: latest
+        executable: "{{ pipx_executable }}"
+        editable: false
+      loop: "{{ pipx_packages }}"
+      when: pipx_packages | length > 0
+
+  tags:
+    - install
+    - pipx

@@ -10,6 +10,7 @@
       tags:
         - install
         - core
+
   tasks:
     - import_tasks: ansible/tasks/git-setup.yaml
     - import_tasks: ansible/tasks/app-store-apps.yaml
@@ -27,3 +28,4 @@
     - import_tasks: ansible/tasks/rust.yaml
     - import_tasks: ansible/tasks/remove-unwanted-packages.yaml
     - import_tasks: ansible/tasks/dock.yaml
+    - import_tasks: ansible/tasks/pipx-packages.yaml
