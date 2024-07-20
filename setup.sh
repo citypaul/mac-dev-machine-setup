@@ -5,6 +5,13 @@ set -e
 # Ensure necessary directories exist
 mkdir -p ~/.ssh ~/.gnupg
 
+# Set up the shell environment
+if [ -f /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -f /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
+
 echo -n "Would you like to update brew, ansible and ansible extensions to the latest versions? [y/N]: "
 read -r update_choice
 
@@ -22,7 +29,7 @@ if ! command -v brew &>/dev/null; then
 
     # Check if Homebrew is already in PATH
     if ! grep -q '/opt/homebrew/bin/brew shellenv' ~/.zshrc; then
-        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>~/.zshrc
     fi
     eval "$(/opt/homebrew/bin/brew shellenv)"
 
@@ -46,8 +53,9 @@ add_python_to_path() {
         export PATH="$python_path:$PATH"
     fi
     if ! grep -q "export PATH=\"$python_path:\$PATH\"" ~/.zshrc; then
-        echo "export PATH=\"$python_path:\$PATH\"" >> ~/.zshrc
+        echo "export PATH=\"$python_path:\$PATH\"" >>~/.zshrc
     fi
+    zsh -c 'source ~/.zshrc'
 }
 
 # Function to install or upgrade Python
@@ -71,6 +79,7 @@ fi
 # Check if pipx is installed, and install it if not
 if ! command -v pipx &>/dev/null; then
     brew install pipx || handle_error "pipx installation failed"
+    pipx ensurepath
 elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
     # If pipx is installed and user chose to update, upgrade to the latest version
     brew upgrade pipx || echo "pipx is already at the latest version"
@@ -79,20 +88,73 @@ else
 fi
 
 # Ensure pipx is in PATH
-eval "$(pipx ensurepath)"
+export PATH="$HOME/.local/bin:$PATH"
 
-# Install or upgrade Ansible using pipx
-if ! command -v ansible &>/dev/null || [[ "$update_choice" =~ ^[Yy]$ ]]; then
-    pipx install --include-deps ansible || pipx upgrade --include-deps ansible || handle_error "Ansible installation/upgrade failed"
-fi
-
-# Verify Ansible installation
+# Install, upgrade, or verify Ansible using pipx
 if ! command -v ansible &>/dev/null; then
-    handle_error "Ansible installation failed. Please check your system and try again."
+    echo "Ansible not found. Installing Ansible..."
+    pipx install --include-deps ansible || handle_error "Ansible installation failed"
+else
+    echo "Ansible is already installed."
+    if [[ "$update_choice" =~ ^[Yy]$ ]]; then
+        echo "Updating Ansible..."
+        pipx upgrade --include-deps ansible || echo "Ansible is already at the latest version"
+    fi
 fi
 
 # Ensure pipx binaries are in PATH
 export PATH="$HOME/.local/bin:$PATH"
+
+# Verify Ansible installation and version
+echo "Verifying Ansible installation..."
+ansible_path=$(find $HOME/.local/pipx -name ansible -type f 2>/dev/null | head -n 1)
+if [ -z "$ansible_path" ]; then
+    handle_error "Ansible not found. Installation may have failed."
+fi
+
+ansible_bin_path=$(dirname "$ansible_path")
+echo "Found Ansible at $ansible_path"
+echo "Adding Ansible binary path to PATH..."
+export PATH="$ansible_bin_path:$PATH"
+
+if ! command -v ansible &>/dev/null; then
+    handle_error "Ansible still not found in PATH after adding it. Please check your system."
+fi
+
+ansible_version=$(ansible --version 2>/dev/null | head -n1 | awk '{print $2}')
+if [ -z "$ansible_version" ]; then
+    handle_error "Failed to get Ansible version. Please check your installation."
+else
+    echo "Ansible version $ansible_version is installed."
+fi
+
+# Add Ansible binary path to .zshrc if not already present
+if ! grep -q "$ansible_bin_path" ~/.zshrc; then
+    echo "export PATH=\"$ansible_bin_path:\$PATH\"" >>~/.zshrc
+    echo "Added Ansible binary path to .zshrc"
+fi
+
+# Source .zshrc to update current session
+echo "Sourcing .zshrc to update current session..."
+source ~/.zshrc
+
+# Verify Ansible is in PATH after sourcing .zshrc
+if ! command -v ansible &>/dev/null; then
+    handle_error "Ansible still not found in PATH after sourcing .zshrc. Please check your .zshrc file."
+fi
+
+echo "Ansible installation and PATH setup completed successfully."
+
+# Ensure pipx binaries are in PATH
+export PATH="$HOME/.local/bin:$PATH"
+
+# Check and update .zsh_profile
+if [ -f ~/.zsh_profile ]; then
+    if grep -q "/opt/homebrew/etc/profile.d/z.sh" ~/.zsh_profile; then
+        sed -i '' '/\/opt\/homebrew\/etc\/profile.d\/z.sh/d' ~/.zsh_profile
+        echo '[ -f /opt/homebrew/etc/profile.d/z.sh ] && source /opt/homebrew/etc/profile.d/z.sh' >>~/.zsh_profile
+    fi
+fi
 
 # Install required Ansible roles and collections
 if [[ "$update_choice" =~ ^[Yy]$ ]]; then
