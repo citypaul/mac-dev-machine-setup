@@ -104,4 +104,4 @@ gui_packages_to_remove_if_installed_work:
 
 pipx_packages:
   - aider-chat
-  - praisonai[code]
+  - praisonai
