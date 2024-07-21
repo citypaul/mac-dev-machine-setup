@@ -206,6 +206,43 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# TypeScript
+dist/
+*.tsbuildinfo
+
+# IDEs and editors
+.idea/
+*.swp
+*.swo
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# npm
+npm-debug.log
+
+# Jest
+coverage/
+
 # Aider AI
 
 .aider*
+
+# Local configuration files
+*.local
+config.local.js
+config.local.ts
+
+# TypeScript and JavaScript build outputs
+*.js.map
+
+# Logs
+*.log.*
+.log/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
