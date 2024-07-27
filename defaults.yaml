@@ -12,6 +12,7 @@ cli_packages:
   - curl
   - deno
   - entr
+  - eza
   - fd
   - fswatch
   - fzf
