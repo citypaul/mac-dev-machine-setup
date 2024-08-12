@@ -57,6 +57,7 @@ gui_packages:
   - balsamiq-wireframes
   - bruno
   - chatgpt
+  - cursor
   - devtoys
   - docker
   - fantastical
