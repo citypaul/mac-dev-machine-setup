@@ -17,6 +17,7 @@ cli_packages:
   - fswatch
   - fzf
   - gh
+  - go
   - gifsicle
   - glances
   - glow
