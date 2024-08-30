@@ -1,3 +1,12 @@
+- name: Install pip
+  ansible.builtin.shell: |
+    python3 -m venv myenv
+    source myenv/bin/activate
+    pip install --upgrade pip
+  tags:
+    - install
+    - pip
+
 - name: Install and configure pipx
   block:
     - name: Ensure pipx is installed
