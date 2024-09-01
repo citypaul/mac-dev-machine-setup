@@ -1,0 +1,78 @@
+- name: Install and Configure Fabric
+  tags:
+    - install
+    - ai
+  block:
+    - name: Install Go (if not already installed)
+      package:
+        name: golang
+        state: present
+      when: ansible_os_family in ["Debian", "RedHat"]
+
+    - name: Create Fabric configuration directory
+      file:
+        path: "{{ fabric_config_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Create settings.yaml file with API keys
+      copy:
+        dest: "{{ fabric_config_dir }}/settings.yaml"
+        content: |
+          anthropic_api_key: "{{ anthropic_api_key }}"
+        mode: "0600"
+
+    - name: Check if Fabric is installed
+      command: "which fabric"
+      register: fabric_check
+      failed_when: false
+      changed_when: false
+
+    - name: Install Fabric
+      command: "go install github.com/danielmiessler/fabric@{{ fabric_version }}"
+      environment:
+        GOPATH: "{{ go_path }}"
+        PATH: "{{ ansible_env.PATH }}:{{ go_path }}/bin:{{ go_root }}/bin"
+      when: fabric_check.rc != 0
+
+    - name: Run Fabric setup (non-interactive)
+      command: "{{ go_path }}/bin/fabric --setup --non-interactive"
+      environment:
+        GOPATH: "{{ go_path }}"
+        PATH: "{{ ansible_env.PATH }}:{{ go_path }}/bin:{{ go_root }}/bin"
+      register: fabric_setup
+      changed_when: fabric_setup.rc == 0
+      failed_when: fabric_setup.rc != 0 and "already set up" not in fabric_setup.stderr
+
+    - name: Set Go environment variables
+      lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: "{{ item }}"
+        create: yes
+      loop:
+        - "export GOROOT={{ go_root }}"
+        - "export GOPATH={{ go_path }}"
+        - "export PATH=$GOPATH/bin:$GOROOT/bin:$HOME/.local/bin:$PATH"
+
+    - name: Create .env file for YouTube API key
+      copy:
+        dest: "{{ fabric_config_dir }}/.env"
+        content: "YOUTUBE_API_KEY={{ youtube_api_key }}"
+        mode: "0600"
+
+    - name: Check if yt helper is installed
+      command: "which yt"
+      register: yt_check
+      changed_when: false
+      failed_when: false
+
+    - name: Install yt helper
+      command: "go install github.com/danielmiessler/yt@latest"
+      environment:
+        GOPATH: "{{ go_path }}"
+        PATH: "{{ ansible_env.PATH }}:{{ go_path }}/bin:{{ go_root }}/bin"
+      when: yt_check.rc != 0
+
+    - name: Notify user to source .bashrc
+      debug:
+        msg: "Installation complete. Please run 'source ~/.bashrc' to apply the environment changes."
