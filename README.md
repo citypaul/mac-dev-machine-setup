@@ -23,7 +23,7 @@ This repository contains Ansible playbooks and scripts to automatically set up a
 
    These scripts will:
 
-   - Run `setup.sh` to install or update Homebrew, Python, pipx, and Ansible
+   - Run `setup.sh` to install or update Homebrew, Python, and Ansible
    - Execute the appropriate Ansible playbook with the necessary tags
 
 3. To install private keys (optional):
@@ -85,14 +85,7 @@ This repository contains Ansible playbooks and scripts to automatically set up a
      brew reinstall python
      ```
 
-  3. Install pipx if it's not already installed:
-
-     ```sh
-     brew install pipx
-     pipx ensurepath
-     ```
-
-  4. Restart your terminal or source your `.zshrc`:
+  3. Restart your terminal or source your `.zshrc`:
 
      ```sh
      source ~/.zshrc
@@ -107,7 +100,6 @@ This repository contains Ansible playbooks and scripts to automatically set up a
 
 - In some cases, you may need to run the installation script multiple times to ensure all components are properly installed and configured.
 - If you encounter permission issues, ensure you have the necessary rights to install software on your system.
-- If you see an "externally-managed-environment" error, make sure you're using pipx to install Python packages as described in the setup script.
 
 ## Additional Resources
 
