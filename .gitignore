@@ -1,3 +1,4 @@
 *.retry
 roles*
 .aider*
+!ansible/templates/fabric/.env
