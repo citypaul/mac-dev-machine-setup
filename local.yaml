@@ -3,7 +3,6 @@
     - { role: elliotweiser.osx-command-line-tools }
   vars_files:
     - ./defaults.yaml
-    - ./vars/api_keys.yml
   vars:
     go_root: "/usr/local/go"
     go_path: "{{ ansible_env.HOME }}/go"

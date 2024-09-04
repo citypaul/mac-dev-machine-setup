@@ -14,13 +14,6 @@
         state: directory
         mode: "0755"
 
-    - name: Create settings.yaml file with API keys
-      copy:
-        dest: "{{ fabric_config_dir }}/settings.yaml"
-        content: |
-          anthropic_api_key: "{{ anthropic_api_key }}"
-        mode: "0600"
-
     - name: Check if Fabric is installed
       command: "which fabric"
       register: fabric_check
@@ -52,36 +45,6 @@
         - 'export GOPATH="{{ ansible_env.HOME }}/go"'
         - 'export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"'
 
-    - name: Ensure ~/.config/fabric directory exists
-      ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.config/fabric"
-        state: directory
-        mode: "0755"
-      tags:
-        - install
-        - ai-tools
-        - fabric
-
-    - name: Copy Fabric AI .env file
-      ansible.builtin.template:
-        src: "../templates/fabric/.env"
-        dest: "{{ ansible_env.HOME }}/.config/fabric/.env"
-        mode: "0600"
-      tags:
-        - install
-        - ai-tools
-        - fabric
-
-    - name: Copy Fabric settings.yaml file
-      ansible.builtin.template:
-        src: "../templates/fabric/settings.yaml"
-        dest: "{{ fabric_config_dir }}/settings.yaml"
-        mode: "0600"
-      tags:
-        - install
-        - ai-tools
-        - fabric
-
     - name: Check if yt helper is installed
       command: "which yt"
       register: yt_check
@@ -95,8 +58,18 @@
         PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin:{{ ansible_env.HOME }}/go/bin"
       when: yt_check.rc != 0
 
+    - name: Check if fabric .env file exists
+      stat:
+        path: "/Users/paulhammond/.config/fabric/.env"
+      register: fabric_env_file
+
     - name: Update fabric patterns
       command: "fabric -U"
       environment:
         GOPATH: "{{ ansible_env.HOME }}/go"
         PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin:{{ ansible_env.HOME }}/go/bin"
+      when: fabric_env_file.stat.exists
+
+    - name: Remind user to run install-keys.sh
+      debug:
+        msg: "Please run 'install-keys.sh' to install the API keys for fabric."
