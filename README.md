@@ -36,7 +36,7 @@ This repository contains Ansible playbooks and scripts to automatically set up a
 
 - The `defaults.yaml` file contains default settings and package lists.
 - The `local.yaml` file is the main Ansible playbook that imports various tasks.
-- The `vars/api_keys.yml` file contains encrypted API keys. For more information, see [API Keys Documentation](./docs/API_KEYS_DOCUMENTATION.md).
+- The `vars/api_keys.yml` file contains encrypted API keys. For more information, see [API Keys Documentation](./docs/api-keys.md).
 
 ## Post-Installation Steps
 
