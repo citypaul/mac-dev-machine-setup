@@ -3,11 +3,10 @@
     - install
     - ai
   block:
-    - name: Install Go (if not already installed)
-      package:
-        name: golang
+    - name: Install Go using Homebrew
+      homebrew:
+        name: go
         state: present
-      when: ansible_os_family in ["Debian", "RedHat"]
 
     - name: Create Fabric configuration directory
       file:
@@ -31,34 +30,57 @@
     - name: Install Fabric
       command: "go install github.com/danielmiessler/fabric@{{ fabric_version }}"
       environment:
-        GOPATH: "{{ go_path }}"
-        PATH: "{{ ansible_env.PATH }}:{{ go_path }}/bin:{{ go_root }}/bin"
+        GOPATH: "{{ ansible_env.HOME }}/go"
+        PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin:{{ ansible_env.HOME }}/go/bin"
       when: fabric_check.rc != 0
 
     - name: Run Fabric setup (non-interactive)
-      command: "{{ go_path }}/bin/fabric --setup --non-interactive"
+      command: "{{ ansible_env.HOME }}/go/bin/fabric --setup --non-interactive"
       environment:
-        GOPATH: "{{ go_path }}"
-        PATH: "{{ ansible_env.PATH }}:{{ go_path }}/bin:{{ go_root }}/bin"
+        GOPATH: "{{ ansible_env.HOME }}/go"
+        PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin:{{ ansible_env.HOME }}/go/bin"
       register: fabric_setup
       changed_when: fabric_setup.rc == 0
       failed_when: fabric_setup.rc != 0 and "already set up" not in fabric_setup.stderr
 
     - name: Set Go environment variables
       lineinfile:
-        path: "{{ ansible_env.HOME }}/.bashrc"
+        path: "{{ ansible_env.HOME }}/.zshrc"
         line: "{{ item }}"
         create: yes
       loop:
-        - "export GOROOT={{ go_root }}"
-        - "export GOPATH={{ go_path }}"
-        - "export PATH=$GOPATH/bin:$GOROOT/bin:$HOME/.local/bin:$PATH"
+        - 'export GOPATH="{{ ansible_env.HOME }}/go"'
+        - 'export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"'
 
-    - name: Create .env file for YouTube API key
-      copy:
-        dest: "{{ fabric_config_dir }}/.env"
-        content: "YOUTUBE_API_KEY={{ youtube_api_key }}"
+    - name: Ensure ~/.config/fabric directory exists
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.config/fabric"
+        state: directory
+        mode: "0755"
+      tags:
+        - install
+        - ai-tools
+        - fabric
+
+    - name: Copy Fabric AI .env file
+      ansible.builtin.template:
+        src: "../templates/fabric/.env"
+        dest: "{{ ansible_env.HOME }}/.config/fabric/.env"
         mode: "0600"
+      tags:
+        - install
+        - ai-tools
+        - fabric
+
+    - name: Copy Fabric settings.yaml file
+      ansible.builtin.template:
+        src: "../templates/fabric/settings.yaml"
+        dest: "{{ fabric_config_dir }}/settings.yaml"
+        mode: "0600"
+      tags:
+        - install
+        - ai-tools
+        - fabric
 
     - name: Check if yt helper is installed
       command: "which yt"
@@ -69,10 +91,12 @@
     - name: Install yt helper
       command: "go install github.com/danielmiessler/yt@latest"
       environment:
-        GOPATH: "{{ go_path }}"
-        PATH: "{{ ansible_env.PATH }}:{{ go_path }}/bin:{{ go_root }}/bin"
+        GOPATH: "{{ ansible_env.HOME }}/go"
+        PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin:{{ ansible_env.HOME }}/go/bin"
       when: yt_check.rc != 0
 
-    - name: Notify user to source .bashrc
-      debug:
-        msg: "Installation complete. Please run 'source ~/.bashrc' to apply the environment changes."
+    - name: Update fabric patterns
+      command: "fabric -U"
+      environment:
+        GOPATH: "{{ ansible_env.HOME }}/go"
+        PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin:{{ ansible_env.HOME }}/go/bin"
