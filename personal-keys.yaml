@@ -52,14 +52,14 @@
 
     - name: Ensure ~/.config/fabric directory exists
       ansible.builtin.file:
-        path: "{{ ansible_env.HOME }}/.config/fabric"
+        path: "{{ fabric_config_dir }}"
         state: directory
         mode: "0755"
 
     - name: Copy Fabric AI .env file
       ansible.builtin.template:
         src: "./ansible/templates/fabric/.env"
-        dest: "{{ ansible_env.HOME }}/.config/fabric/.env"
+        dest: "{{ fabric_config_dir }}/.env"
         mode: "0600"
 
     - name: Copy Fabric settings.yaml file
