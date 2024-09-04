@@ -68,21 +68,22 @@ if ! command -v python3 &>/dev/null; then
     handle_error "Python 3 installation failed. Please check your system and try again."
 fi
 
-# Check if pipx is installed, and install it if not
-if ! command -v pipx &>/dev/null; then
-    brew install pipx || handle_error "pipx installation failed"
-elif [[ "$update_choice" =~ ^[Yy]$ ]]; then
-    # If pipx is installed and user chose to update, upgrade to the latest version
-    brew upgrade pipx || echo "pipx is already at the latest version"
-else
-    echo "pipx is already installed. Skipping installation/upgrade."
+# Setup python environment
+python3 -m venv ~/.venv
+source ~/.venv/bin/activate
+
+# Ensure python environment is in PATH
+if ! echo $PATH | grep -q "$HOME/.venv/bin"; then
+    export PATH="$HOME/.venv/bin:$PATH"
+    echo 'export PATH="$HOME/.venv/bin:$PATH"' >>~/.zshrc
 fi
 
-# Ensure pipx binaries are in PATH
-export PATH="$HOME/.local/bin:$PATH"
+# Install Ansible using pip
+python3 -m pip install ansible
 
-# Add pipx binary path to .zshrc if it's not already there
-if ! grep -q 'export PATH="$HOME/.local/bin:$PATH"' ~/.zshrc; then
+# Ensure the user's local bin directory is in PATH
+if ! echo $PATH | grep -q "$HOME/.local/bin"; then
+    export PATH="$HOME/.local/bin:$PATH"
     echo 'export PATH="$HOME/.local/bin:$PATH"' >>~/.zshrc
 fi
 
@@ -90,9 +91,6 @@ fi
 if ! command -v ansible &>/dev/null; then
     handle_error "Ansible installation succeeded but it's not in the PATH. Please restart your terminal and run the script again."
 fi
-
-# Ensure Ansible binaries are in PATH
-export PATH="$HOME/.local/bin:$PATH"
 
 # Install required Ansible roles and collections
 if [[ "$update_choice" =~ ^[Yy]$ ]]; then
