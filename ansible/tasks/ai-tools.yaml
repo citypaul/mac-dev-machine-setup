@@ -1,0 +1,75 @@
+- name: Install and Configure Fabric
+  tags:
+    - install
+    - ai
+  block:
+    - name: Install Go using Homebrew
+      homebrew:
+        name: go
+        state: present
+
+    - name: Create Fabric configuration directory
+      file:
+        path: "{{ fabric_config_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Check if Fabric is installed
+      command: "which fabric"
+      register: fabric_check
+      failed_when: false
+      changed_when: false
+
+    - name: Install Fabric
+      command: "go install github.com/danielmiessler/fabric@{{ fabric_version }}"
+      environment:
+        GOPATH: "{{ ansible_env.HOME }}/go"
+        PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin:{{ ansible_env.HOME }}/go/bin"
+      when: fabric_check.rc != 0
+
+    - name: Run Fabric setup (non-interactive)
+      command: "{{ ansible_env.HOME }}/go/bin/fabric --setup --non-interactive"
+      environment:
+        GOPATH: "{{ ansible_env.HOME }}/go"
+        PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin:{{ ansible_env.HOME }}/go/bin"
+      register: fabric_setup
+      changed_when: fabric_setup.rc == 0
+      failed_when: fabric_setup.rc != 0 and "already set up" not in fabric_setup.stderr
+
+    - name: Set Go environment variables
+      lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: "{{ item }}"
+        create: yes
+      loop:
+        - 'export GOPATH="{{ ansible_env.HOME }}/go"'
+        - 'export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"'
+
+    - name: Check if yt helper is installed
+      command: "which yt"
+      register: yt_check
+      changed_when: false
+      failed_when: false
+
+    - name: Install yt helper
+      command: "go install github.com/danielmiessler/yt@latest"
+      environment:
+        GOPATH: "{{ ansible_env.HOME }}/go"
+        PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin:{{ ansible_env.HOME }}/go/bin"
+      when: yt_check.rc != 0
+
+    - name: Check if fabric .env file exists
+      stat:
+        path: "/Users/paulhammond/.config/fabric/.env"
+      register: fabric_env_file
+
+    - name: Update fabric patterns
+      command: "fabric -U"
+      environment:
+        GOPATH: "{{ ansible_env.HOME }}/go"
+        PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin:{{ ansible_env.HOME }}/go/bin"
+      when: fabric_env_file.stat.exists
+
+    - name: Remind user to run install-keys.sh
+      debug:
+        msg: "Please run 'install-keys.sh' to install the API keys for fabric."

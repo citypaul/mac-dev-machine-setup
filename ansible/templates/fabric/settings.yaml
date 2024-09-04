@@ -1,0 +1,2 @@
+anthropic_api_key: "{{anthropic_api_key}}"
+youtube_api_key: "{{youtube_api_key}}"

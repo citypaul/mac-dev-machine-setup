@@ -3,6 +3,11 @@
     - { role: elliotweiser.osx-command-line-tools }
   vars_files:
     - ./defaults.yaml
+  vars:
+    go_root: "/usr/local/go"
+    go_path: "{{ ansible_env.HOME }}/go"
+    fabric_version: "latest"
+    fabric_config_dir: "{{ ansible_env.HOME }}/.config/fabric"
   pre_tasks:
     - name: Update Brew
       community.general.homebrew:
@@ -29,3 +34,4 @@
     - import_tasks: ansible/tasks/remove-unwanted-packages.yaml
     - import_tasks: ansible/tasks/dock.yaml
     - import_tasks: ansible/tasks/pipx-packages.yaml
+    - import_tasks: ansible/tasks/ai-tools.yaml
