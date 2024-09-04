@@ -22,7 +22,7 @@ if ! command -v brew &>/dev/null; then
 
     # Check if Homebrew is already in PATH
     if ! grep -q '/opt/homebrew/bin/brew shellenv' ~/.zshrc; then
-        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>~/.zshrc
     fi
     eval "$(/opt/homebrew/bin/brew shellenv)"
 
@@ -46,7 +46,7 @@ add_python_to_path() {
         export PATH="$python_path:$PATH"
     fi
     if ! grep -q "export PATH=\"$python_path:\$PATH\"" ~/.zshrc; then
-        echo "export PATH=\"$python_path:\$PATH\"" >> ~/.zshrc
+        echo "export PATH=\"$python_path:\$PATH\"" >>~/.zshrc
     fi
 }
 
@@ -78,29 +78,17 @@ else
     echo "pipx is already installed. Skipping installation/upgrade."
 fi
 
-# Ensure pipx is in PATH
-eval "$(pipx ensurepath)"
+# Ensure pipx binaries are in PATH
+export PATH="$HOME/.local/bin:$PATH"
 
-# Install or upgrade Ansible using pipx
-if ! command -v ansible &>/dev/null || [[ "$update_choice" =~ ^[Yy]$ ]]; then
-    pipx install --include-deps ansible || pipx upgrade --include-deps ansible || handle_error "Ansible installation/upgrade failed"
+# Add pipx binary path to .zshrc if it's not already there
+if ! grep -q 'export PATH="$HOME/.local/bin:$PATH"' ~/.zshrc; then
+    echo 'export PATH="$HOME/.local/bin:$PATH"' >>~/.zshrc
 fi
 
 # Verify Ansible installation
 if ! command -v ansible &>/dev/null; then
-    handle_error "Ansible installation failed. Please check your system and try again."
-fi
-
-# Ensure pipx binaries are in PATH
-export PATH="$HOME/.local/bin:$PATH"
-
-# Install required Ansible roles and collections
-if [[ "$update_choice" =~ ^[Yy]$ ]]; then
-    ansible-galaxy install --force elliotweiser.osx-command-line-tools || handle_error "Failed to install or upgrade elliotweiser.osx-command-line-tools role"
-    ansible-galaxy collection install --force community.general || handle_error "Failed to install or upgrade community.general collection"
-else
-    ansible-galaxy install elliotweiser.osx-command-line-tools || handle_error "Failed to install elliotweiser.osx-command-line-tools role"
-    ansible-galaxy collection install community.general || handle_error "Failed to install community.general collection"
+    handle_error "Ansible installation succeeded but it's not in the PATH. Please restart your terminal and run the script again."
 fi
 
 # Ensure Ansible binaries are in PATH
