@@ -93,3 +93,12 @@ fi
 
 # Ensure Ansible binaries are in PATH
 export PATH="$HOME/.local/bin:$PATH"
+
+# Install required Ansible roles and collections
+if [[ "$update_choice" =~ ^[Yy]$ ]]; then
+    ansible-galaxy install --force elliotweiser.osx-command-line-tools || handle_error "Failed to install or upgrade elliotweiser.osx-command-line-tools role"
+    ansible-galaxy collection install --force community.general || handle_error "Failed to install or upgrade community.general collection"
+else
+    ansible-galaxy install elliotweiser.osx-command-line-tools || handle_error "Failed to install elliotweiser.osx-command-line-tools role"
+    ansible-galaxy collection install community.general || handle_error "Failed to install community.general collection"
+fi

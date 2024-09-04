@@ -1,6 +1,6 @@
 - hosts: localhost
   roles:
-    - { role: elliotweiser.osx-command-line-tools }
+    - role: elliotweiser.osx-command-line-tools
   vars_files:
     - ./defaults.yaml
   vars:
