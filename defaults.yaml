@@ -59,6 +59,7 @@ gui_packages:
   - bruno
   - chatgpt
   - cursor
+  - deskpad
   - devtoys
   - docker
   - fantastical
