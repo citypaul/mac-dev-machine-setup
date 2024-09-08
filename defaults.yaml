@@ -70,8 +70,7 @@ gui_packages:
   - imageoptim
   - iterm2
   - meetingbar
-  - ngrok
-  - obs
+  - ngrok/ngrok/ngrok
   - obsidian
   - orbstack
   - pgadmin4
