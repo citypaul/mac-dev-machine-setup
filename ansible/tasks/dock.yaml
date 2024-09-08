@@ -34,7 +34,8 @@
         - /Applications/Arc.app
         - /Applications/Google\ Chrome.app
         - /Applications/Firefox.app
-        - "'' --type small-spacer --section apps --after Firefox"
+        - /Applications/ResponsivelyApp.app
+        - "'' --type small-spacer --section apps --after ResponsivelyApp"
         - /Applications/Bruno.app
         - /Applications/TablePlus.app
         - /Applications/Sourcetree.app
