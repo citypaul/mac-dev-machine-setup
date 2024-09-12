@@ -40,6 +40,8 @@ cli_packages:
   - shellcheck
   - shortcat
   - starship
+  - task
+  - taskwarrior-tui
   - terraform
   - tldr
   - tmux
