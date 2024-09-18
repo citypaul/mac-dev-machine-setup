@@ -3,11 +3,15 @@ git_name: Paul Hammond
 
 dotfiles_repo: https://github.com/citypaul/.dotfiles.git
 
+homebrew_taps:
+  - oven-sh/bun
+
 cli_packages:
   - adr-tools
   - asciinema
   - awscli
   - bat
+  - bun
   - broot
   - curl
   - deno
