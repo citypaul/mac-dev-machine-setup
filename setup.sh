@@ -34,10 +34,8 @@ else
     echo "Homebrew is already installed."
 fi
 
-if [[ "$update_choice" =~ ^[Yy]$ ]]; then
-    echo "Updating and upgrading Homebrew..."
-    brew update && brew upgrade || handle_error "Homebrew upgrade failed"
-fi
+echo "Updating and upgrading Homebrew..."
+brew update && brew upgrade || handle_error "Homebrew upgrade failed"
 
 # Function to add Python to PATH
 add_python_to_path() {
@@ -90,13 +88,4 @@ fi
 # Verify Ansible installation
 if ! command -v ansible &>/dev/null; then
     handle_error "Ansible installation succeeded but it's not in the PATH. Please restart your terminal and run the script again."
-fi
-
-# Install required Ansible roles and collections
-if [[ "$update_choice" =~ ^[Yy]$ ]]; then
-    ansible-galaxy install --force elliotweiser.osx-command-line-tools || handle_error "Failed to install or upgrade elliotweiser.osx-command-line-tools role"
-    ansible-galaxy collection install --force community.general || handle_error "Failed to install or upgrade community.general collection"
-else
-    ansible-galaxy install elliotweiser.osx-command-line-tools || handle_error "Failed to install elliotweiser.osx-command-line-tools role"
-    ansible-galaxy collection install community.general || handle_error "Failed to install community.general collection"
 fi

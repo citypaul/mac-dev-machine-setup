@@ -11,25 +11,45 @@ This repository contains Ansible playbooks and scripts to automatically set up a
 
 1. Clone this repository:
 
-   ```
+   ```sh
    git clone https://github.com/your-username/mac-dev-setup.git
    cd mac-dev-setup
    ```
 
-2. Choose the appropriate installation script:
+2. Run the new-mac setup script:
 
-   - For personal setup: `./install-personal.sh`
-   - For work setup: `./install-work.sh`
-
-   These scripts will:
-
-   - Run `setup.sh` to install or update Homebrew, Python, and Ansible
-   - Execute the appropriate Ansible playbook with the necessary tags
-
-3. To install private keys (optional):
+   ```sh
+   ./new-mac.sh
    ```
+
+   This will:
+
+   - Install Xcode Command Line Tools
+   - Install Homebrew
+   - Install Git
+
+3. Run the setup tasks:
+
+   ```sh
+   make setup
+   ```
+
+   This will:
+
+   - Install or update Homebrew, Python, and Ansible
+   - Set up the necessary directories and environment variables
+
+4. Choose the appropriate installation target:
+
+   - For personal setup: `make install-personal`
+   - For work setup: `make install-work`
+
+5. To install private keys (optional):
+
+   ```sh
    ./install-keys.sh
    ```
+
    This script uses Ansible Vault to decrypt and install private keys.
 
 ## Configuration
@@ -50,7 +70,7 @@ This repository contains Ansible playbooks and scripts to automatically set up a
 
 2. Set up GPG for Git:
    After running the installation script, manually run:
-   ```
+   ```sh
    gpgconf --kill gpg-agent
    ```
    Then make a Git commit. This will store the GPG key in the keychain.

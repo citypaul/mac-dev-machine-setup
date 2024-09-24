@@ -1,0 +1,78 @@
+---
+- name: Setup Mac Dev Environment
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Ensure necessary directories exist
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0700"
+      loop:
+        - "{{ lookup('env', 'HOME') }}/.ssh"
+        - "{{ lookup('env', 'HOME') }}/.gnupg"
+
+    - name: Install Homebrew
+      become: no
+      shell: |
+        if ! command -v brew &>/dev/null; then
+          echo "Homebrew not found. Installing Homebrew..."
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        fi
+      args:
+        creates: /usr/local/bin/brew
+
+    - name: Ensure Homebrew is in the PATH
+      become: no
+      shell: |
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+      when: ansible_os_family == "Darwin"
+
+    - name: Update Homebrew
+      become: no
+      homebrew:
+        update_homebrew: yes
+
+    - name: Install Python
+      become: no
+      homebrew:
+        name: python
+        state: latest
+
+    - name: Ensure Python is in the PATH
+      become: no
+      shell: |
+        python_path="/opt/homebrew/opt/python@3.11/libexec/bin"
+        if ! echo $PATH | grep -q $python_path; then
+          export PATH="$python_path:$PATH"
+        fi
+        if ! grep -q "export PATH=\"$python_path:\$PATH\"" ~/.zshrc; then
+          echo "export PATH=\"$python_path:\$PATH\"" >> ~/.zshrc
+        fi
+        source ~/.zshrc
+      args:
+        executable: /bin/zsh
+
+    - name: Create Python virtual environment
+      become: no
+      command: python3 -m venv ~/.venv
+      args:
+        creates: "{{ lookup('env', 'HOME') }}/.venv"
+
+    - name: Activate virtual environment
+      become: no
+      shell: source ~/.venv/bin/activate
+      args:
+        executable: /bin/zsh
+
+    - name: Ensure Ansible is in the PATH
+      become: no
+      shell: |
+        if ! echo $PATH | grep -q "$HOME/.local/bin"; then
+          export PATH="$HOME/.local/bin:$PATH"
+          echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+        fi
+        source ~/.zshrc
+      args:
+        executable: /bin/zsh
