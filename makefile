@@ -31,8 +31,8 @@ install-work: sudo_prompt
 install-keys: sudo_prompt
 	@ANSIBLE_BECOME_PASS="$$SUDO_PASSWORD" ansible-playbook personal-keys.yaml --ask-vault-pass
 
-dock: sudo_prompt
-	@ANSIBLE_BECOME_PASS="$$SUDO_PASSWORD" ansible-playbook local.yaml --tags dock
+dock:
+	@ansible-playbook local.yaml --tags dock
 
 setup: sudo_prompt
 	@ANSIBLE_BECOME_PASS="$$SUDO_PASSWORD" ansible-playbook setup.yaml
