@@ -1,13 +1,24 @@
 # Mac Dev Machine Setup
 
-This repository contains Ansible playbooks and scripts to automatically set up a new Mac for development. It installs and configures various tools and applications, saving time and effort when setting up a new machine.
+This repository contains Ansible playbooks and scripts to automatically set up a new Mac for development or update an existing one. It installs and configures various tools and applications, saving time and effort when setting up or maintaining a development environment.
+
+## What This Repository Does
+
+This repository automates the process of setting up a Mac for development. It:
+
+1. Installs essential command-line tools and applications
+2. Configures system preferences and settings
+3. Sets up development environments for various programming languages
+4. Installs and configures productivity tools
+5. Manages dotfiles for consistent configurations across machines
+6. Provides separate configurations for personal and work setups
 
 ## Prerequisites
 
 - A Mac running macOS (tested on macOS 15.0 arm64)
 - Internet connection
 
-## Installation
+## Setting Up a New Mac
 
 1. Clone this repository:
 
@@ -16,47 +27,74 @@ This repository contains Ansible playbooks and scripts to automatically set up a
    cd mac-dev-setup
    ```
 
-2. Run the new-mac setup script:
+2. Choose the appropriate installation target:
+
+   - For personal setup:
+     ```sh
+     make
+     ```
+   - For work setup:
+     ```sh
+     make work
+     ```
+
+   These commands will automatically run the necessary setup scripts, install dependencies, and configure your system based on the chosen profile.
+
+3. To install private keys (optional):
 
    ```sh
-   ./new-mac.sh
+   make install-keys
    ```
 
-   This will:
+   This uses Ansible Vault to decrypt and install private keys.
 
-   - Install Xcode Command Line Tools
-   - Install Homebrew
-   - Install Git
+## Updating an Existing Mac
 
-3. Run the setup tasks:
+To update an existing Mac that was previously set up using this repository:
+
+1. Navigate to the repository directory:
 
    ```sh
-   make setup
+   cd path/to/mac-dev-setup
    ```
 
-   This will:
-
-   - Install or update Homebrew, Python, and Ansible
-   - Set up the necessary directories and environment variables
-
-4. Choose the appropriate installation target:
-
-   - For personal setup: `make install-personal`
-   - For work setup: `make install-work`
-
-5. To install private keys (optional):
+2. Pull the latest changes:
 
    ```sh
-   ./install-keys.sh
+   git pull
    ```
 
-   This script uses Ansible Vault to decrypt and install private keys.
+3. Run the appropriate installation target:
+
+   - For personal setup:
+     ```sh
+     make
+     ```
+   - For work setup:
+     ```sh
+     make work
+     ```
+
+## Personal vs. Work Setup
+
+This repository supports both personal and work setups:
+
+- Personal setup (`make`):
+
+  - Installs a wider range of applications and tools
+  - Configures personal Git settings
+  - Sets up personal SSH and GPG keys
+
+- Work setup (`make work`):
+  - Installs a more focused set of work-related tools
+  - Avoids installing personal applications
+  - Can be customized further for specific work environments
 
 ## Configuration
 
-- The `defaults.yaml` file contains default settings and package lists.
-- The `local.yaml` file is the main Ansible playbook that imports various tasks.
-- The `vars/api_keys.yml` file contains encrypted API keys. For more information, see [API Keys Documentation](./docs/api-keys.md).
+- `defaults.yaml`: Contains default settings and package lists
+- `local.yaml`: Main Ansible playbook that imports various tasks
+- `vars/api_keys.yml`: Contains encrypted API keys (see [API Keys Documentation](./docs/api-keys.md))
 
 ## Post-Installation Steps
 
@@ -66,14 +104,12 @@ This repository contains Ansible playbooks and scripts to automatically set up a
    - Select "Mac Dev Environment" profile
    - Click "Other Actions" and select "Set as Default"
 
-   ![iterm theme instructions](./docs/screenshots/choose-iterm-theme.png)
-
 2. Set up GPG for Git:
    After running the installation script, manually run:
    ```sh
    gpgconf --kill gpg-agent
    ```
-   Then make a Git commit. This will store the GPG key in the keychain.
+   Then make a Git commit to store the GPG key in the keychain.
 
 ## Screenshots
 
@@ -89,47 +125,6 @@ This repository contains Ansible playbooks and scripts to automatically set up a
 
 ![tmux theme](./docs/screenshots/tmux-theme-example.png)
 
-## Troubleshooting
+## Disclaimer
 
-- If you encounter issues with Python or pip, try the following steps:
-
-  1. Ensure you have the latest version of Homebrew:
-
-     ```sh
-     brew update && brew upgrade
-     ```
-
-  2. Reinstall Python using Homebrew:
-
-     ```sh
-     brew reinstall python
-     ```
-
-  3. Restart your terminal or source your `.zshrc`:
-
-     ```sh
-     source ~/.zshrc
-     ```
-
-- If Homebrew is installed but not recognized, restart your terminal and run the script again.
-- If certain tools are not recognized after installation, try sourcing your `.zshrc` file:
-
-  ```sh
-  source ~/.zshrc
-  ```
-
-- In some cases, you may need to run the installation script multiple times to ensure all components are properly installed and configured.
-- If you encounter permission issues, ensure you have the necessary rights to install software on your system.
-
-## Additional Resources
-
-- [Understanding GPG keys in Git](https://samuelsson.dev/sign-git-commits-on-github-with-gpg-in-macos/)
-- [Dotfiles Repository](https://github.com/citypaul/.dotfiles)
-
-## Contributing
-
-This is a personal project for my own setup, but if you find any issues or have suggestions, please feel free to open an issue or submit a pull request.
-
-## License
-
-[Include your license information here]
+This repository is provided as-is, without any warranties or guarantees. Always review scripts and playbooks before running them on your system, especially when they involve system-wide changes or require sudo access.
