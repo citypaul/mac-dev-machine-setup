@@ -1,4 +1,4 @@
-.PHONY: all deps install-personal install-work dock setup install-keys
+.PHONY: all deps install-personal install-work dock setup install-keys sudo_prompt
 
 # Function to prompt for sudo password and verify sudo access
 define sudo_prompt
