@@ -83,8 +83,8 @@ if ! echo $PATH | grep -q "$HOME/.venv/bin"; then
   echo 'export PATH="$HOME/.venv/bin:$PATH"' >>~/.zshrc
 fi
 
-# Install Ansible using pip
-python3 -m pip install ansible
+# Install Ansible
+brew install ansible
 
 # Ensure the user's local bin directory is in PATH
 if ! echo $PATH | grep -q "$HOME/.local/bin"; then

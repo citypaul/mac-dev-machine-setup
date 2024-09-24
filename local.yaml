@@ -18,9 +18,9 @@
 
   tasks:
     - import_tasks: ansible/tasks/git-setup.yaml
-    - import_tasks: ansible/tasks/app-store-apps.yaml
     - import_tasks: ansible/tasks/cli-tools.yaml
     - import_tasks: ansible/tasks/gui-tools.yaml
+    - import_tasks: ansible/tasks/app-store-apps.yaml
     - import_tasks: ansible/tasks/zsh.yaml
     - import_tasks: ansible/tasks/fonts.yaml
     - import_tasks: ansible/tasks/themes.yaml
