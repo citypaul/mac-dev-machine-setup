@@ -36,6 +36,9 @@ cli: sudo_prompt
 gui: sudo_prompt
 	@ansible_become_pass="$$SUDO_PASSWORD" ansible-playbook local.yaml --tags gui
 
+osx: sudo_prompt
+	@ansible_become_pass="$$SUDO_PASSWORD" ansible-playbook local.yaml --tags osx
+
 dock:
 	@ansible-playbook local.yaml --tags dock
 
