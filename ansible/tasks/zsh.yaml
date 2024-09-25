@@ -6,16 +6,6 @@
     - zsh
     - productivity
 
-- name: Change shell to zsh
-  become: true
-  become_method: sudo
-  shell: chsh -s $(which zsh) {{ ansible_user_id }}
-  changed_when: true
-  tags:
-    - install
-    - zsh
-    - productivity
-
 - name: Check to see if oh-my-zsh is already installed
   stat:
     path: ~/.oh-my-zsh
