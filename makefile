@@ -22,25 +22,25 @@ deps:
 	@ansible-galaxy collection install -f -r requirements.yaml
 
 personal: sudo_prompt
-	@ANSIBLE_BECOME_PASS="$$SUDO_PASSWORD" ansible-playbook local.yaml --tags install,personal
+	@ansible_become_pass="$$SUDO_PASSWORD" ansible-playbook local.yaml --tags install,personal
 
 work: sudo_prompt
-	@ANSIBLE_BECOME_PASS="$$SUDO_PASSWORD" ansible-playbook local.yaml --tags install,work
+	@ansible_become_pass="$$SUDO_PASSWORD" ansible-playbook local.yaml --tags install,work
 
 keys: sudo_prompt
-	@ANSIBLE_BECOME_PASS="$$SUDO_PASSWORD" ansible-playbook personal-keys.yaml --ask-vault-pass
+	@ansible_become_pass="$$SUDO_PASSWORD" ansible-playbook personal-keys.yaml --ask-vault-pass
 
 cli: sudo_prompt
-	@ANSIBLE_BECOME_PASS="$$SUDO_PASSWORD" ansible-playbook local.yaml --tags cli
+	@ansible_become_pass="$$SUDO_PASSWORD" ansible-playbook local.yaml --tags cli
 
 gui: sudo_prompt
-	@ANSIBLE_BECOME_PASS="$$SUDO_PASSWORD" ansible-playbook local.yaml --tags gui
+	@ansible_become_pass="$$SUDO_PASSWORD" ansible-playbook local.yaml --tags gui
 
 dock:
 	@ansible-playbook local.yaml --tags dock
 
 setup: sudo_prompt
-	@ANSIBLE_BECOME_PASS="$$SUDO_PASSWORD" ansible-playbook setup.yaml
+	@ansible_become_pass="$$SUDO_PASSWORD" ansible-playbook setup.yaml
 
 sudo_prompt:
 	$(call sudo_prompt)
