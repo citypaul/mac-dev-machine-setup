@@ -1,4 +1,4 @@
-.PHONY: all deps install-personal install-work dock setup install-keys sudo_prompt
+.PHONY: all deps personal work dock setup keys sudo_prompt cli gui
 
 define sudo_prompt
 	@if [ -z "$(SUDO_PASSWORD)" ]; then \
@@ -12,23 +12,29 @@ define sudo_prompt
 	fi
 endef
 
-all: setup deps install-personal
+all: setup deps personal
 
-work: setup deps install-work
+work: setup deps work
 
 deps:
 	@echo "Installing dependencies..."
 	@ansible-galaxy role install -f -r requirements.yaml
 	@ansible-galaxy collection install -f -r requirements.yaml
 
-install-personal: sudo_prompt
+personal: sudo_prompt
 	@ANSIBLE_BECOME_PASS="$$SUDO_PASSWORD" ansible-playbook local.yaml --tags install,personal
 
-install-work: sudo_prompt
+work: sudo_prompt
 	@ANSIBLE_BECOME_PASS="$$SUDO_PASSWORD" ansible-playbook local.yaml --tags install,work
 
-install-keys: sudo_prompt
+keys: sudo_prompt
 	@ANSIBLE_BECOME_PASS="$$SUDO_PASSWORD" ansible-playbook personal-keys.yaml --ask-vault-pass
+
+cli: sudo_prompt
+	@ANSIBLE_BECOME_PASS="$$SUDO_PASSWORD" ansible-playbook local.yaml --tags cli
+
+gui: sudo_prompt
+	@ANSIBLE_BECOME_PASS="$$SUDO_PASSWORD" ansible-playbook local.yaml --tags gui
 
 dock:
 	@ansible-playbook local.yaml --tags dock
