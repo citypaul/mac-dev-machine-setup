@@ -1,6 +1,5 @@
 .PHONY: all deps install-personal install-work dock setup install-keys sudo_prompt
 
-# Function to prompt for sudo password and verify sudo access
 define sudo_prompt
 	@if [ -z "$(SUDO_PASSWORD)" ]; then \
 		read -s -p "Enter your sudo password: " SUDO_PASSWORD; \
