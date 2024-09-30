@@ -31,5 +31,8 @@ osx:
 dock:
 	@ansible-playbook local.yaml --tags dock
 
+dotfiles:
+	@ansible-playbook local.yaml --tags dotfiles
+
 setup: 
 	@ansible-playbook setup.yaml -K
