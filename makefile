@@ -1,9 +1,11 @@
 .PHONY: all deps personal work dock setup keys cli gui
 
-
 all: setup deps personal
 
 work: setup deps work
+
+dotfiles:
+	@ansible-playbook local.yaml --tags dotfiles
 
 deps:
 	@echo "Installing dependencies..."
@@ -30,9 +32,6 @@ osx:
 
 dock:
 	@ansible-playbook local.yaml --tags dock
-
-dotfiles:
-	@ansible-playbook local.yaml --tags dotfiles
 
 setup: 
 	@ansible-playbook setup.yaml -K
