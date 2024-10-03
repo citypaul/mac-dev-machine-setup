@@ -72,7 +72,6 @@ gui_packages:
   - imageoptim
   - iterm2
   - meetingbar
-  - ngrok/ngrok/ngrok
   - obsidian
   - orbstack
   - pgadmin4
@@ -104,6 +103,7 @@ gui_packages_to_remove_if_installed:
   - exa
   - rewind
   - zotero
+  - ngrok
 
 gui_packages_to_remove_if_installed_work:
   - protonvpn
