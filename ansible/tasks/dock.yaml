@@ -35,11 +35,12 @@
         - /Applications/Google\ Chrome.app
         - /Applications/Firefox.app
         - /Applications/ResponsivelyApp.app
-        - "'' --type small-spacer --section apps --after ResponsivelyApp"
+        - /Applications/Deskpad.app
+        - "'' --type small-spacer --section apps --after Deskpad"
         - /Applications/Bruno.app
         - /Applications/TablePlus.app
         - /Applications/Sourcetree.app
-      ignore_errors: yes
+      ignore_errors: true
       tags:
         - install
         - dock
