@@ -97,6 +97,7 @@ gui_packages_personal:
   - dropbox
   - shottr
   - silentknight
+  - adguard
 
 gui_packages_to_remove_if_installed:
   - bartender
