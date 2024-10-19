@@ -16,8 +16,6 @@
         name: Yoink
       - id: 803453959
         name: Slack
-      - id: 1875466942
-        name: Perplexity
   community.general.mas:
     id: "{{ item.id }}"
     state: latest

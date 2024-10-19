@@ -33,8 +33,5 @@ osx:
 dock:
 	@ansible-playbook local.yaml --tags dock
 
-app-store:
-	@ansible-playbook local.yaml --tags app-store
-
 setup: 
 	@ansible-playbook setup.yaml -K
