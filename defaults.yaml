@@ -98,6 +98,7 @@ gui_packages_personal:
   - shottr
   - silentknight
   - adguard
+  - tailscale
 
 gui_packages_to_remove_if_installed:
   - bartender
