@@ -9,6 +9,7 @@ cli_packages:
   - awscli
   - bat
   - broot
+  - colima
   - curl
   - deno
   - entr
