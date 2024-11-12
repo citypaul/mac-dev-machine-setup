@@ -13,7 +13,7 @@ deps:
 	@ansible-galaxy collection install -f -r requirements.yaml
 
 personal: 
-	@ansible-playbook local.yaml -K --tags install,personal
+	@ansible-playbook local.yaml -K --tags personal
 
 work: 
 	@ansible-playbook local.yaml -K --tags install,work
@@ -35,3 +35,6 @@ dock:
 
 setup: 
 	@ansible-playbook setup.yaml -K
+
+fonts:
+	@ansible-playbook local.yaml --tags fonts

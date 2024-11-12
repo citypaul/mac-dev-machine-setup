@@ -7,10 +7,11 @@
       - font-iosevka
       - font-iosevka-nerd-font
       - font-jetbrains-mono
-      - font-meslo-for-powerline
-      - font-meslo-lg-nerd-font
+      - font-monaspace
+      - font-monaspace-nerd-font
       - font-monocraft
       - font-pt-mono
+    state: present
   ignore_errors: true
   tags:
     - install
