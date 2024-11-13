@@ -38,3 +38,6 @@ setup:
 
 fonts:
 	@ansible-playbook local.yaml --tags fonts
+
+themes:
+	@ansible-playbook local.yaml --tags themes
