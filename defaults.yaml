@@ -72,6 +72,7 @@ gui_packages:
   - httpie
   - imageoptim
   - iterm2
+  - karabiner-elements
   - meetingbar
   - obsidian
   - orbstack
