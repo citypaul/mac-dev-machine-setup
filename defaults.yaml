@@ -94,13 +94,14 @@ gui_packages:
   - zoom
 
 gui_packages_personal:
-  - protonvpn
+  - adguard
   - discord
   - dropbox
+  - protonvpn
   - shottr
   - silentknight
-  - adguard
   - tailscale
+  - whisky
 
 gui_packages_to_remove_if_installed:
   - bartender
