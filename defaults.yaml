@@ -59,8 +59,10 @@ cli_packages:
 gui_packages:
   - arc
   - balsamiq-wireframes
+  - brave-browser
   - bruno
   - chatgpt
+  - claude
   - cursor
   - deskpad
   - devtoys
@@ -75,7 +77,6 @@ gui_packages:
   - karabiner-elements
   - meetingbar
   - obsidian
-  - orbstack
   - pgadmin4
   - postman
   - raycast
@@ -91,7 +92,6 @@ gui_packages:
   - visual-studio-code@insiders
   - vlc
   - wezterm
-  - zed
   - zoom
 
 gui_packages_personal:
@@ -107,9 +107,11 @@ gui_packages_personal:
 gui_packages_to_remove_if_installed:
   - bartender
   - exa
-  - rewind
-  - zotero
   - ngrok
+  - orbstack
+  - rewind
+  - zed
+  - zotero
 
 gui_packages_to_remove_if_installed_work:
   - protonvpn

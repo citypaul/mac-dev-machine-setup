@@ -8,6 +8,7 @@
     - install
     - core
     - remove
+    - gui
 
 - name: Remove unwanted gui packages from work machine
   community.general.homebrew_cask:

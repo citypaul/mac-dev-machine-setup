@@ -25,21 +25,21 @@
         - "'' --type small-spacer --section apps --after Obsidian"
         - /Applications/Raycast.app
         - /Applications/Alacritty.app
+        - /Applications/WezTerm.app
         - /Applications/Visual\ Studio\ Code.app
-        - /Applications/Visual\ Studio\ Code\ -\ Insiders.app
         - /Applications/Cursor.app
-        - /Applications/Zed.app
-        - /Applications/Orbstack.app
         - "'' --type small-spacer --section apps --after VSCode"
-        - /Applications/Arc.app
+        - /Applications/Brave\ Browser.app
         - /Applications/Google\ Chrome.app
         - /Applications/Firefox.app
+        - /Applications/Arc.app
         - /Applications/ResponsivelyApp.app
         - /Applications/Deskpad.app
         - "'' --type small-spacer --section apps --after Deskpad"
         - /Applications/Bruno.app
         - /Applications/TablePlus.app
         - /Applications/Sourcetree.app
+        - /Applications/Claude.app
       ignore_errors: true
       tags:
         - install
@@ -50,7 +50,6 @@
       shell: dockutil --add {{ item }} --no-restart
       with_items:
         - "'' --type small-spacer --section apps --after Sourcetree"
-        - /Applications/ChatGPT.app
         - /Applications/Obsidian.app
       ignore_errors: yes
       tags:
