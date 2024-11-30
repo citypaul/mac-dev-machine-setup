@@ -90,6 +90,7 @@ gui_packages:
   - visual-studio-code
   - visual-studio-code@insiders
   - vlc
+  - wezterm
   - zed
   - zoom
 
