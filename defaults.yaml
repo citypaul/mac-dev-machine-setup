@@ -35,6 +35,7 @@ cli_packages:
   - mas
   - navi
   - neofetch
+  - ollama
   - pnpm
   - pwgen
   - ripgrep
