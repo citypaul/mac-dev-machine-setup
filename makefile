@@ -41,3 +41,6 @@ fonts:
 
 themes:
 	@ansible-playbook local.yaml --tags themes
+
+app-store:
+	@ansible-playbook local.yaml --tags app-store
