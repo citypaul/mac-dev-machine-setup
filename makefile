@@ -22,16 +22,16 @@ keys:
 	@ansible-playbook personal-keys.yaml -K --ask-vault-pass
 
 cli: 
-	@ansible-playbook local.yaml --tags cli
+	@ansible-playbook local.yaml --tags cli -K
 
 gui: 
-	@ansible-playbook local.yaml --tags gui
+	@ansible-playbook local.yaml --tags gui -K
 
 osx: 
-	@ansible-playbook local.yaml --tags osx
+	@ansible-playbook local.yaml --tags osx -K 
 
 dock:
-	@ansible-playbook local.yaml --tags dock
+	@ansible-playbook local.yaml --tags dock 
 
 setup: 
 	@ansible-playbook setup.yaml -K
@@ -43,4 +43,4 @@ themes:
 	@ansible-playbook local.yaml --tags themes
 
 app-store:
-	@ansible-playbook local.yaml --tags app-store
+	@ansible-playbook local.yaml --tags app-store -K
