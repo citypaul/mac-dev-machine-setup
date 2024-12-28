@@ -23,9 +23,8 @@
         - /Applications/Spotify.app
         - /Applications/Fantastical.app
         - "'' --type small-spacer --section apps --after Obsidian"
-        - /Applications/Raycast.app
         - /Applications/Alacritty.app
-        - /Applications/WezTerm.app
+        - /Applications/Ghostty.app
         - /Applications/Visual\ Studio\ Code.app
         - /Applications/Cursor.app
         - "'' --type small-spacer --section apps --after VSCode"

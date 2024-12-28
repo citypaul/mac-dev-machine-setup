@@ -70,6 +70,7 @@ gui_packages:
   - docker
   - fantastical
   - firefox
+  - ghostty
   - google-chrome
   - hiddenbar
   - httpie
