@@ -1,8 +1,8 @@
 .PHONY: all deps personal work dock setup keys cli gui
 
-all: setup deps personal
+all: setup deps install personal
 
-work: setup deps work
+work: setup deps install work
 
 dotfiles:
 	@ansible-playbook local.yaml --tags dotfiles
@@ -12,11 +12,14 @@ deps:
 	@ansible-galaxy role install -f -r requirements.yaml
 	@ansible-galaxy collection install -f -r requirements.yaml
 
+install:
+	@ansible-playbook local.yaml -K --tags install
+
 personal: 
 	@ansible-playbook local.yaml -K --tags personal
 
 work: 
-	@ansible-playbook local.yaml -K --tags install,work
+	@ansible-playbook local.yaml -K --tags work
 
 keys: 
 	@ansible-playbook personal-keys.yaml -K --ask-vault-pass

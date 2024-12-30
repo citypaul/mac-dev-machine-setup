@@ -45,6 +45,7 @@
         - install
         - dock
         - work
+        - personal
 
     - name: Add dock items specific to personal machine
       shell: dockutil --add {{ item }} --no-restart
@@ -62,3 +63,4 @@
       tags:
         - install
         - dock
+        - personal
