@@ -51,7 +51,7 @@
       with_items:
         - "'' --type small-spacer --section apps --after Sourcetree"
         - /Applications/Obsidian.app
-      ignore_errors: yes
+      ignore_errors: true
       tags:
         - install
         - dock
