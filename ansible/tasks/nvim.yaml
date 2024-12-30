@@ -1,4 +1,5 @@
 - name: Install neovim
+  ignore_errors: true
   community.general.homebrew:
     name: neovim
     state: latest
@@ -9,6 +10,7 @@
     - nvim
 
 - name: Setup NvChad Neovim Configuration
+  ignore_errors: true
   git:
     repo: "https://github.com/NvChad/NvChad"
     dest: "~/.config/nvim"

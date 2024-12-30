@@ -28,6 +28,7 @@
       when: fabric_check.rc != 0
 
     - name: Run Fabric setup (non-interactive)
+      ignore_errors: true
       command: "{{ ansible_env.HOME }}/go/bin/fabric --setup --non-interactive"
       environment:
         GOPATH: "{{ ansible_env.HOME }}/go"
