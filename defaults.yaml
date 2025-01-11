@@ -28,6 +28,7 @@ cli_packages:
   - graphviz
   - hurl
   - htop
+  - imagemagick
   - jq
   - lazydocker
   - lazygit
