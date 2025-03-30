@@ -38,6 +38,8 @@
         - /Applications/Bruno.app
         - /Applications/TablePlus.app
         - /Applications/Sourcetree.app
+        - /Applications/Raycast.app
+        - /Applications/ChatGPT.app
         - /Applications/Claude.app
         - /Applications/Perplexity.app
       ignore_errors: true
