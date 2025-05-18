@@ -42,6 +42,9 @@
         - /Applications/ChatGPT.app
         - /Applications/Claude.app
         - /Applications/Perplexity.app
+        - "'' --type small-spacer --section apps --after Perplexity"
+        - /Applications/Obsidian.app
+        - /Applications/Parcel.app
       ignore_errors: true
       tags:
         - install
