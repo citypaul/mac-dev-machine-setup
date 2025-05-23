@@ -101,6 +101,7 @@ gui_packages_personal:
   - adguard
   - discord
   - dropbox
+  - jellyfin
   - protonvpn
   - shottr
   - silentknight
