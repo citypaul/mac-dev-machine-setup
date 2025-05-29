@@ -99,6 +99,7 @@ gui_packages:
 
 gui_packages_personal:
   - adguard
+  - audacity
   - discord
   - dropbox
   - jellyfin
