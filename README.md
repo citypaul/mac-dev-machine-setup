@@ -1,130 +1,207 @@
 # Mac Dev Machine Setup
 
-This repository contains Ansible playbooks and scripts to automatically set up a new Mac for development or update an existing one. It installs and configures various tools and applications, saving time and effort when setting up or maintaining a development environment.
+Automated setup and maintenance for macOS development environments using Ansible. This repository helps you quickly set up a new Mac or keep your existing setup up-to-date with a single command.
 
-## What This Repository Does
+## Features
 
-This repository automates the process of setting up a Mac for development. It:
+- 🚀 **One-command setup** for new Macs
+- 🔄 **Automated updates** for all installed packages
+- 🎯 **Separate profiles** for personal and work environments
+- 🔐 **Secure handling** of API keys and private keys
+- ✅ **Idempotent operations** - run safely multiple times
+- 🛡️ **Pre-flight validation** and backup of existing configs
+- 📦 **Comprehensive toolset** including modern AI tools
 
-1. Installs essential command-line tools and applications
-2. Configures system preferences and settings
-3. Sets up development environments for various programming languages
-4. Installs and configures productivity tools
-5. Manages dotfiles for consistent configurations across machines
-6. Provides separate configurations for personal and work setups
+## Quick Start
 
-## Prerequisites
-
-- A Mac running macOS (tested on macOS 15.0 arm64)
-- Internet connection
-
-## Setting Up a New Mac
+### New Mac Setup
 
 1. Clone this repository:
-
-   ```sh
+   ```bash
    git clone https://github.com/your-username/mac-dev-setup.git
    cd mac-dev-setup
    ```
 
-2. Choose the appropriate installation target:
-
-   - For personal setup:
-     ```sh
-     make
-     ```
-   - For work setup:
-     ```sh
-     make work
-     ```
-
-   These commands will automatically run the necessary setup scripts, install dependencies, and configure your system based on the chosen profile.
-
-3. To install private keys (optional):
-
-   ```sh
-   make install-keys
+2. Run the bootstrap script:
+   ```bash
+   ./new-mac.sh
    ```
 
-   This uses Ansible Vault to decrypt and install private keys.
-
-## Updating an Existing Mac
-
-To update an existing Mac that was previously set up using this repository:
-
-1. Navigate to the repository directory:
-
-   ```sh
-   cd path/to/mac-dev-setup
+3. Install everything:
+   ```bash
+   make        # For personal setup
+   # OR
+   make work   # For work setup
    ```
 
-2. Pull the latest changes:
+### Existing Mac Updates
 
-   ```sh
-   git pull
+Update all installed packages:
+```bash
+make update
+```
+
+## Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `make` | Complete personal setup (all tools + personal apps) |
+| `make work` | Complete work setup (essential tools only) |
+| `make update` | Update all installed packages |
+| `make check` | Dry run to preview changes |
+| `make cli` | Install command-line tools only |
+| `make gui` | Install GUI applications only |
+| `make osx` | Configure macOS system preferences |
+| `make dock` | Configure dock items |
+| `make dotfiles` | Sync dotfiles from repository |
+| `make fonts` | Install developer fonts |
+| `make themes` | Install terminal themes |
+| `make app-store` | Install Mac App Store apps |
+| `make keys` | Install private keys (requires vault password) |
+
+## What Gets Installed
+
+### Development Tools
+- **Languages**: Node.js (via nvm), Go, Rust, Python, Deno
+- **Package Managers**: Homebrew, npm, pnpm, yarn, cargo
+- **Version Control**: Git, GitHub CLI, Sourcetree
+- **Containers**: Docker, Colima, lazydocker
+- **Databases**: PostgreSQL tools, Redis tools, TablePlus
+
+### Terminal & Productivity
+- **Terminals**: iTerm2, Alacritty, Ghostty, WezTerm
+- **Shells**: Zsh with Oh My Zsh, Starship prompt
+- **Multiplexers**: tmux, Zellij
+- **Editors**: Neovim, VS Code, Cursor
+- **CLI Tools**: fzf, ripgrep, bat, eza, zoxide, and more
+
+### AI & Modern Tools
+- **AI Assistants**: ChatGPT, Claude, Fabric AI
+- **AI Development**: Ollama for local LLMs
+- **API Testing**: Bruno, Postman, HTTPie
+
+### System Enhancements
+- **Window Management**: Karabiner Elements
+- **System Monitoring**: Stats, glances, htop
+- **Security**: GPG tools, SSH key management
+- **Productivity**: Raycast, Obsidian, Fantastical
+
+## Customization
+
+### Modifying Package Lists
+
+Edit `defaults.yaml` to customize which packages get installed:
+
+```yaml
+cli_packages:
+  - your-favorite-cli-tool
+
+gui_packages:
+  - your-favorite-app
+
+gui_packages_personal:  # Only installed with 'make'
+  - personal-only-app
+
+gui_packages_work:      # Only installed with 'make work'
+  - work-only-app
+```
+
+### Using Your Own Dotfiles
+
+Update the `dotfiles_repo` in `defaults.yaml`:
+
+```yaml
+dotfiles_repo: https://github.com/yourusername/dotfiles.git
+```
+
+### API Keys and Secrets
+
+Sensitive data is stored encrypted using Ansible Vault:
+
+1. Create your vault file:
+   ```bash
+   cp vars/api_keys.yml.example vars/api_keys.yml
+   ansible-vault encrypt vars/api_keys.yml
    ```
 
-3. Run the appropriate installation target:
-
-   - For personal setup:
-     ```sh
-     make
-     ```
-   - For work setup:
-     ```sh
-     make work
-     ```
-
-## Personal vs. Work Setup
-
-This repository supports both personal and work setups:
-
-- Personal setup (`make`):
-
-  - Installs a wider range of applications and tools
-  - Configures personal Git settings
-  - Sets up personal SSH and GPG keys
-
-- Work setup (`make work`):
-  - Installs a more focused set of work-related tools
-  - Avoids installing personal applications
-  - Can be customized further for specific work environments
-
-## Configuration
-
-- `defaults.yaml`: Contains default settings and package lists
-- `local.yaml`: Main Ansible playbook that imports various tasks
-- `vars/api_keys.yml`: Contains encrypted API keys (see [API Keys Documentation](./docs/api-keys.md))
-
-## Post-Installation Steps
-
-1. Set up the iTerm2 theme:
-
-   - Open iTerm2 -> Preferences -> Profiles
-   - Select "Mac Dev Environment" profile
-   - Click "Other Actions" and select "Set as Default"
-
-2. Set up GPG for Git:
-   After running the installation script, manually run:
-   ```sh
-   gpgconf --kill gpg-agent
+2. Edit the vault:
+   ```bash
+   ansible-vault edit vars/api_keys.yml
    ```
-   Then make a Git commit to store the GPG key in the keychain.
 
-## Screenshots
+3. Install keys:
+   ```bash
+   make keys
+   ```
 
-### Alacritty Terminal with Zellij
+## Validation and Safety
 
-![alacritty theme](./docs/screenshots/alacritty-zellij.png)
+The setup includes several safety features:
 
-### iTerm2 Theme
+- **Pre-flight checks**: Validates system requirements before running
+- **Backup creation**: Backs up existing SSH/GPG keys before modification
+- **Disk space check**: Warns if disk space is low
+- **Internet connectivity**: Verifies connection before downloading
+- **Dry run mode**: Preview changes with `make check`
 
-![iterm theme](./docs/screenshots/iterm-theme-example.png)
+## Troubleshooting
 
-### Tmux Theme
+### Common Issues
 
-![tmux theme](./docs/screenshots/tmux-theme-example.png)
+1. **"Homebrew not found" after new-mac.sh**
+   - Restart your terminal or run: `source ~/.zshrc`
 
-## Disclaimer
+2. **"Permission denied" errors**
+   - The makefile will prompt for sudo password when needed
+   - Some operations require admin access
 
-This repository is provided as-is, without any warranties or guarantees. Always review scripts and playbooks before running them on your system, especially when they involve system-wide changes or require sudo access.
+3. **App Store apps fail to install**
+   - Ensure you're signed into the Mac App Store
+   - Run `mas signin your-apple-id@example.com` first
+
+4. **Ansible Galaxy certificate errors**
+   - We've removed the insecure `ignore_certs` setting
+   - If you have certificate issues, fix your system certificates
+
+### Logs and Debugging
+
+- Run with verbose output: `ansible-playbook local.yaml -vvv`
+- Check specific task: `make cli` or `make gui`
+- Validate syntax: `ansible-playbook local.yaml --syntax-check`
+
+## File Structure
+
+```
+.
+├── makefile              # Main interface for all commands
+├── new-mac.sh           # Bootstrap script for fresh installs
+├── defaults.yaml        # Package lists and configuration
+├── local.yaml           # Main Ansible playbook
+├── update.yaml          # Update playbook
+├── ansible/
+│   ├── tasks/          # Individual task files
+│   └── templates/      # Configuration templates
+└── vars/
+    └── api_keys.yml    # Encrypted secrets (create this)
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Test your changes with `make check`
+4. Submit a pull request
+
+## Requirements
+
+- macOS (tested on macOS 15.0 arm64)
+- Internet connection
+- Apple ID (for App Store apps)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+This setup is inspired by various dotfiles repositories and automation scripts from the developer community.

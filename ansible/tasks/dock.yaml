@@ -22,12 +22,12 @@
         - /Applications/Slack.app
         - /Applications/Spotify.app
         - /Applications/Fantastical.app
-        - "'' --type small-spacer --section apps --after Obsidian"
+        - "'' --type small-spacer --section apps --after Fantastical"
         - /Applications/Alacritty.app
         - /Applications/Ghostty.app
         - /Applications/Visual\ Studio\ Code.app
         - /Applications/Cursor.app
-        - "'' --type small-spacer --section apps --after VSCode"
+        - "'' --type small-spacer --section apps --after Cursor"
         - /Applications/Brave\ Browser.app
         - /Applications/Google\ Chrome.app
         - /Applications/Firefox.app
@@ -42,8 +42,6 @@
         - /Applications/ChatGPT.app
         - /Applications/Claude.app
         - /Applications/Perplexity.app
-        - "'' --type small-spacer --section apps --after Perplexity"
-        - /Applications/Obsidian.app
         - /Applications/Parcel.app
       ignore_errors: true
       tags:
@@ -55,7 +53,7 @@
     - name: Add dock items specific to personal machine
       shell: dockutil --add {{ item }} --no-restart
       with_items:
-        - "'' --type small-spacer --section apps --after Sourcetree"
+        - "'' --type small-spacer --section apps --after Perplexity"
         - /Applications/Obsidian.app
       ignore_errors: true
       tags:

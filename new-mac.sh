@@ -25,7 +25,21 @@ handle_error() {
 if ! command -v brew &>/dev/null; then
   echo "Homebrew not found. Installing Homebrew..."
   HOMEBREW_INSTALL_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
-  /bin/bash -c "$(curl -fsSL ${HOMEBREW_INSTALL_URL})" || handle_error "Homebrew installation failed"
+  
+  # Download and verify the script
+  echo "Downloading Homebrew install script..."
+  TEMP_SCRIPT=$(mktemp)
+  curl -fsSL "${HOMEBREW_INSTALL_URL}" -o "${TEMP_SCRIPT}" || handle_error "Failed to download Homebrew install script"
+  
+  # Check if the script looks legitimate (basic validation)
+  if ! grep -q "Homebrew" "${TEMP_SCRIPT}"; then
+    rm -f "${TEMP_SCRIPT}"
+    handle_error "Downloaded script does not appear to be the Homebrew installer"
+  fi
+  
+  # Run the installer
+  /bin/bash "${TEMP_SCRIPT}" || handle_error "Homebrew installation failed"
+  rm -f "${TEMP_SCRIPT}"
 
   # Check if Homebrew is already in PATH
   if ! grep -q '/opt/homebrew/bin/brew shellenv' ~/.zshrc; then

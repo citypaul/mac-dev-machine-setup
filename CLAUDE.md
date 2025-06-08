@@ -12,6 +12,8 @@ This is an Ansible-based automation repository for setting up and maintaining Ma
 
 - `make` or `make all` - Complete personal setup (runs setup → deps → install → personal)
 - `make work` - Complete work setup (runs setup → deps → install → work)
+- `make update` - Update all installed packages (brew, npm, rust, go, etc.)
+- `make check` - Dry run to preview what changes would be made
 
 ### Individual Task Commands
 
@@ -49,13 +51,13 @@ ansible-playbook local.yaml -K --check --diff
 ### Entry Points
 
 - `new-mac.sh` - Initial setup script for fresh Mac installations (installs Xcode tools, Homebrew, Python, Ansible)
-- `install-work.sh` - Work-specific setup wrapper
-- `makefile` - Primary interface for running setup tasks
+- `makefile` - Primary interface for ALL setup tasks (use `make work` for work setup)
 
 ### Core Configuration
 
 - `defaults.yaml` - Central configuration file containing all package lists and default settings
-- `local.yaml` - Main Ansible playbook that orchestrates all tasks
+- `local.yaml` - Main Ansible playbook that orchestrates all tasks (includes validation)
+- `update.yaml` - Update playbook for refreshing all installed packages
 - `setup.yaml` - Prerequisites installation playbook
 - `personal-keys.yaml` - Encrypted private key installation (GPG, SSH)
 - `ansible.cfg` - Ansible runtime configuration
@@ -70,7 +72,8 @@ All Ansible tasks are in `ansible/tasks/`:
 - Security: `security.yaml`, `gpg.yaml`, `ssh.yaml`
 - System config: `osx.yaml`, `dock.yaml`, `window-management.yaml`
 - AI tools: `ai-tools.yaml` (Fabric AI, Ollama, etc.)
-- Maintenance: `remove-unwanted-packages.yaml`, `dotfiles.yaml`
+- Maintenance: `remove-unwanted-packages.yaml`, `dotfiles.yaml`, `update.yaml`
+- Validation: `validation.yaml` (pre-flight checks and backups)
 
 ### Template Files
 

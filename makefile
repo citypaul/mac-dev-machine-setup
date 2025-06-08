@@ -1,4 +1,4 @@
-.PHONY: all deps personal work dock setup keys cli gui
+.PHONY: all deps personal work dock setup keys cli gui update check
 
 all: setup deps install personal
 
@@ -47,3 +47,11 @@ themes:
 
 app-store:
 	@ansible-playbook local.yaml --tags app-store -K
+
+update:
+	@echo "Updating all installed packages..."
+	@ansible-playbook update.yaml -K
+
+check:
+	@echo "Running in check mode (dry run)..."
+	@ansible-playbook local.yaml -K --check --diff

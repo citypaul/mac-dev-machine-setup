@@ -9,12 +9,17 @@
     fabric_version: "latest"
     fabric_config_dir: "{{ ansible_env.HOME }}/.config/fabric"
   pre_tasks:
+    - import_tasks: ansible/tasks/validation.yaml
+      tags:
+        - always
+    
     - name: Update Brew
       community.general.homebrew:
         update_homebrew: yes
       tags:
         - install
         - core
+      when: not (ansible_check_mode | default(false))
 
   tasks:
     - import_tasks: ansible/tasks/git-setup.yaml

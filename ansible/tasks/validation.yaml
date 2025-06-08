@@ -1,0 +1,89 @@
+---
+- name: Pre-flight validation checks
+  tags:
+    - always
+    - validation
+  block:
+    - name: Check if running on macOS
+      fail:
+        msg: "This playbook is designed for macOS only. Current OS: {{ ansible_os_family }}"
+      when: ansible_os_family != "Darwin"
+
+    - name: Check for required commands
+      command: "which {{ item }}"
+      loop:
+        - brew
+        - git
+        - curl
+      register: command_check
+      changed_when: false
+      failed_when: command_check.rc != 0
+
+    - name: Verify Homebrew is working
+      command: brew --version
+      register: brew_check
+      changed_when: false
+      failed_when: brew_check.rc != 0
+
+    - name: Check disk space
+      shell: df -h / | tail -1 | awk '{print $5}' | sed 's/%//'
+      register: disk_usage
+      changed_when: false
+      failed_when: disk_usage.stdout|int > 90
+
+    - name: Warn if disk usage is high
+      debug:
+        msg: "WARNING: Disk usage is {{ disk_usage.stdout }}%. Consider freeing up space before proceeding."
+      when: disk_usage.stdout|int > 80
+
+    - name: Check internet connectivity
+      uri:
+        url: https://api.github.com
+        timeout: 10
+      register: internet_check
+      failed_when: false
+
+    - name: Fail if no internet connection
+      fail:
+        msg: "No internet connection detected. Please ensure you're connected to the internet."
+      when: internet_check.status is not defined or internet_check.status != 200
+
+- name: Backup existing configurations
+  tags:
+    - backup
+    - validation
+  block:
+    - name: Create backup directory
+      file:
+        path: "{{ ansible_env.HOME }}/.mac-setup-backups/{{ ansible_date_time.date }}"
+        state: directory
+        mode: '0755'
+
+    - name: Check for existing SSH keys
+      stat:
+        path: "{{ ansible_env.HOME }}/.ssh/id_rsa"
+      register: ssh_key_check
+
+    - name: Backup existing SSH keys if present
+      copy:
+        src: "{{ ansible_env.HOME }}/.ssh/"
+        dest: "{{ ansible_env.HOME }}/.mac-setup-backups/{{ ansible_date_time.date }}/ssh/"
+        mode: preserve
+      when: ssh_key_check.stat.exists
+
+    - name: Check for existing GPG keys
+      command: gpg --list-secret-keys
+      register: gpg_keys
+      changed_when: false
+      failed_when: false
+
+    - name: Backup GPG keys if present
+      shell: |
+        gpg --export-secret-keys --armor > "{{ ansible_env.HOME }}/.mac-setup-backups/{{ ansible_date_time.date }}/gpg-secret-keys.asc"
+        gpg --export --armor > "{{ ansible_env.HOME }}/.mac-setup-backups/{{ ansible_date_time.date }}/gpg-public-keys.asc"
+      when: gpg_keys.rc == 0 and gpg_keys.stdout != ""
+
+    - name: Display backup location
+      debug:
+        msg: "Backups stored in: {{ ansible_env.HOME }}/.mac-setup-backups/{{ ansible_date_time.date }}"
+      when: ssh_key_check.stat.exists or (gpg_keys.rc == 0 and gpg_keys.stdout != "")

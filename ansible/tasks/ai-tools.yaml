@@ -61,7 +61,7 @@
 
     - name: Check if fabric .env file exists
       stat:
-        path: "/Users/paulhammond/.config/fabric/.env"
+        path: "{{ ansible_env.HOME }}/.config/fabric/.env"
       register: fabric_env_file
 
     - name: Update fabric patterns

@@ -1,0 +1,111 @@
+---
+- name: Update all installed packages
+  tags:
+    - update
+  block:
+    - name: Update Homebrew
+      community.general.homebrew:
+        update_homebrew: yes
+      register: brew_update
+
+    - name: Upgrade all Homebrew packages
+      community.general.homebrew:
+        upgrade_all: yes
+      register: brew_upgrade
+
+    - name: Upgrade all Homebrew casks
+      community.general.homebrew_cask:
+        upgrade_all: yes
+      register: cask_upgrade
+      ignore_errors: yes  # Some casks may fail if app is running
+
+    - name: Clean up Homebrew
+      command: brew cleanup -s
+      changed_when: true
+
+    - name: Update npm packages globally
+      shell: |
+        if command -v npm &> /dev/null; then
+          npm update -g
+        fi
+      register: npm_update
+      changed_when: npm_update.rc == 0
+      ignore_errors: yes
+
+    - name: Update pnpm packages globally
+      shell: |
+        if command -v pnpm &> /dev/null; then
+          pnpm update -g
+        fi
+      register: pnpm_update
+      changed_when: pnpm_update.rc == 0
+      ignore_errors: yes
+
+    - name: Update Mac App Store apps
+      command: mas upgrade
+      register: mas_update
+      changed_when: "'No updates available' not in mas_update.stdout"
+      ignore_errors: yes
+
+    - name: Update Rust toolchain
+      shell: |
+        if command -v rustup &> /dev/null; then
+          rustup update
+        fi
+      register: rust_update
+      changed_when: rust_update.rc == 0
+      ignore_errors: yes
+
+    - name: Update Go packages
+      shell: |
+        if command -v go &> /dev/null; then
+          go install -v $(go list -m -u all 2>/dev/null | grep -v "^go " | awk '{print $1"@latest"}') 2>/dev/null || true
+        fi
+      register: go_update
+      changed_when: go_update.rc == 0
+      ignore_errors: yes
+
+    - name: Update fabric patterns
+      shell: |
+        if command -v fabric &> /dev/null; then
+          fabric -U
+        fi
+      environment:
+        PATH: "{{ ansible_env.PATH }}:{{ ansible_env.HOME }}/go/bin"
+      register: fabric_update
+      changed_when: fabric_update.rc == 0
+      ignore_errors: yes
+
+    - name: Update tmux plugins
+      shell: |
+        if [ -d "$HOME/.tmux/plugins/tpm" ]; then
+          $HOME/.tmux/plugins/tpm/bin/update_plugins all
+        fi
+      register: tmux_update
+      changed_when: tmux_update.rc == 0
+      ignore_errors: yes
+
+    - name: Update Ollama models
+      shell: |
+        if command -v ollama &> /dev/null; then
+          for model in $(ollama list | tail -n +2 | awk '{print $1}'); do
+            echo "Updating $model..."
+            ollama pull "$model"
+          done
+        fi
+      register: ollama_update
+      changed_when: ollama_update.rc == 0
+      ignore_errors: yes
+
+    - name: Display update summary
+      debug:
+        msg:
+          - "Update Summary:"
+          - "Homebrew: {{ 'Updated' if brew_update.changed else 'No updates' }}"
+          - "Homebrew packages: {{ 'Upgraded' if brew_upgrade.changed else 'No upgrades' }}"
+          - "Homebrew casks: {{ 'Upgraded' if cask_upgrade.changed else 'No upgrades' }}"
+          - "NPM packages: {{ 'Updated' if npm_update.changed else 'Skipped/No updates' }}"
+          - "Mac App Store: {{ 'Updated' if mas_update.changed else 'No updates' }}"
+          - "Rust: {{ 'Updated' if rust_update.changed else 'Skipped/No updates' }}"
+          - "Go packages: {{ 'Updated' if go_update.changed else 'Skipped/No updates' }}"
+          - "Fabric patterns: {{ 'Updated' if fabric_update.changed else 'Skipped/No updates' }}"
