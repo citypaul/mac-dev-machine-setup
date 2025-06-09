@@ -96,6 +96,7 @@ gui_packages:
   - visual-studio-code
   - visual-studio-code@insiders
   - vlc
+  - waves-central
   - wezterm
   - zoom
 
