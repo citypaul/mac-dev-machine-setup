@@ -9,6 +9,7 @@
     - downie
     - unclack
     - cleanshot
+    - httpie
     - bettertouchtool
     - istat-menus
     - raycast
@@ -30,7 +31,6 @@
     - rotato
     # Web Development
     - vivaldi
-    - arc
     - firefox
     # PKM
     - obsidian
