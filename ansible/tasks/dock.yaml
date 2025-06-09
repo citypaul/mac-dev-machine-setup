@@ -27,6 +27,8 @@
         - /Applications/Ghostty.app
         - /Applications/Visual\ Studio\ Code.app
         - /Applications/Cursor.app
+        - /Applications/Audio\ Hijack.app
+        - /Applications/Loopback.app
         - "'' --type small-spacer --section apps --after Cursor"
         - /Applications/Brave\ Browser.app
         - /Applications/Google\ Chrome.app

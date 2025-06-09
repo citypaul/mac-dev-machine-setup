@@ -60,6 +60,7 @@ cli_packages:
 
 gui_packages:
   - arc
+  - audio-hijack
   - balsamiq-wireframes
   - brave-browser
   - bruno
@@ -78,6 +79,7 @@ gui_packages:
   - imageoptim
   - iterm2
   - karabiner-elements
+  - loopback
   - meetingbar
   - obsidian
   - pgadmin4
