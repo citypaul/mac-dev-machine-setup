@@ -12,6 +12,7 @@ cli_packages:
   - colima
   - curl
   - deno
+  - dua-cli
   - entr
   - eza
   - fd
