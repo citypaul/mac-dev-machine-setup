@@ -19,6 +19,7 @@ cli_packages:
   - fd
   - fswatch
   - fzf
+  - git-filter-repo
   - gh
   - go
   - gifsicle
