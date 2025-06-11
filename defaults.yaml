@@ -8,6 +8,7 @@ cli_packages:
   - asciinema
   - awscli
   - bat
+  - bfg
   - broot
   - colima
   - curl
