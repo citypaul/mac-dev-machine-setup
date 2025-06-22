@@ -55,3 +55,6 @@ update:
 check:
 	@echo "Running in check mode (dry run)..."
 	@ansible-playbook local.yaml -K --check --diff
+
+node:
+	@ansible-playbook local.yaml --tags node
