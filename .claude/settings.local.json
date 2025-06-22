@@ -1,7 +1,17 @@
 {
   "permissions": {
     "allow": [
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(mas info:*)",
+      "Bash(sw_vers:*)",
+      "Bash(mas account:*)",
+      "Bash(mas search:*)",
+      "Bash(mas install:*)",
+      "Bash(brew search:*)",
+      "Bash(grep:*)",
+      "WebFetch(domain:www.blackmagicdesign.com)",
+      "Bash(ansible-playbook:*)",
+      "Bash(ls:*)"
     ],
     "deny": []
   }

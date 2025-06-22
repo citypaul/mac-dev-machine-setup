@@ -20,6 +20,8 @@
         name: Perplexity AI
       - id: 639968404
         name: Parcel - Delivery Tracking
+      - id: 571213070
+        name: Davinci Resolve
   community.general.mas:
     id: "{{ item.id }}"
     state: latest
