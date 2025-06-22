@@ -130,3 +130,4 @@ gui_packages_to_remove_if_installed_work:
 
 pnpm_global_packages:
   - task-master-ai
+  - claude-code
