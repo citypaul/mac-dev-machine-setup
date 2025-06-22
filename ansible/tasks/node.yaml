@@ -16,3 +16,15 @@
   tags:
     - install
     - node
+
+- name: Install pnpm global packages
+  ansible.builtin.shell: |
+    source ~/.zshrc
+    pnpm add -g {{ item }}
+  args:
+    executable: /bin/zsh
+  loop: "{{ pnpm_global_packages | default([]) }}"
+  when: pnpm_global_packages is defined
+  tags:
+    - install
+    - node
