@@ -2,7 +2,7 @@
 
 all: setup deps install personal
 
-work: setup deps install work
+work-setup: setup deps install work-tag
 
 dotfiles:
 	@ansible-playbook local.yaml --tags dotfiles
@@ -18,8 +18,10 @@ install:
 personal: 
 	@ansible-playbook local.yaml -K --tags personal
 
-work: 
+work-tag: 
 	@ansible-playbook local.yaml -K --tags work
+
+work: work-setup
 
 keys: 
 	@ansible-playbook personal-keys.yaml -K --ask-vault-pass
@@ -37,7 +39,7 @@ dock:
 	@ansible-playbook local.yaml --tags dock 
 
 setup: 
-	@ansible-playbook setup.yaml -K
+	@ansible-playbook setup.yaml
 
 fonts:
 	@ansible-playbook local.yaml --tags fonts

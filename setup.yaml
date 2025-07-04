@@ -1,9 +1,9 @@
 ---
 - name: Setup Mac Dev Environment
   hosts: localhost
-  become: yes
   tasks:
     - name: Ensure necessary directories exist
+      become: no
       file:
         path: "{{ item }}"
         state: directory
@@ -29,10 +29,22 @@
         eval "$(/opt/homebrew/bin/brew shellenv)"
       when: ansible_os_family == "Darwin"
 
+    - name: Remove deprecated Homebrew taps
+      become: no
+      shell: |
+        for tap in "homebrew/cask-fonts" "homebrew/cask-versions"; do
+          if brew tap | grep -q "^$tap\$"; then
+            brew untap "$tap" || true
+          fi
+        done
+      ignore_errors: yes
+
     - name: Update Homebrew
       become: no
       homebrew:
         update_homebrew: yes
+      environment:
+        GIT_TERMINAL_PROMPT: "0"
 
     - name: Install Python
       become: no

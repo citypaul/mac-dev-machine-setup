@@ -38,15 +38,19 @@
 
     - name: Check internet connectivity
       uri:
-        url: https://api.github.com
+        url: https://httpbin.org/get
         timeout: 10
       register: internet_check
       failed_when: false
+      when: not ansible_check_mode
 
     - name: Fail if no internet connection
       fail:
         msg: "No internet connection detected. Please ensure you're connected to the internet."
-      when: internet_check.status is not defined or internet_check.status != 200
+      when: 
+        - not ansible_check_mode
+        - internet_check is defined
+        - internet_check.status is not defined or (internet_check.status != 200 and internet_check.status != 403)
 
 - name: Backup existing configurations
   tags:

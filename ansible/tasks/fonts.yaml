@@ -1,5 +1,5 @@
 - name: Installing fonts
-  homebrew_cask:
+  community.general.homebrew_cask:
     name:
       - font-fira-code
       - font-geist

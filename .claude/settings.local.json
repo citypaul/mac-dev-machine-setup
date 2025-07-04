@@ -11,7 +11,14 @@
       "Bash(grep:*)",
       "WebFetch(domain:www.blackmagicdesign.com)",
       "Bash(ansible-playbook:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(brew tap:*)",
+      "Bash(brew untap:*)",
+      "Bash(make:*)",
+      "Bash(brew:*)",
+      "Bash(curl:*)",
+      "Bash(cat:*)",
+      "Bash(ansible:*)"
     ],
     "deny": []
   }

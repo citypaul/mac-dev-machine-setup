@@ -1,5 +1,5 @@
 - name: Install Gui tools via brew casks
-  homebrew_cask:
+  community.general.homebrew_cask:
     name: "{{ item }}"
     state: latest
     greedy: yes
@@ -12,7 +12,7 @@
     - productivity
 
 - name: Install personal Gui tools via brew casks
-  homebrew_cask:
+  community.general.homebrew_cask:
     name: "{{ item }}"
     state: latest
     greedy: yes
@@ -26,7 +26,7 @@
 # https://github.com/alacritty/alacritty/issues/4673#issuecomment-771291615
 
 - name: Install alacritty with '--no-quarantine' option
-  homebrew_cask:
+  community.general.homebrew_cask:
     name: alacritty
     state: latest
     greedy: yes
