@@ -24,6 +24,7 @@ cli_packages:
   - gh
   - go
   - gifsicle
+  - git-sizer
   - glances
   - glow
   - gnupg
