@@ -25,6 +25,26 @@
     - import_tasks: ansible/tasks/gpg.yaml
     - import_tasks: ansible/tasks/ssh.yaml
 
+    - name: Configure Git to use GPG signing
+      block:
+        - name: Set global git gpg key
+          ansible.builtin.git_config:
+            name: user.signingkey
+            scope: global
+            value: 5016355A88C64BE0
+
+        - name: Set global git always gpgsign
+          ansible.builtin.git_config:
+            name: commit.gpgsign
+            scope: global
+            value: "true"
+
+        - name: Set GPG program path
+          ansible.builtin.git_config:
+            name: gpg.program
+            scope: global
+            value: "{{ ansible_env.HOMEBREW_PREFIX | default('/opt/homebrew') }}/bin/gpg"
+
     - name: Set correct permissions for SSH key
       file:
         path: "{{ dest_ssh_key }}"
