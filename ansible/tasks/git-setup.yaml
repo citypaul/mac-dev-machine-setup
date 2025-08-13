@@ -53,18 +53,6 @@
         scope: global
         value: main
 
-    - name: Set global git gpg key
-      ansible.builtin.git_config:
-        name: user.signingkey
-        scope: global
-        value: 5016355A88C64BE0
-
-    - name: Set global git always gpgsign
-      ansible.builtin.git_config:
-        name: commit.gpgsign
-        scope: global
-        value: "true"
-
     - name: Set autoSetupRemote to true to automatically set upstream branch on push
       ansible.builtin.git_config:
         name: push.autoSetupRemote
