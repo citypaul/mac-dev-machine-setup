@@ -5,6 +5,7 @@ dotfiles_repo: https://github.com/citypaul/.dotfiles.git
 
 cli_packages:
   - adr-tools
+  - age
   - asciinema
   - awscli
   - bat
@@ -47,6 +48,7 @@ cli_packages:
   - ripgrep
   - shellcheck
   - shortcat
+  - sops
   - starship
   - task
   - taskwarrior-tui
