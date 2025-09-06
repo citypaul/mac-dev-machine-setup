@@ -108,5 +108,11 @@
         - { name: "color.diff.new", value: "green bold" }
         - { name: "color.diff.whitespace", value: "red reverse" }
 
+    - name: Set difftastic as default diff tool
+      ansible.builtin.git_config:
+        name: diff.tool
+        scope: global
+        value: difftastic
+
   tags:
     - git-personal
