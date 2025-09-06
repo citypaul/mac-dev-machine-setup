@@ -18,7 +18,10 @@
       "Bash(brew:*)",
       "Bash(curl:*)",
       "Bash(cat:*)",
-      "Bash(ansible:*)"
+      "Bash(ansible:*)",
+      "WebFetch(domain:difftastic.wilfred.me.uk)",
+      "Bash(git config:*)",
+      "Bash(git ds:*)"
     ],
     "deny": []
   }
