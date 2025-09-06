@@ -120,6 +120,23 @@
         # Commit search
         - { name: "find", value: "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%an] %Cred%d' --decorate --date=short --grep=\"$1\"; }; f" }
         - { name: "who", value: "blame -w -M -C" }
+        
+        # FZF-powered interactive aliases
+        - { name: "fco", value: "!f() { git branch -a | grep -v HEAD | sed 's/.* //' | sed 's#remotes/[^/]*/##' | sort -u | fzf --preview 'git log --oneline --graph --date=short --color=always --pretty=\"format:%C(auto)%cd %h%d %s\" {}' | xargs git checkout; }; f" }
+        - { name: "fcoc", value: "!f() { git log --pretty=oneline --abbrev-commit --all | fzf --preview 'git show --color=always {1}' | awk '{print $1}' | xargs git checkout; }; f" }
+        - { name: "fshow", value: "!f() { git log --oneline --color=always | fzf --ansi --preview 'git show --color=always {1}' | awk '{print $1}' | xargs git show; }; f" }
+        - { name: "fadd", value: "!f() { git status -s | fzf -m --preview 'git diff --color=always {2}' | awk '{print $2}' | xargs git add; }; f" }
+        - { name: "funstage", value: "!f() { git diff --cached --name-only | fzf -m --preview 'git diff --cached --color=always {}' | xargs git reset HEAD; }; f" }
+        - { name: "fstash", value: "!f() { git stash list | fzf --preview 'git stash show -p --color=always {1}' | cut -d: -f1 | xargs git stash apply; }; f" }
+        - { name: "flog", value: "!f() { git log --oneline --color=always | fzf --ansi --multi --preview 'git show --color=always {1}' | awk '{print $1}'; }; f" }
+        - { name: "fbr", value: "!f() { git branch -vv | fzf --preview 'git log --oneline --graph --date=short --color=always --pretty=\"format:%C(auto)%cd %h%d %s\" {1}' | awk '{print $1}' | sed 's/.* //' | xargs git checkout; }; f" }
+        - { name: "fbrm", value: "!f() { git branch -vv | fzf --multi --preview 'git log --oneline --graph --date=short --color=always --pretty=\"format:%C(auto)%cd %h%d %s\" {1}' | awk '{print $1}' | xargs git branch -d; }; f" }
+        - { name: "ftag", value: "!f() { git tag | fzf --preview 'git show --color=always {}' | xargs git checkout; }; f" }
+        - { name: "fcherry", value: "!f() { git log --oneline | fzf --multi --preview 'git show --color=always {1}' | awk '{print $1}' | xargs -n1 git cherry-pick; }; f" }
+        - { name: "frebase", value: "!f() { git log --oneline | fzf --preview 'git show --color=always {1}' | awk '{print $1}' | xargs -I {} git rebase -i {}^; }; f" }
+        - { name: "ffix", value: "!f() { git log --oneline | fzf --preview 'git show --color=always {1}' | awk '{print $1}' | xargs git commit --fixup; }; f" }
+        - { name: "fdiff", value: "!f() { git status -s | fzf --preview 'git diff --color=always {2}' | awk '{print $2}' | xargs git diff; }; f" }
+        - { name: "fgrep", value: "!f() { git ls-files | fzf --preview 'bat --color=always --line-range :500 {}' | xargs grep \"${1:-}\"; }; f" }
 
     - name: Enable colorized output
       ansible.builtin.git_config:
