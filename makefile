@@ -23,6 +23,9 @@ work-tag:
 
 work: work-setup
 
+git:
+	@ansible-playbook local.yaml --tags git-personal -K
+
 keys: 
 	@ansible-playbook personal-keys.yaml -K --ask-vault-pass
 

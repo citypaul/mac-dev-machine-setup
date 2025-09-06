@@ -59,10 +59,10 @@
         scope: global
         value: "true"
 
-    - name: Install diff-so-fancy
+    - name: Remove diff-so-fancy
       community.general.homebrew:
         name: diff-so-fancy
-        state: latest
+        state: absent
 
     - name: Set Git aliases
       ansible.builtin.git_config:
@@ -77,6 +77,13 @@
         - { name: "last", value: "log -1 HEAD" }
         - { name: "unstage", value: "reset HEAD --" }
         - { name: "lg", value: "log --oneline --decorate --graph --all" }
+        # Difftastic aliases
+        - { name: "dlog", value: "-c diff.external=difft log --ext-diff" }
+        - { name: "dshow", value: "-c diff.external=difft show --ext-diff" }
+        - { name: "ddiff", value: "-c diff.external=difft diff" }
+        - { name: "dl", value: "-c diff.external=difft log -p --ext-diff" }
+        - { name: "ds", value: "-c diff.external=difft show --ext-diff" }
+        - { name: "dft", value: "-c diff.external=difft diff" }
 
     - name: Enable colorized output
       ansible.builtin.git_config:
@@ -84,29 +91,52 @@
         scope: global
         value: auto
 
-    - name: Improve git diff output
+    - name: Reset core.pager to default (removing diff-so-fancy)
       ansible.builtin.git_config:
         name: core.pager
         scope: global
-        value: "diff-so-fancy | less --tabs=4 -RFX"
+        state: absent
 
-    - name: Set diff-so-fancy colors
+    - name: Remove diff-so-fancy color configurations
       ansible.builtin.git_config:
-        name: "{{ item.name }}"
+        name: "{{ item }}"
         scope: global
-        value: "{{ item.value }}"
+        state: absent
       loop:
-        - { name: "color.diff-highlight.oldNormal", value: "red bold" }
-        - { name: "color.diff-highlight.oldHighlight", value: "red bold 52" }
-        - { name: "color.diff-highlight.newNormal", value: "green bold" }
-        - { name: "color.diff-highlight.newHighlight", value: "green bold 22" }
-        - { name: "color.diff.meta", value: "11" }
-        - { name: "color.diff.frag", value: "magenta bold" }
-        - { name: "color.diff.func", value: "146 bold" }
-        - { name: "color.diff.commit", value: "yellow bold" }
-        - { name: "color.diff.old", value: "red bold" }
-        - { name: "color.diff.new", value: "green bold" }
-        - { name: "color.diff.whitespace", value: "red reverse" }
+        - "color.diff-highlight.oldNormal"
+        - "color.diff-highlight.oldHighlight"
+        - "color.diff-highlight.newNormal"
+        - "color.diff-highlight.newHighlight"
+
+    - name: Set difftastic as external diff tool
+      ansible.builtin.git_config:
+        name: diff.external
+        scope: global
+        value: difft
+
+    - name: Set difftastic as default diff tool
+      ansible.builtin.git_config:
+        name: diff.tool
+        scope: global
+        value: difftastic
+
+    - name: Configure difftastic difftool command
+      ansible.builtin.git_config:
+        name: difftool.difftastic.cmd
+        scope: global
+        value: 'difft "$LOCAL" "$REMOTE"'
+
+    - name: Disable difftool prompt
+      ansible.builtin.git_config:
+        name: difftool.prompt
+        scope: global
+        value: "false"
+
+    - name: Enable pager for difftool
+      ansible.builtin.git_config:
+        name: pager.difftool
+        scope: global
+        value: "true"
 
   tags:
     - git-personal
