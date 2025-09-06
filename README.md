@@ -154,6 +154,42 @@ The following Git configurations are automatically applied:
 - `git find <text>` - search commit messages
 - `git who <file>` - enhanced blame with move/copy detection
 
+### FZF-Powered Interactive Git Commands
+
+These aliases provide an interactive interface using fzf (fuzzy finder) with live previews, making git operations more visual and intuitive.
+
+#### Interactive Checkout & Navigation
+- `git fco` - **Fuzzy checkout branch** - Search and checkout any branch (local or remote) with commit preview
+- `git fcoc` - **Checkout any commit** - Browse entire commit history and checkout with preview
+- `git fbr` - **Branch switcher** - Switch between local branches with commit history preview
+- `git ftag` - **Tag browser** - Browse and checkout tags with full diff preview
+
+#### Interactive File Operations
+- `git fadd` - **Stage files interactively** - Select files to stage with diff preview (supports multi-select with TAB)
+- `git funstage` - **Unstage files** - Select staged files to unstage with preview
+- `git fdiff` - **Diff browser** - Select modified files to diff interactively
+
+#### Interactive Commit Operations
+- `git fshow` - **Commit browser** - Browse commits and show details with full diff preview
+- `git flog` - **Log explorer** - Browse and select multiple commits (returns commit SHAs)
+- `git fcherry` - **Cherry-pick commits** - Select commits to cherry-pick with preview (multi-select with TAB)
+- `git ffix` - **Create fixup commits** - Select target commit for fixup with preview
+- `git frebase` - **Interactive rebase from point** - Select commit to start interactive rebase from
+
+#### Interactive Stash & Branch Management
+- `git fstash` - **Stash browser** - Browse stashes with full diff preview and apply selected
+- `git fbrm` - **Delete branches** - Select branches to delete (supports multi-select with TAB)
+
+#### Interactive Search
+- `git fgrep [pattern]` - **Grep in tracked files** - Select file to search with bat preview, then grep for pattern
+
+**Tips for FZF aliases:**
+- Use `TAB` to multi-select items where supported
+- Use `Ctrl-C` or `ESC` to cancel without making changes
+- Type to fuzzy search through the list
+- Arrow keys or `Ctrl-J/K` to navigate
+- `Enter` to confirm selection
+
 ## Customization
 
 ### Modifying Package Lists
