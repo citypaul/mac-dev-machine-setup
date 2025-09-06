@@ -21,7 +21,12 @@
       "Bash(ansible:*)",
       "WebFetch(domain:difftastic.wilfred.me.uk)",
       "Bash(git config:*)",
-      "Bash(git ds:*)"
+      "Bash(git ds:*)",
+      "Bash(git checkout:*)",
+      "Bash(git aliases:*)",
+      "Bash(git recent)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }
