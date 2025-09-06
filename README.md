@@ -86,6 +86,74 @@ make update
 - **Security**: GPG tools, SSH key management
 - **Productivity**: Raycast, Obsidian, Fantastical
 
+## Git Configuration
+
+The setup includes comprehensive Git configuration with productivity-enhancing aliases and modern diff tools.
+
+### Git Settings
+
+The following Git configurations are automatically applied:
+
+- **Editor**: Neovim as default editor
+- **Pull strategy**: Rebase by default
+- **Auto-prune**: Fetch automatically prunes deleted remote branches
+- **Auto-setup remote**: Automatically sets upstream on push
+- **Default branch**: `main` for new repositories
+- **Diff tool**: Difftastic for syntax-aware diffs
+
+### Git Aliases
+
+#### Basic Commands
+- `git co` - checkout
+- `git br` - branch
+- `git ci` - commit
+- `git st` - status
+- `git last` - show last commit
+- `git unstage` - unstage files
+- `git lg` - compact log with graph
+
+#### Difftastic Integration
+- `git dlog` - log with difftastic diffs
+- `git dshow` - show commit with difftastic
+- `git ddiff` - diff with difftastic
+- `git dl` - log with patches using difftastic
+- `git ds` - short alias for dshow
+- `git dft` - short alias for ddiff
+
+#### Productivity Aliases
+- `git amend` - amend last commit without editing message
+- `git undo` - undo last commit, keeping changes
+- `git wip` - quick work-in-progress commit
+- `git cleanup [N]` - interactive rebase last N commits (default: 10)
+- `git fixup <commit>` - create fixup commit
+- `git recent` - show recently worked branches
+- `git aliases` - list all configured aliases
+
+#### Branch Management
+- `git branches` - show all branches with tracking info
+- `git gone` - list branches whose remotes are gone
+- `git prune-branches` - delete branches whose remotes are gone
+- `git main` - checkout the main/master branch
+
+#### Stash Improvements
+- `git stash-all` - stash including untracked files
+- `git pop` - pop latest stash
+
+#### History Exploration
+- `git contributors` - show contributor statistics
+- `git graph` - pretty graph of commit history
+- `git today` - show your commits from today
+- `git yesterday` - show your commits from yesterday
+
+#### File Operations
+- `git untrack <file>` - stop tracking file
+- `git ignored` - show ignored files
+- `git modified` - list modified files only
+
+#### Search and Blame
+- `git find <text>` - search commit messages
+- `git who <file>` - enhanced blame with move/copy detection
+
 ## Customization
 
 ### Modifying Package Lists

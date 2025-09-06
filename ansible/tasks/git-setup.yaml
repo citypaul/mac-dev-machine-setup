@@ -70,6 +70,7 @@
         scope: global
         value: "{{ item.value }}"
       loop:
+        # Basic shortcuts
         - { name: "co", value: "checkout" }
         - { name: "br", value: "branch" }
         - { name: "ci", value: "commit" }
@@ -77,6 +78,7 @@
         - { name: "last", value: "log -1 HEAD" }
         - { name: "unstage", value: "reset HEAD --" }
         - { name: "lg", value: "log --oneline --decorate --graph --all" }
+        
         # Difftastic aliases
         - { name: "dlog", value: "-c diff.external=difft log --ext-diff" }
         - { name: "dshow", value: "-c diff.external=difft show --ext-diff" }
@@ -84,6 +86,40 @@
         - { name: "dl", value: "-c diff.external=difft log -p --ext-diff" }
         - { name: "ds", value: "-c diff.external=difft show --ext-diff" }
         - { name: "dft", value: "-c diff.external=difft diff" }
+        
+        # Productivity aliases
+        - { name: "amend", value: "commit --amend --no-edit" }
+        - { name: "undo", value: "reset HEAD~1 --mixed" }
+        - { name: "wip", value: "!git add -A && git commit -m 'WIP'" }
+        - { name: "cleanup", value: "!f() { git rebase -i HEAD~${1:-10}; }; f" }
+        - { name: "fixup", value: "commit --fixup" }
+        - { name: "recent", value: "branch --sort=-committerdate --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:green)(%(committerdate:relative))%(color:reset) - %(contents:subject) - %(authorname)'" }
+        - { name: "aliases", value: "config --get-regexp '^alias\\.'" }
+        
+        # Branch management
+        - { name: "branches", value: "branch -vv" }
+        - { name: "gone", value: "!git branch -vv | grep ': gone]' | awk '{print $1}'" }
+        - { name: "prune-branches", value: "!git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -D" }
+        - { name: "main", value: "!git checkout $(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')" }
+        
+        # Stash improvements
+        - { name: "stash-all", value: "stash save --include-untracked" }
+        - { name: "pop", value: "stash pop" }
+        
+        # History exploration
+        - { name: "contributors", value: "shortlog --summary --numbered" }
+        - { name: "graph", value: "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit" }
+        - { name: "today", value: "log --since=midnight --author=\"$(git config user.name)\" --oneline" }
+        - { name: "yesterday", value: "log --since=yesterday.midnight --until=midnight --author=\"$(git config user.name)\" --oneline" }
+        
+        # File operations
+        - { name: "untrack", value: "rm --cached" }
+        - { name: "ignored", value: "!git ls-files -v | grep '^[[:lower:]]'" }
+        - { name: "modified", value: "diff --name-only --diff-filter=M" }
+        
+        # Commit search
+        - { name: "find", value: "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%an] %Cred%d' --decorate --date=short --grep=\"$1\"; }; f" }
+        - { name: "who", value: "blame -w -M -C" }
 
     - name: Enable colorized output
       ansible.builtin.git_config:
