@@ -2,6 +2,25 @@
 - name: Setup Mac Dev Environment
   hosts: localhost
   tasks:
+    - name: Check if Xcode Command Line Tools are installed
+      become: no
+      shell: xcode-select -p
+      register: xcode_check
+      failed_when: false
+      changed_when: false
+
+    - name: Install Xcode Command Line Tools if missing
+      become: no
+      shell: xcode-select --install
+      when: xcode_check.rc != 0
+      register: xcode_install
+      failed_when: false
+
+    - name: Wait for Xcode Command Line Tools installation
+      pause:
+        prompt: "Please complete the Xcode Command Line Tools installation in the dialog box, then press Enter to continue"
+      when: xcode_check.rc != 0 and xcode_install.rc == 0
+
     - name: Ensure necessary directories exist
       become: no
       file:
