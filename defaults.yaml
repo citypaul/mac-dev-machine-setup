@@ -7,6 +7,7 @@ homebrew_taps:
   - ankitpokhrel/jira-cli
 
 cli_packages:
+  - act
   - adr-tools
   - age
   - asciinema
