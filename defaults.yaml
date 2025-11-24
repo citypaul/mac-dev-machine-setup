@@ -28,6 +28,7 @@ cli_packages:
   - fzf
   - git-filter-repo
   - gh
+  - gemini-cli
   - go
   - gifsicle
   - git-sizer
