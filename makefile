@@ -9,8 +9,20 @@ dotfiles:
 
 deps:
 	@echo "Installing dependencies..."
-	@ansible-galaxy role install -f -r requirements.yaml
-	@ansible-galaxy collection install -f -r requirements.yaml
+	@if grep -q "^roles:" requirements.yaml 2>/dev/null && [ -n "$$(awk '/^roles:/,/^collections:/' requirements.yaml | grep -v '^roles:' | grep -v '^collections:' | grep 'name:' || true)" ]; then \
+		ansible-galaxy role install -f -r requirements.yaml; \
+	else \
+		echo "Skipping roles install, no requirements found"; \
+	fi
+	@if grep -q "^collections:" requirements.yaml 2>/dev/null && [ -n "$$(awk '/^collections:/,/^$$/' requirements.yaml | grep -v '^collections:' | grep 'name:' || true)" ]; then \
+		if ! ansible-galaxy collection list | grep -q "community.general"; then \
+			ansible-galaxy collection install -f -r requirements.yaml; \
+		else \
+			echo "Skipping collections install, already installed"; \
+		fi; \
+	else \
+		echo "Skipping collections install, no requirements found"; \
+	fi
 
 install:
 	@ansible-playbook local.yaml -K --tags install
