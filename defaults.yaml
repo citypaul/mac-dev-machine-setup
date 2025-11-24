@@ -36,6 +36,7 @@ cli_packages:
   - hurl
   - htop
   - imagemagick
+  - jira-cli
   - jq
   - lazydocker
   - lazygit
