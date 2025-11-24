@@ -29,6 +29,7 @@
       tags:
         - install
         - core
+        - cli
       when: not (ansible_check_mode | default(false))
 
   tasks:
