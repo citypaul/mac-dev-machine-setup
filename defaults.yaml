@@ -3,6 +3,9 @@ git_name: Paul Hammond
 
 dotfiles_repo: https://github.com/citypaul/.dotfiles.git
 
+homebrew_taps:
+  - ankitpokhrel/jira-cli
+
 cli_packages:
   - adr-tools
   - age

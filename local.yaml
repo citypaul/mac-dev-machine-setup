@@ -21,6 +21,16 @@
         - core
       when: not (ansible_check_mode | default(false))
 
+    - name: Tap Homebrew repositories
+      community.general.homebrew_tap:
+        name: "{{ item }}"
+        state: present
+      with_items: "{{ homebrew_taps }}"
+      tags:
+        - install
+        - core
+      when: not (ansible_check_mode | default(false))
+
   tasks:
     - import_tasks: ansible/tasks/git-setup.yaml
     - import_tasks: ansible/tasks/cli-tools.yaml
