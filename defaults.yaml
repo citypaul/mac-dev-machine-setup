@@ -89,6 +89,7 @@ gui_packages:
   - firefox
   - ghostty
   - google-chrome
+  - granola
   - hiddenbar
   - httpie
   - imageoptim
