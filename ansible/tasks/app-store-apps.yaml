@@ -22,6 +22,8 @@
         name: Parcel - Delivery Tracking
       - id: 571213070
         name: Davinci Resolve
+      - id: 1497506650
+        name: Yubico Authenticator
   community.general.mas:
     id: "{{ item.id }}"
     state: latest
