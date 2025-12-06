@@ -209,3 +209,7 @@ dist
 # Aider AI
 
 .aider*
+
+# Claude Code
+
+.claude/settings.local.json
