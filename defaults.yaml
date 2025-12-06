@@ -5,6 +5,7 @@ dotfiles_repo: https://github.com/citypaul/.dotfiles.git
 
 homebrew_taps:
   - ankitpokhrel/jira-cli
+  - oven-sh/bun
 
 cli_packages:
   - act
@@ -15,6 +16,7 @@ cli_packages:
   - bat
   - bfg
   - broot
+  - bun
   - claude-squad
   - colima
   - curl
