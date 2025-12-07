@@ -1,0 +1,60 @@
+- name: GPG and YubiKey setup
+  block:
+    - name: Install pinentry-mac for GPG PIN entry
+      community.general.homebrew:
+        name: pinentry-mac
+        state: latest
+
+    - name: Kill gpg-agent to reload configuration
+      ansible.builtin.shell: gpgconf --kill gpg-agent
+      changed_when: true
+      ignore_errors: true
+
+    - name: Get GPG signing key from YubiKey
+      ansible.builtin.shell: |
+        gpg --card-status 2>/dev/null | grep -E "^sec" | head -1 | awk -F'/' '{print $2}' | awk '{print $1}'
+      register: gpg_key_from_yubikey
+      changed_when: false
+      failed_when: false
+
+    - name: Get GPG signing key from keyring (fallback)
+      ansible.builtin.shell: |
+        gpg --list-secret-keys --keyid-format=long 2>/dev/null | grep -E "^sec" | head -1 | awk -F'/' '{print $2}' | awk '{print $1}'
+      register: gpg_key_from_keyring
+      changed_when: false
+      when: gpg_key_from_yubikey.stdout == ""
+
+    - name: Set GPG key fact
+      ansible.builtin.set_fact:
+        detected_gpg_key: "{{ gpg_key_from_yubikey.stdout | default(gpg_key_from_keyring.stdout, true) }}"
+
+    - name: Configure git GPG signing
+      when: detected_gpg_key != ""
+      block:
+        - name: Set GPG signing key in git
+          ansible.builtin.git_config:
+            name: user.signingkey
+            scope: global
+            value: "{{ detected_gpg_key }}"
+
+        - name: Enable GPG signed commits
+          ansible.builtin.git_config:
+            name: commit.gpgsign
+            scope: global
+            value: "true"
+
+        - name: Set GPG program path
+          ansible.builtin.git_config:
+            name: gpg.program
+            scope: global
+            value: gpg
+
+    - name: Warn if no GPG key found
+      ansible.builtin.debug:
+        msg: "No GPG key found. Run 'make gpg-setup' to generate a key on your YubiKey."
+      when: detected_gpg_key == ""
+
+  tags:
+    - install
+    - gpg
+    - security

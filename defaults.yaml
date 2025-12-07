@@ -38,6 +38,7 @@ cli_packages:
   - glow
   - gnupg
   - gource
+  - pinentry-mac
   - graphicsmagick
   - graphviz
   - hurl
