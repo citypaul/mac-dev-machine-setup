@@ -42,6 +42,7 @@
     - import_tasks: ansible/tasks/iterm.yaml
     - import_tasks: ansible/tasks/nvim.yaml
     - import_tasks: ansible/tasks/security.yaml
+    - import_tasks: ansible/tasks/gpg.yaml
     - import_tasks: ansible/tasks/dotfiles.yaml
     - import_tasks: ansible/tasks/node.yaml
     - import_tasks: ansible/tasks/rust.yaml

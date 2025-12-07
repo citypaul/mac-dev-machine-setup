@@ -58,6 +58,8 @@ make update
 | `make themes` | Install terminal themes |
 | `make app-store` | Install Mac App Store apps |
 | `make keys` | Install private keys (requires vault password) |
+| `make gpg` | Configure GPG signing for git (auto-detects key) |
+| `make gpg-setup` | Interactive YubiKey GPG key setup wizard |
 
 ## What Gets Installed
 
@@ -83,7 +85,7 @@ make update
 ### System Enhancements
 - **Window Management**: Karabiner Elements
 - **System Monitoring**: Stats, glances, htop
-- **Security**: SSH key management
+- **Security**: SSH key management, GPG signing with YubiKey
 - **Productivity**: Raycast, Obsidian, Fantastical
 
 ## Git Configuration
@@ -237,6 +239,150 @@ Sensitive data is stored encrypted using Ansible Vault:
    ```bash
    make keys
    ```
+
+### GPG Signing with YubiKey
+
+This setup supports signing git commits with a GPG key stored on a YubiKey for enhanced security.
+
+#### Prerequisites
+
+- YubiKey with OpenPGP support (YubiKey 5 series recommended)
+- GPG and YubiKey tools (installed automatically via `make cli`)
+
+#### First-Time Setup
+
+1. **Install prerequisites:**
+   ```bash
+   make cli
+   ```
+   This installs `gnupg`, `pinentry-mac`, and `ykman`.
+
+2. **Set up your GPG key on YubiKey:**
+   ```bash
+   make gpg-setup
+   ```
+   This interactive wizard will:
+   - Check if your YubiKey is connected
+   - Detect existing GPG keys on the YubiKey
+   - Guide you through generating a new key or importing an existing one
+
+3. **Configure git to sign commits:**
+   ```bash
+   make gpg
+   ```
+   This automatically:
+   - Detects your GPG key ID
+   - Configures git to use it for signing
+   - Enables commit signing by default
+
+4. **Add your public key to GitHub:**
+   ```bash
+   gpg --armor --export YOUR_KEY_ID
+   ```
+   Copy the output and add it at: https://github.com/settings/keys
+
+#### Daily Usage
+
+After setup, git commits are automatically signed. The 8-hour cache means you'll enter your YubiKey PIN once per workday.
+
+```bash
+# Test signing works
+git commit --allow-empty -m "Test signed commit"
+git log --show-signature -1
+
+# Verify YubiKey is detected
+gpg --card-status
+```
+
+#### Backup YubiKey Setup
+
+**Important:** Keys generated directly on a YubiKey cannot be extracted. Plan for backup BEFORE generating keys.
+
+##### Option 1: Off-Card Backup During Generation (Recommended)
+
+When running `make gpg-setup` and choosing to generate a new key:
+1. When asked "Make off-card backup of encryption key?", choose **Yes**
+2. GPG will create an encrypted backup file in `~/.gnupg/`
+3. Store this backup securely (encrypted USB, password manager, safe)
+
+To restore to a backup YubiKey:
+```bash
+# Import the backup key
+gpg --import ~/.gnupg/sk_XXXXX.gpg
+
+# Insert backup YubiKey
+# Move the key to the new YubiKey
+gpg --edit-key YOUR_KEY_ID
+keytocard
+# Select slot 1 for Signature, 2 for Encryption, 3 for Authentication
+save
+```
+
+##### Option 2: Generate Keys on Computer First
+
+For maximum flexibility with multiple YubiKeys:
+
+```bash
+# 1. Generate a master key on your computer (NOT on YubiKey)
+gpg --full-generate-key
+# Choose RSA (sign only), 4096 bits, set expiration
+
+# 2. Add subkeys for signing, encryption, authentication
+gpg --edit-key YOUR_KEY_ID
+addkey  # Add signing subkey
+addkey  # Add encryption subkey
+addkey  # Add authentication subkey
+save
+
+# 3. Export backup BEFORE moving to YubiKey
+gpg --armor --export-secret-keys YOUR_KEY_ID > master-key-backup.asc
+gpg --armor --export-secret-subkeys YOUR_KEY_ID > subkeys-backup.asc
+# Store these securely!
+
+# 4. Move subkeys to primary YubiKey
+gpg --edit-key YOUR_KEY_ID
+key 1  # Select first subkey
+keytocard
+key 1  # Deselect
+key 2  # Select second subkey
+keytocard
+# Repeat for all subkeys
+save
+
+# 5. For backup YubiKey, reimport and repeat
+gpg --delete-secret-keys YOUR_KEY_ID
+gpg --import subkeys-backup.asc
+# Insert backup YubiKey
+gpg --edit-key YOUR_KEY_ID
+# Move keys to backup YubiKey using keytocard
+```
+
+##### Switching Between YubiKeys
+
+When switching to a different YubiKey with the same key:
+```bash
+# Remove cached key stub and re-detect
+gpg-connect-agent "scd serialno" "learn --force" /bye
+
+# Or fully reset the agent
+gpgconf --kill gpg-agent
+gpg --card-status
+```
+
+#### Troubleshooting GPG
+
+1. **"No secret key" errors:**
+   - Ensure your YubiKey is inserted
+   - Run `gpgconf --kill gpg-agent` to restart the agent
+   - Run `gpg --card-status` to verify YubiKey detection
+
+2. **PIN prompt doesn't appear:**
+   - Ensure `pinentry-mac` is installed: `brew list pinentry-mac`
+   - Check gpg-agent config includes `pinentry-program`
+
+3. **Signing fails in terminal:**
+   - Ensure `GPG_TTY` is set: `export GPG_TTY=$(tty)`
+   - Add this to your `.zshrc` if not already present
 
 ## Validation and Safety
 

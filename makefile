@@ -1,4 +1,4 @@
-.PHONY: all deps personal work dock setup keys cli gui update check
+.PHONY: all deps personal work dock setup keys cli gui update check gpg gpg-setup
 
 all: setup deps install personal
 
@@ -75,3 +75,9 @@ check:
 
 node:
 	@ansible-playbook local.yaml --tags node
+
+gpg:
+	@ansible-playbook local.yaml -K --tags gpg
+
+gpg-setup:
+	@./scripts/gpg-yubikey-setup.sh
