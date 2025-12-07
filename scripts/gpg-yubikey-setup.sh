@@ -6,6 +6,9 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
+# Ensure we can read from terminal even when run through make
+exec < /dev/tty
+
 echo -e "${GREEN}=== GPG YubiKey Setup ===${NC}"
 echo ""
 
@@ -29,6 +32,29 @@ fi
 echo -e "${GREEN}YubiKey detected!${NC}"
 
 echo ""
+echo -e "${YELLOW}Preparing GPG for YubiKey access...${NC}"
+
+# Kill any existing GPG daemons that might be holding the device
+gpgconf --kill scdaemon 2>/dev/null || true
+gpgconf --kill gpg-agent 2>/dev/null || true
+
+# Check if macOS pcscd is conflicting with GPG's scdaemon
+if sudo launchctl list 2>/dev/null | grep -q "com.apple.pcscd"; then
+    echo -e "${YELLOW}Disabling macOS smart card daemon (conflicts with GPG)...${NC}"
+    sudo launchctl disable system/com.apple.pcscd 2>/dev/null || true
+    sudo pkill -9 pcscd 2>/dev/null || true
+    sleep 1
+fi
+
+# Verify GPG can now access the card
+if ! gpg --card-status &>/dev/null; then
+    echo -e "${RED}Error: GPG cannot access YubiKey.${NC}"
+    echo "Try unplugging and reinserting your YubiKey, then run this script again."
+    exit 1
+fi
+echo -e "${GREEN}GPG can access YubiKey!${NC}"
+
+echo ""
 echo -e "${YELLOW}Checking for existing GPG key on YubiKey...${NC}"
 EXISTING_KEY=$(gpg --card-status 2>/dev/null | grep -E "^sec" | head -1 || true)
 
@@ -49,7 +75,8 @@ echo "  1) Generate a new key directly on YubiKey (most secure)"
 echo "  2) Import an existing key to YubiKey"
 echo "  3) Exit"
 echo ""
-read -p "Choose option [1-3]: " choice
+printf "Choose option [1-3]: "
+read -r choice
 
 case $choice in
     1)
@@ -73,7 +100,8 @@ case $choice in
         echo "  8. Set your Admin PIN when prompted (default is 12345678)"
         echo "  9. Type 'quit' when done"
         echo ""
-        read -p "Press Enter to continue..."
+        printf "Press Enter to continue..."
+        read -r _
         gpg --card-edit
 
         echo ""
@@ -92,7 +120,8 @@ case $choice in
         echo ""
         echo -e "${YELLOW}=== Importing Existing Key ===${NC}"
         echo ""
-        read -p "Enter path to your private key file: " key_path
+        printf "Enter path to your private key file: "
+        read -r key_path
 
         if [ ! -f "$key_path" ]; then
             echo -e "${RED}Error: File not found: $key_path${NC}"
@@ -107,7 +136,8 @@ case $choice in
         echo -e "${RED}WARNING: This is destructive - the key will be moved, not copied!${NC}"
         echo "Make sure you have a backup of your key."
         echo ""
-        read -p "Press Enter to continue or Ctrl+C to cancel..."
+        printf "Press Enter to continue or Ctrl+C to cancel..."
+        read -r _
 
         KEY_ID=$(gpg --list-secret-keys --keyid-format=long | grep -E "^sec" | head -1 | awk -F'/' '{print $2}' | awk '{print $1}')
         echo "Moving key $KEY_ID to YubiKey..."
