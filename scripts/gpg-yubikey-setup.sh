@@ -56,11 +56,16 @@ case $choice in
         echo ""
         echo -e "${YELLOW}=== Generating New Key on YubiKey ===${NC}"
         echo ""
+        echo -e "${YELLOW}IMPORTANT: Backup Decision${NC}"
+        echo "Keys generated on YubiKey CANNOT be extracted later."
+        echo "If you have a backup YubiKey, choose YES for off-card backup."
+        echo ""
         echo "This will launch the GPG card interface."
         echo "Follow these steps:"
         echo "  1. Type 'admin' and press Enter"
         echo "  2. Type 'generate' and press Enter"
-        echo "  3. Choose whether to make an off-card backup (recommended: no)"
+        echo "  3. Off-card backup? Choose YES if you have a backup YubiKey"
+        echo "     (Creates ~/.gnupg/sk_*.gpg - store this securely!)"
         echo "  4. Set key expiration (recommended: 2y for 2 years)"
         echo "  5. Enter your name: Paul Hammond"
         echo "  6. Enter your email: paul.hammond@gmail.com"
@@ -73,6 +78,15 @@ case $choice in
 
         echo ""
         echo -e "${GREEN}Key generation complete!${NC}"
+
+        # Check for backup file
+        BACKUP_FILE=$(ls -t ~/.gnupg/sk_*.gpg 2>/dev/null | head -1)
+        if [ -n "$BACKUP_FILE" ]; then
+            echo ""
+            echo -e "${YELLOW}Backup key created: $BACKUP_FILE${NC}"
+            echo "Store this file securely to restore to a backup YubiKey later."
+            echo "See 'Backup YubiKey Setup' in README.md for restore instructions."
+        fi
         ;;
     2)
         echo ""

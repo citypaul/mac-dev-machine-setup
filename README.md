@@ -294,6 +294,81 @@ git log --show-signature -1
 gpg --card-status
 ```
 
+#### Backup YubiKey Setup
+
+**Important:** Keys generated directly on a YubiKey cannot be extracted. Plan for backup BEFORE generating keys.
+
+##### Option 1: Off-Card Backup During Generation (Recommended)
+
+When running `make gpg-setup` and choosing to generate a new key:
+1. When asked "Make off-card backup of encryption key?", choose **Yes**
+2. GPG will create an encrypted backup file in `~/.gnupg/`
+3. Store this backup securely (encrypted USB, password manager, safe)
+
+To restore to a backup YubiKey:
+```bash
+# Import the backup key
+gpg --import ~/.gnupg/sk_XXXXX.gpg
+
+# Insert backup YubiKey
+# Move the key to the new YubiKey
+gpg --edit-key YOUR_KEY_ID
+keytocard
+# Select slot 1 for Signature, 2 for Encryption, 3 for Authentication
+save
+```
+
+##### Option 2: Generate Keys on Computer First
+
+For maximum flexibility with multiple YubiKeys:
+
+```bash
+# 1. Generate a master key on your computer (NOT on YubiKey)
+gpg --full-generate-key
+# Choose RSA (sign only), 4096 bits, set expiration
+
+# 2. Add subkeys for signing, encryption, authentication
+gpg --edit-key YOUR_KEY_ID
+addkey  # Add signing subkey
+addkey  # Add encryption subkey
+addkey  # Add authentication subkey
+save
+
+# 3. Export backup BEFORE moving to YubiKey
+gpg --armor --export-secret-keys YOUR_KEY_ID > master-key-backup.asc
+gpg --armor --export-secret-subkeys YOUR_KEY_ID > subkeys-backup.asc
+# Store these securely!
+
+# 4. Move subkeys to primary YubiKey
+gpg --edit-key YOUR_KEY_ID
+key 1  # Select first subkey
+keytocard
+key 1  # Deselect
+key 2  # Select second subkey
+keytocard
+# Repeat for all subkeys
+save
+
+# 5. For backup YubiKey, reimport and repeat
+gpg --delete-secret-keys YOUR_KEY_ID
+gpg --import subkeys-backup.asc
+# Insert backup YubiKey
+gpg --edit-key YOUR_KEY_ID
+# Move keys to backup YubiKey using keytocard
+```
+
+##### Switching Between YubiKeys
+
+When switching to a different YubiKey with the same key:
+```bash
+# Remove cached key stub and re-detect
+gpg-connect-agent "scd serialno" "learn --force" /bye
+
+# Or fully reset the agent
+gpgconf --kill gpg-agent
+gpg --card-status
+```
+
 #### Troubleshooting GPG
 
 1. **"No secret key" errors:**
