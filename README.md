@@ -58,6 +58,8 @@ make update
 | `make themes` | Install terminal themes |
 | `make app-store` | Install Mac App Store apps |
 | `make keys` | Install private keys (requires vault password) |
+| `make gpg` | Configure GPG signing for git (auto-detects key) |
+| `make gpg-setup` | Interactive YubiKey GPG key setup wizard |
 
 ## What Gets Installed
 
@@ -83,7 +85,7 @@ make update
 ### System Enhancements
 - **Window Management**: Karabiner Elements
 - **System Monitoring**: Stats, glances, htop
-- **Security**: SSH key management
+- **Security**: SSH key management, GPG signing with YubiKey
 - **Productivity**: Raycast, Obsidian, Fantastical
 
 ## Git Configuration
@@ -237,6 +239,75 @@ Sensitive data is stored encrypted using Ansible Vault:
    ```bash
    make keys
    ```
+
+### GPG Signing with YubiKey
+
+This setup supports signing git commits with a GPG key stored on a YubiKey for enhanced security.
+
+#### Prerequisites
+
+- YubiKey with OpenPGP support (YubiKey 5 series recommended)
+- GPG and YubiKey tools (installed automatically via `make cli`)
+
+#### First-Time Setup
+
+1. **Install prerequisites:**
+   ```bash
+   make cli
+   ```
+   This installs `gnupg`, `pinentry-mac`, and `ykman`.
+
+2. **Set up your GPG key on YubiKey:**
+   ```bash
+   make gpg-setup
+   ```
+   This interactive wizard will:
+   - Check if your YubiKey is connected
+   - Detect existing GPG keys on the YubiKey
+   - Guide you through generating a new key or importing an existing one
+
+3. **Configure git to sign commits:**
+   ```bash
+   make gpg
+   ```
+   This automatically:
+   - Detects your GPG key ID
+   - Configures git to use it for signing
+   - Enables commit signing by default
+
+4. **Add your public key to GitHub:**
+   ```bash
+   gpg --armor --export YOUR_KEY_ID
+   ```
+   Copy the output and add it at: https://github.com/settings/keys
+
+#### Daily Usage
+
+After setup, git commits are automatically signed. The 8-hour cache means you'll enter your YubiKey PIN once per workday.
+
+```bash
+# Test signing works
+git commit --allow-empty -m "Test signed commit"
+git log --show-signature -1
+
+# Verify YubiKey is detected
+gpg --card-status
+```
+
+#### Troubleshooting GPG
+
+1. **"No secret key" errors:**
+   - Ensure your YubiKey is inserted
+   - Run `gpgconf --kill gpg-agent` to restart the agent
+   - Run `gpg --card-status` to verify YubiKey detection
+
+2. **PIN prompt doesn't appear:**
+   - Ensure `pinentry-mac` is installed: `brew list pinentry-mac`
+   - Check gpg-agent config includes `pinentry-program`
+
+3. **Signing fails in terminal:**
+   - Ensure `GPG_TTY` is set: `export GPG_TTY=$(tty)`
+   - Add this to your `.zshrc` if not already present
 
 ## Validation and Safety
 
