@@ -83,7 +83,7 @@ make update
 ### System Enhancements
 - **Window Management**: Karabiner Elements
 - **System Monitoring**: Stats, glances, htop
-- **Security**: GPG tools, SSH key management
+- **Security**: SSH key management
 - **Productivity**: Raycast, Obsidian, Fantastical
 
 ## Git Configuration
@@ -243,7 +243,7 @@ Sensitive data is stored encrypted using Ansible Vault:
 The setup includes several safety features:
 
 - **Pre-flight checks**: Validates system requirements before running
-- **Backup creation**: Backs up existing SSH/GPG keys before modification
+- **Backup creation**: Backs up existing SSH keys before modification
 - **Disk space check**: Warns if disk space is low
 - **Internet connectivity**: Verifies connection before downloading
 - **Dry run mode**: Preview changes with `make check`

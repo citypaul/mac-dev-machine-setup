@@ -1,8 +1,6 @@
 - hosts: localhost
 
   vars:
-    source_gpg_private_key: "./.gpg_keys/private.key"
-    source_gpg_public_key: "./.gpg_keys/public.key"
     source_ssh_key: "./.ssh/id_rsa"
     dest_ssh_key: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
     go_root: "/usr/local/go"
@@ -12,38 +10,14 @@
   vars_files:
     - ./vars/api_keys.yml
   tasks:
-    - name: Ensure .ssh and .gnupg directories exist
+    - name: Ensure .ssh directory exists
       file:
-        path: "{{ item }}"
+        path: "{{ lookup('env', 'HOME') }}/.ssh"
         state: directory
         mode: "0700"
-      loop:
-        - "{{ lookup('env', 'HOME') }}/.ssh"
-        - "{{ lookup('env', 'HOME') }}/.gnupg"
       ignore_errors: no
 
-    - import_tasks: ansible/tasks/gpg.yaml
     - import_tasks: ansible/tasks/ssh.yaml
-
-    - name: Configure Git to use GPG signing
-      block:
-        - name: Set global git gpg key
-          ansible.builtin.git_config:
-            name: user.signingkey
-            scope: global
-            value: 5016355A88C64BE0
-
-        - name: Set global git always gpgsign
-          ansible.builtin.git_config:
-            name: commit.gpgsign
-            scope: global
-            value: "true"
-
-        - name: Set GPG program path
-          ansible.builtin.git_config:
-            name: gpg.program
-            scope: global
-            value: "{{ ansible_env.HOMEBREW_PREFIX | default('/opt/homebrew') }}/bin/gpg"
 
     - name: Set correct permissions for SSH key
       file:
@@ -52,23 +26,11 @@
       when: dest_ssh_key is file
       ignore_errors: no
 
-    - name: Verify key installations
-      block:
-        - name: Check GPG key
-          command: gpg --list-secret-keys
-          register: gpg_check
-          changed_when: false
-          failed_when: gpg_check.rc != 0
-
-        - name: Check SSH key
-          stat:
-            path: "{{ dest_ssh_key }}"
-          register: ssh_check
-
-      rescue:
-        - name: Key installation failed
-          fail:
-            msg: "Failed to install keys. Please check the error messages above."
+    - name: Verify SSH key installation
+      stat:
+        path: "{{ dest_ssh_key }}"
+      register: ssh_check
+      failed_when: not ssh_check.stat.exists
 
     - name: Ensure ~/.config/fabric directory exists
       ansible.builtin.file:

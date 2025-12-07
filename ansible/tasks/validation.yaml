@@ -59,19 +59,7 @@
         mode: preserve
       when: ssh_key_check.stat.exists
 
-    - name: Check for existing GPG keys
-      command: gpg --list-secret-keys
-      register: gpg_keys
-      changed_when: false
-      failed_when: false
-
-    - name: Backup GPG keys if present
-      shell: |
-        gpg --export-secret-keys --armor > "{{ ansible_env.HOME }}/.mac-setup-backups/{{ ansible_date_time.date }}/gpg-secret-keys.asc"
-        gpg --export --armor > "{{ ansible_env.HOME }}/.mac-setup-backups/{{ ansible_date_time.date }}/gpg-public-keys.asc"
-      when: gpg_keys.rc == 0 and gpg_keys.stdout != ""
-
     - name: Display backup location
       debug:
         msg: "Backups stored in: {{ ansible_env.HOME }}/.mac-setup-backups/{{ ansible_date_time.date }}"
-      when: ssh_key_check.stat.exists or (gpg_keys.rc == 0 and gpg_keys.stdout != "")
+      when: ssh_key_check.stat.exists

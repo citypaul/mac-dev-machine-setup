@@ -59,7 +59,7 @@ ansible-playbook local.yaml -K --check --diff
 - `local.yaml` - Main Ansible playbook that orchestrates all tasks (includes validation)
 - `update.yaml` - Update playbook for refreshing all installed packages
 - `setup.yaml` - Prerequisites installation playbook
-- `personal-keys.yaml` - Encrypted private key installation (GPG, SSH)
+- `personal-keys.yaml` - Encrypted private key installation (SSH)
 - `ansible.cfg` - Ansible runtime configuration
 - `requirements.yaml` - Ansible Galaxy dependencies
 
@@ -69,7 +69,7 @@ All Ansible tasks are in `ansible/tasks/`:
 
 - Development tools: `cli-tools.yaml`, `gui-tools.yaml`, `node.yaml`, `rust.yaml`
 - Terminal & editors: `iterm.yaml`, `nvim.yaml`, `zsh.yaml`, `themes.yaml`, `fonts.yaml`
-- Security: `security.yaml`, `gpg.yaml`, `ssh.yaml`
+- Security: `security.yaml`, `ssh.yaml`
 - System config: `osx.yaml`, `dock.yaml`, `window-management.yaml`
 - AI tools: `ai-tools.yaml` (Fabric AI, Ollama, etc.)
 - Maintenance: `remove-unwanted-packages.yaml`, `dotfiles.yaml`, `update.yaml`
