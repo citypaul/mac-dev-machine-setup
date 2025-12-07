@@ -10,6 +10,18 @@
       changed_when: true
       ignore_errors: true
 
+    - name: Create ~/.local/bin directory
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.local/bin"
+        state: directory
+        mode: "0755"
+
+    - name: Install gpg-auto-sign wrapper script
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/scripts/gpg-auto-sign.sh"
+        dest: "{{ ansible_env.HOME }}/.local/bin/gpg-auto-sign"
+        mode: "0755"
+
     - name: Get GPG signing key from YubiKey
       ansible.builtin.shell: |
         gpg --card-status 2>/dev/null | grep -E "^sec" | head -1 | awk -F'/' '{print $2}' | awk '{print $1}'
@@ -43,11 +55,11 @@
             scope: global
             value: "true"
 
-        - name: Set GPG program path
+        - name: Set GPG program to auto-detect wrapper
           ansible.builtin.git_config:
             name: gpg.program
             scope: global
-            value: gpg
+            value: "{{ ansible_env.HOME }}/.local/bin/gpg-auto-sign"
 
     - name: Warn if no GPG key found
       ansible.builtin.debug:
