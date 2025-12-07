@@ -70,6 +70,7 @@ cli_packages:
   - watchman
   - wget
   - yarn
+  - ykman
   - yt-dlp
   - zellij
   - zoxide
