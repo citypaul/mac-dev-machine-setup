@@ -242,7 +242,7 @@ Sensitive data is stored encrypted using Ansible Vault:
 
 ### GPG Signing with YubiKey
 
-This setup supports signing git commits with a GPG key stored on a YubiKey for enhanced security.
+This setup supports signing git commits with a GPG key stored on a YubiKey for enhanced security. **Multiple YubiKeys with different keys are supported** - git automatically detects which YubiKey is currently inserted and uses the correct key.
 
 #### Prerequisites
 
@@ -359,7 +359,7 @@ gpg --edit-key YOUR_KEY_ID
 
 ##### Switching Between YubiKeys
 
-When switching to a different YubiKey with the same key:
+**With the same key on both YubiKeys:**
 ```bash
 # Remove cached key stub and re-detect
 gpg-connect-agent "scd serialno" "learn --force" /bye
@@ -368,6 +368,18 @@ gpg-connect-agent "scd serialno" "learn --force" /bye
 gpgconf --kill gpg-agent
 gpg --card-status
 ```
+
+**With different keys on each YubiKey:**
+
+This setup includes automatic key detection via a wrapper script (`~/.local/bin/gpg-auto-sign`). When you run `make gpg`, git is configured to use this wrapper which:
+
+1. Detects which YubiKey is currently inserted
+2. Reads the key ID from that YubiKey
+3. Uses that key for signing, regardless of what's in `user.signingkey`
+
+This means you can simply swap YubiKeys and git will automatically use the correct key - no manual switching required.
+
+**Note:** You'll need to add each key's public key to GitHub separately at https://github.com/settings/keys
 
 #### Troubleshooting GPG
 
