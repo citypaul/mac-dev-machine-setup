@@ -17,7 +17,8 @@
       tags:
         - install
         - core
-      when: not (ansible_check_mode | default(false))
+        - cli
+        - gui
 
     - name: Tap Homebrew repositories
       community.general.homebrew_tap:
@@ -28,7 +29,7 @@
         - install
         - core
         - cli
-      when: not (ansible_check_mode | default(false))
+        - gui
 
   tasks:
     - import_tasks: ansible/tasks/git-setup.yaml
