@@ -4,39 +4,36 @@
     state: latest
   ignore_errors: yes
   with_items:
-    # Mac Uiltiies
-    - appcleaner
+    # Mac Utilities
     - downie
-    - unclack
     - cleanshot
     - httpie
     - bettertouchtool
-    - istat-menus
     - raycast
     - lunar
     - gas-mask
-    - jordanbaird-ice
     - rectangle-pro
     - alt-tab
     - popclip
     - protonvpn
+    - bartender
+    - little-snitch
+    - micro-snitch
     # Software Development
-    - paw
     - warp
-    - tabby
-    - visual-studio-code
     - cursor
-    - zed
+    - 1password-cli
+    - tuist
+    - codex
+    - claude-code
     # App Development
     - rotato
     # Web Development
-    - vivaldi
     - firefox
+    - ungoogled-chromium
     # PKM
     - obsidian
     - dropbox
-    - proton-mail
-    - proton-drive
     # Social
     - discord
     - zoom
@@ -44,9 +41,16 @@
     - camo-studio
     # Design
     - sketch
+    # Gaming
+    - steelseries-gg
     # Misc
     - vlc
-    - steam
+    - hammerspoon
+    # Fonts
+    - font-fira-code
+    - font-hack
+    - font-jetbrains-mono
+    - font-recursive-code
   tags:
     - install
     - gui

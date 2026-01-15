@@ -4,38 +4,60 @@
     state: latest
   ignore_errors: yes
   with_items:
+    # Core Tools
+    - git
+    - curl
+    - wget
+    - tree
+    - stow
+    # Shell & Navigation
     - zellij
     - fzf
     - z
+    - starship
+    - thefuck
+    # Development Tools
     - gh
-    - aria2
-    - curl
+    - lazygit
+    - ripgrep
+    - fd
+    - jq
+    - httpie
     - claude
-    - wget
+    # Package Managers
     - yarn
     - pnpm
-    - tree
-    - thefuck
+    - nvm
+    - pipx
     - mas
-    - starship
-    - httpie
-    - jq
-    - lazygit
+    # Infrastructure & Cloud
+    - ansible
+    - terraform
+    - mole
+    # Database
+    - mysql-client
+    - pscale
+    # Languages & Runtimes
+    - rust
+    - deno
+    - go
+    # Build Tools
+    - cmake
+    # System Monitoring
     - glances
     - tldr
-    - fd
+    # Utilities
+    - aria2
     - asciinema
     - eza
     - bat
+    - axe
+    # Apple Development
     - robotsandpencils/made/xcodes
-    - rust
     - hammerspoon
-    - deno
-    - terraform
     - xcode-build-server
     - xcbeautify
     - swiftformat
-    # Apples
     - swift-format
   tags:
     - install
