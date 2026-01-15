@@ -50,6 +50,7 @@ cli_packages:
   - lazygit
   - maccy
   - mas
+  - mole
   - navi
   - neofetch
   - ollama
