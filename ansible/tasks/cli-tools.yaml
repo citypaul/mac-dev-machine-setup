@@ -6,6 +6,7 @@
   with_items:
     # Core Tools
     - git
+    - worktrunk
     - curl
     - wget
     - tree
