@@ -101,6 +101,7 @@ gui_packages:
   - iterm2
   - karabiner-elements
   - loopback
+  - mactex
   - meetingbar
   - obsidian
   - pgadmin4
