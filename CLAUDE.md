@@ -29,6 +29,7 @@ This is an Ansible-based automation repository for setting up and maintaining Ma
 - `make themes` - Install themes
 - `make app-store` - Install Mac App Store apps
 - `make dotfiles` - Sync dotfiles from external repository
+- `make git` - Configure git identity, aliases, and GPG signing (runs `git-personal` tag)
 
 ### Running Specific Tasks
 
@@ -69,7 +70,7 @@ All Ansible tasks are in `ansible/tasks/`:
 
 - Development tools: `cli-tools.yaml`, `gui-tools.yaml`, `node.yaml`, `rust.yaml`
 - Terminal & editors: `iterm.yaml`, `nvim.yaml`, `zsh.yaml`, `themes.yaml`, `fonts.yaml`
-- Security: `security.yaml`, `ssh.yaml`
+- Security: `security.yaml`, `ssh.yaml`, `gpg.yaml`
 - System config: `osx.yaml`, `dock.yaml`, `window-management.yaml`
 - AI tools: `ai-tools.yaml` (Fabric AI, Ollama, etc.)
 - Maintenance: `remove-unwanted-packages.yaml`, `dotfiles.yaml`, `update.yaml`
@@ -82,6 +83,18 @@ Templates in `ansible/templates/`:
 - `fabric/settings.yaml` - Fabric AI configuration
 - `iterm-dynamic-profile.json` - iTerm2 profile configuration
 
+### Static Files
+
+Static files in `ansible/files/`:
+
+- `gpg/public-keys.asc` - GPG public keys imported on fresh machines so YubiKey signing works
+
+### Scripts
+
+Helper scripts in `scripts/`:
+
+- `gpg-auto-sign.sh` - GPG wrapper that auto-detects the signing key from the currently-inserted YubiKey
+
 ## Key Design Patterns
 
 ### Dual Profile Support
@@ -91,6 +104,13 @@ The repository supports both personal and work environments through Ansible tags
 - Tasks tagged with `install` run for both profiles
 - Tasks tagged with `personal` only run for personal setup
 - Tasks tagged with `work` only run for work setup
+
+### Tag Relationships
+
+Some tasks share tags so they run together:
+
+- `git-setup.yaml` and `gpg.yaml` both have `git-personal` and `install` tags, so `make git` configures both git identity/aliases and GPG signing in a single command
+- `make` and `make work` both run the `install` tag, which includes git and GPG setup
 
 ### Package Management
 

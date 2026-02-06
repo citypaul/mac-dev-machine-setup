@@ -54,6 +54,7 @@ make update
 | `make osx` | Configure macOS system preferences |
 | `make dock` | Configure dock items |
 | `make dotfiles` | Sync dotfiles from repository |
+| `make git` | Configure git identity, aliases, and GPG signing |
 | `make fonts` | Install developer fonts |
 | `make themes` | Install terminal themes |
 | `make app-store` | Install Mac App Store apps |
@@ -249,6 +250,14 @@ This setup supports signing git commits with a GPG key stored on a YubiKey for e
 - YubiKey with OpenPGP support (YubiKey 5 series recommended)
 - GPG and YubiKey tools (installed automatically via `make cli`)
 
+#### How It Works
+
+GPG signing is automatically configured when you run `make git` (or `make` / `make work`, which include it). The setup:
+
+1. **Imports GPG public keys** from `ansible/files/gpg/public-keys.asc` into your local keyring (required for GPG to sign with YubiKey-stored private keys)
+2. **Detects the signing key** from the currently-inserted YubiKey (tries keyring first, falls back to parsing `gpg --card-status` fingerprint)
+3. **Configures git** with the detected key, enables commit signing, and installs the `gpg-auto-sign` wrapper script
+
 #### First-Time Setup
 
 1. **Install prerequisites:**
@@ -257,7 +266,7 @@ This setup supports signing git commits with a GPG key stored on a YubiKey for e
    ```
    This installs `gnupg`, `pinentry-mac`, and `ykman`.
 
-2. **Set up your GPG key on YubiKey:**
+2. **Set up your GPG key on YubiKey** (if not already done):
    ```bash
    make gpg-setup
    ```
@@ -266,16 +275,23 @@ This setup supports signing git commits with a GPG key stored on a YubiKey for e
    - Detect existing GPG keys on the YubiKey
    - Guide you through generating a new key or importing an existing one
 
-3. **Configure git to sign commits:**
+3. **Export your public key and add it to this repo:**
    ```bash
-   make gpg
+   gpg --armor --export YOUR_KEY_ID >> ansible/files/gpg/public-keys.asc
+   ```
+   This ensures fresh machines can import the public key before configuring signing.
+
+4. **Configure git to sign commits:**
+   ```bash
+   make git
    ```
    This automatically:
-   - Detects your GPG key ID
+   - Imports stored public keys into the local GPG keyring
+   - Detects your GPG key ID from the inserted YubiKey
    - Configures git to use it for signing
    - Enables commit signing by default
 
-4. **Add your public key to GitHub:**
+5. **Add your public key to GitHub:**
    ```bash
    gpg --armor --export YOUR_KEY_ID
    ```
@@ -440,11 +456,14 @@ The setup includes several safety features:
 ├── defaults.yaml        # Package lists and configuration
 ├── local.yaml           # Main Ansible playbook
 ├── update.yaml          # Update playbook
+├── scripts/             # Helper scripts (e.g., gpg-auto-sign.sh)
 ├── ansible/
-│   ├── tasks/          # Individual task files
-│   └── templates/      # Configuration templates
+│   ├── files/           # Static files deployed to target machine
+│   │   └── gpg/         # GPG public keys for import
+│   ├── tasks/           # Individual task files
+│   └── templates/       # Configuration templates
 └── vars/
-    └── api_keys.yml    # Encrypted secrets (create this)
+    └── api_keys.yml     # Encrypted secrets (create this)
 ```
 
 ## Contributing

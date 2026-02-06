@@ -6,8 +6,13 @@
 # which key to use based on which YubiKey is currently plugged in.
 
 # Detect key ID from currently-inserted YubiKey
-# Format: sec>  rsa2048/0x5D742BF97586D1E0  created: ...
+# First try: key stub in keyring (format: sec>  rsa2048/0x5D742BF97586D1E0  created: ...)
 DETECTED_KEY=$(gpg --card-status 2>/dev/null | grep "^sec>" | head -1 | awk -F'/' '{print $2}' | awk '{print $1}' | sed 's/^0x//')
+
+# Second try: read signing key fingerprint directly from card (no public key import needed)
+if [ -z "$DETECTED_KEY" ]; then
+    DETECTED_KEY=$(gpg --card-status 2>/dev/null | grep "^Signature key" | sed 's/.*: //' | tr -d ' ')
+fi
 
 # If still no key, just pass through to gpg normally
 if [ -z "$DETECTED_KEY" ]; then
