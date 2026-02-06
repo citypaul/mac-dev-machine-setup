@@ -192,4 +192,5 @@
         value: "true"
 
   tags:
+    - install
     - git-personal

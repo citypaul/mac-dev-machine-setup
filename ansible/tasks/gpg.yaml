@@ -22,23 +22,38 @@
         dest: "{{ ansible_env.HOME }}/.local/bin/gpg-auto-sign"
         mode: "0755"
 
-    - name: Get GPG signing key from YubiKey
+    - name: Import GPG public keys
+      ansible.builtin.shell: |
+        gpg --import {{ playbook_dir }}/ansible/files/gpg/public-keys.asc 2>&1
+      register: gpg_import_result
+      changed_when: "'imported' in gpg_import_result.stdout or 'imported' in gpg_import_result.stderr"
+      failed_when: false
+
+    - name: Get GPG signing key from YubiKey (keyring lookup)
       ansible.builtin.shell: |
         gpg --card-status 2>/dev/null | grep -E "^sec" | head -1 | awk -F'/' '{print $2}' | awk '{print $1}'
       register: gpg_key_from_yubikey
       changed_when: false
       failed_when: false
 
+    - name: Get GPG signing key from YubiKey (fingerprint fallback)
+      ansible.builtin.shell: |
+        gpg --card-status 2>/dev/null | grep "^Signature key" | sed 's/.*: //' | tr -d ' '
+      register: gpg_key_from_yubikey_fingerprint
+      changed_when: false
+      failed_when: false
+      when: gpg_key_from_yubikey.stdout == ""
+
     - name: Get GPG signing key from keyring (fallback)
       ansible.builtin.shell: |
         gpg --list-secret-keys --keyid-format=long 2>/dev/null | grep -E "^sec" | head -1 | awk -F'/' '{print $2}' | awk '{print $1}'
       register: gpg_key_from_keyring
       changed_when: false
-      when: gpg_key_from_yubikey.stdout == ""
+      when: gpg_key_from_yubikey.stdout == "" and (gpg_key_from_yubikey_fingerprint.stdout | default("")) == ""
 
     - name: Set GPG key fact
       ansible.builtin.set_fact:
-        detected_gpg_key: "{{ gpg_key_from_yubikey.stdout | default(gpg_key_from_keyring.stdout, true) }}"
+        detected_gpg_key: "{{ gpg_key_from_yubikey.stdout | default(gpg_key_from_yubikey_fingerprint.stdout, true) | default(gpg_key_from_keyring.stdout, true) }}"
 
     - name: Configure git GPG signing
       when: detected_gpg_key != ""
@@ -62,11 +77,19 @@
             value: "{{ ansible_env.HOME }}/.local/bin/gpg-auto-sign"
 
     - name: Warn if no GPG key found
-      ansible.builtin.debug:
-        msg: "No GPG key found. Run 'make gpg-setup' to generate a key on your YubiKey."
+      ansible.builtin.pause:
+        prompt: |
+
+          ⚠️  No YubiKey detected - GPG commit signing was NOT configured.
+
+          Insert your YubiKey and re-run 'make git' or 'make gpg' to enable signed commits.
+          If you haven't set up a GPG key on your YubiKey yet, run 'make gpg-setup'.
+
+          Press Enter to continue
       when: detected_gpg_key == ""
 
   tags:
     - install
     - gpg
     - security
+    - git-personal
