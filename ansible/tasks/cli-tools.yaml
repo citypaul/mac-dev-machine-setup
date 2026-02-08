@@ -8,6 +8,15 @@
     - productivity
     - cli
 
+- name: Install agent-browser Chromium
+  ansible.builtin.shell: agent-browser install
+  args:
+    creates: "{{ ansible_env.HOME }}/Library/Caches/ms-playwright"
+  tags:
+    - install
+    - productivity
+    - cli
+
 - name: Better fzf shell integration
   ansible.builtin.shell: $(brew --prefix)/opt/fzf/install
   tags:

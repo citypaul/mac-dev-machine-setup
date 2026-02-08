@@ -10,6 +10,7 @@ homebrew_taps:
 cli_packages:
   - act
   - adr-tools
+  - agent-browser
   - age
   - asciinema
   - awscli
