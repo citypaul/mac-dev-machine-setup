@@ -5,6 +5,7 @@ dotfiles_repo: https://github.com/citypaul/.dotfiles.git
 
 homebrew_taps:
   - ankitpokhrel/jira-cli
+  - hashicorp/tap
   - oven-sh/bun
 
 cli_packages:
@@ -64,7 +65,7 @@ cli_packages:
   - starship
   - task
   - taskwarrior-tui
-  - terraform
+  - hashicorp/tap/terraform
   - tldr
   - tmux
   - tree
