@@ -27,6 +27,7 @@ cli_packages:
   - entr
   - eza
   - fd
+  - forgejo-cli
   - fswatch
   - fzf
   - git-filter-repo
