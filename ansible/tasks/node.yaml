@@ -25,7 +25,7 @@
   ansible.builtin.shell: |
     source ~/.zshrc
     nvm install --lts
-    nvm alias default lts/*
+    nvm alias default 'lts/*'
   args:
     executable: /bin/zsh
   tags:

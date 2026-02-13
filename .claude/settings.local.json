@@ -26,7 +26,10 @@
       "Bash(git aliases:*)",
       "Bash(git recent)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(fj --help:*)",
+      "Bash(fj auth:*)",
+      "Bash(fj:*)"
     ],
     "deny": []
   }
