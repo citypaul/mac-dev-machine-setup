@@ -6,11 +6,26 @@
     - install
     - node
 
+# Some Homebrew packages (e.g. agent-browser, gemini-cli, opencode) depend on
+# the Homebrew `node` formula. Homebrew auto-installs it, placing a `node`
+# symlink in /opt/homebrew/bin/ which takes priority over nvm in PATH.
+# This causes `nvm use` and .nvmrc files to have no effect — the system
+# always resolves to whichever node version Homebrew installed.
+# Unlinking removes the symlink while keeping node available to its dependents.
+- name: Unlink Homebrew node so nvm controls the node version
+  ansible.builtin.command: brew unlink node
+  register: brew_unlink_result
+  changed_when: "'symlinks removed' in brew_unlink_result.stdout"
+  failed_when: false
+  tags:
+    - install
+    - node
+
 - name: Install latest lts version of node
   ansible.builtin.shell: |
     source ~/.zshrc
     nvm install --lts
-    nvm alias default
+    nvm alias default 'lts/*'
   args:
     executable: /bin/zsh
   tags:
