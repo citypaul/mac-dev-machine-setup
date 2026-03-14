@@ -158,6 +158,12 @@
         scope: global
         value: "pnpm install"
 
+    - name: Set gtr default AI tool to Claude
+      ansible.builtin.git_config:
+        name: gtr.ai.default
+        scope: global
+        value: claude
+
     - name: Enable colorized output
       ansible.builtin.git_config:
         name: color.ui
