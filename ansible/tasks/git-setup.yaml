@@ -138,6 +138,26 @@
         - { name: "fdiff", value: "!f() { git status -s | fzf --preview 'git diff --color=always {2}' | awk '{print $2}' | xargs git diff; }; f" }
         - { name: "fgrep", value: "!f() { git ls-files | fzf --preview 'bat --color=always --line-range :500 {}' | xargs grep \"${1:-}\"; }; f" }
 
+    # git-worktree-runner (gtr) configuration
+    # gtr automates git worktree workflows. Global config sets defaults;
+    # override per-project with `git gtr config add <key> <value>` or
+    # a .gtrconfig file in the repo root.
+    # See: https://github.com/coderabbitai/git-worktree-runner
+
+    - name: Set gtr to copy .env files into new worktrees
+      ansible.builtin.git_config:
+        name: gtr.copy.include
+        scope: global
+        value: "**/.env*"
+
+    - name: Set gtr to run pnpm install after creating worktrees
+      # Override per-project for repos using npm:
+      #   git gtr config add gtr.hook.postCreate "npm install"
+      ansible.builtin.git_config:
+        name: gtr.hook.postCreate
+        scope: global
+        value: "pnpm install"
+
     - name: Enable colorized output
       ansible.builtin.git_config:
         name: color.ui
