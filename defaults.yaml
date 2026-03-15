@@ -73,6 +73,7 @@ cli_packages:
   - vhs
   - watchman
   - wget
+  - worktrunk
   - yarn
   - ykman
   - yt-dlp
