@@ -53,11 +53,12 @@
       register: ssh_key_check
 
     - name: Backup existing SSH keys if present
-      copy:
+      synchronize:
         src: "{{ ansible_env.HOME }}/.ssh/"
         dest: "{{ ansible_env.HOME }}/.mac-setup-backups/{{ ansible_date_time.date }}/ssh/"
-        remote_src: true
-        mode: preserve
+        rsync_opts:
+          - "--exclude=agent/"
+      delegate_to: localhost
       when: ssh_key_check.stat.exists
 
     - name: Display backup location
