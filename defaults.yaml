@@ -148,6 +148,7 @@ gui_packages_to_remove_if_installed:
   - zotero
 
 gui_packages_to_remove_if_installed_work:
+  - brave-browser
   - protonvpn
 
 pnpm_global_packages:
