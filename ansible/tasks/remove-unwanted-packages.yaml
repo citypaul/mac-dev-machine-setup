@@ -18,3 +18,4 @@
   loop: "{{ gui_packages_to_remove_if_installed_work }}"
   tags:
     - work
+    - work-remove

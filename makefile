@@ -1,4 +1,4 @@
-.PHONY: all deps personal work dock setup keys cli gui update check gpg gpg-setup
+.PHONY: all deps personal work dock setup keys cli gui update check gpg gpg-setup work-remove
 
 all: setup deps install personal
 
@@ -81,3 +81,6 @@ gpg:
 
 gpg-setup:
 	@./scripts/gpg-yubikey-setup.sh
+
+work-remove:
+	@ansible-playbook local.yaml -K --tags work-remove
