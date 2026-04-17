@@ -19,6 +19,14 @@
       register: cask_upgrade
       ignore_errors: yes  # Some casks may fail if app is running
 
+    # `brew upgrade` above will have re-linked the unversioned `node`
+    # formula (pulled in as a dep of agent-browser, gemini-cli, opencode)
+    # to whatever current major release brew ships. That silently flips
+    # `/opt/homebrew/bin/node` to Node 25.x, overriding nvm's LTS.
+    # Re-unlink so nvm keeps control. See brew-unlink-node.yaml.
+    - name: Unlink Homebrew node after brew upgrade
+      ansible.builtin.import_tasks: brew-unlink-node.yaml
+
     - name: Clean up Homebrew
       command: brew cleanup -s
       changed_when: true

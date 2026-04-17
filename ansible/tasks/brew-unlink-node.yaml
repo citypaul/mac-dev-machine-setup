@@ -1,0 +1,49 @@
+---
+# Reusable task: unlink the Homebrew `node` formula so nvm controls the
+# active Node version.
+#
+# Why this exists
+# ----------------
+# Several Homebrew formulas in `cli_packages` (agent-browser, gemini-cli,
+# opencode) declare the unversioned `node` formula as a runtime dependency.
+# The unversioned `node` formula tracks the latest major release (currently
+# Node 25.x) — not an LTS. Whenever any of these dependents is installed or
+# upgraded, Homebrew:
+#
+#   1. Installs/upgrades the `node` formula to the current latest version.
+#   2. Creates or refreshes the symlink `/opt/homebrew/bin/node` pointing
+#      at that Cellar path.
+#
+# `/opt/homebrew/bin` sits before nvm's shim in `$PATH` for non-interactive
+# shells and many tools that resolve `node` directly (pre-commit hooks,
+# CI runners, editor integrations). Result: the whole toolchain flips to
+# Node 25 whenever Homebrew decides to upgrade node, even though nvm's
+# default is Node 22 LTS.
+#
+# What unlinking does
+# -------------------
+# `brew unlink node` removes the `/opt/homebrew/bin/node` symlink only.
+# The Cellar install stays, and the keg-only path
+# `/opt/homebrew/opt/node/bin/node` continues to work — so the dependent
+# formulas (agent-browser etc.) still launch, because their shebangs
+# point at the keg path, not the PATH symlink.
+#
+# Why it needs to run in more than one place
+# ------------------------------------------
+# Homebrew re-creates the PATH symlink on any upgrade or fresh install of
+# node or its dependents. A single unlink during initial setup is undone
+# by the next `brew upgrade` (via `make update`) or the next install of a
+# node-dependent formula (via `make cli`). This task therefore runs:
+#
+#   - During node setup (ansible/tasks/node.yaml)
+#   - After cli-tools install (ansible/tasks/cli-tools.yaml)
+#   - After the update flow's `brew upgrade` (ansible/tasks/update.yaml)
+#
+# Idempotent: `brew unlink` prints "symlinks removed" only when it
+# actually removed something; `changed_when` reflects that, and
+# `failed_when: false` tolerates the "Not linked" no-op case.
+- name: Unlink Homebrew node so nvm controls the Node version
+  ansible.builtin.command: brew unlink node
+  register: brew_unlink_node_result
+  changed_when: "'symlinks removed' in brew_unlink_node_result.stdout"
+  failed_when: false

@@ -8,6 +8,18 @@
     - productivity
     - cli
 
+# Several packages above (agent-browser, gemini-cli, opencode) pull in the
+# unversioned `node` formula as a runtime dependency and re-link
+# /opt/homebrew/bin/node → whatever major version brew currently ships
+# (Node 25.x at time of writing). Unlink here so nvm's LTS controls the
+# active Node version. See brew-unlink-node.yaml for full context.
+- name: Unlink Homebrew node after cli package installs
+  ansible.builtin.import_tasks: brew-unlink-node.yaml
+  tags:
+    - install
+    - productivity
+    - cli
+
 - name: Install agent-browser Chromium
   ansible.builtin.shell: agent-browser install
   args:
