@@ -5,6 +5,7 @@ dotfiles_repo: https://github.com/citypaul/.dotfiles.git
 
 homebrew_taps:
   - ankitpokhrel/jira-cli
+  - coderabbitai/tap
   - hashicorp/tap
   - oven-sh/bun
   - retlehs/tap
@@ -32,6 +33,7 @@ cli_packages:
   - fswatch
   - fzf
   - git-filter-repo
+  - git-gtr
   - gh
   - gemini-cli
   - go
