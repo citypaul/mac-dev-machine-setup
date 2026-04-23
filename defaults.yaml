@@ -118,6 +118,7 @@ gui_packages:
   - sourcetree
   - spotify
   - stats
+  - syncthing
   - tableplus
   - unclack
   - utm
