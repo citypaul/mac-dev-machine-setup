@@ -126,6 +126,7 @@ gui_packages:
   - vlc
   - waves-central
   - wezterm
+  - zed
   - zoom
 
 gui_packages_personal:
@@ -146,7 +147,6 @@ gui_packages_to_remove_if_installed:
   - ngrok
   - orbstack
   - rewind
-  - zed
   - zotero
 
 gui_packages_to_remove_if_installed_work:
