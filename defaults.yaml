@@ -92,6 +92,7 @@ gui_packages:
   - chatgpt
   - claude
   - claude-code
+  - codex
   - cursor
   - deskpad
   - devtoys
