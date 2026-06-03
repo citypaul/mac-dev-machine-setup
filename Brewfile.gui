@@ -24,6 +24,7 @@ cask "imageoptim", greedy: true
 cask "iterm2", greedy: true
 cask "karabiner-elements", greedy: true
 cask "loopback", greedy: true
+cask "maccy", greedy: true
 cask "mactex", greedy: true
 cask "meetingbar", greedy: true
 cask "obsidian", greedy: true
@@ -34,6 +35,7 @@ cask "redisinsight", greedy: true
 cask "responsively", greedy: true
 cask "sourcetree", greedy: true
 cask "spotify", greedy: true
+cask "shortcat", greedy: true
 cask "stats", greedy: true
 cask "tableplus", greedy: true
 cask "unclack", greedy: true
