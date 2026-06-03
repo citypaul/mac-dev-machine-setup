@@ -42,6 +42,8 @@
 
     - name: Update pnpm packages globally
       shell: |
+        export PNPM_HOME="{{ ansible_env.HOME }}/Library/pnpm"
+        export PATH="$PNPM_HOME/bin:$PNPM_HOME:$PATH"
         if command -v pnpm &> /dev/null; then
           pnpm update -g
         fi

@@ -35,9 +35,20 @@
     - install
     - node
 
+- name: Ensure pnpm global bin directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/Library/pnpm/bin"
+    state: directory
+    mode: "0755"
+  tags:
+    - install
+    - node
+
 - name: Install or update pnpm global packages
   ansible.builtin.shell: |
     export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
+    export PNPM_HOME="{{ ansible_env.HOME }}/Library/pnpm"
+    export PATH="$PNPM_HOME/bin:$PNPM_HOME:$PATH"
     source "$(brew --prefix nvm)/nvm.sh"
     pnpm add -g {{ item }}@latest
   args:
