@@ -56,7 +56,8 @@ ansible-playbook local.yaml -K --check --diff
 
 ### Core Configuration
 
-- `defaults.yaml` - Central configuration file containing all package lists and default settings
+- `Brewfile.*` - Homebrew Bundle package inventories for CLI, GUI, App Store, and profile overlays
+- `defaults.yaml` - Central configuration file for non-Brewfile settings and removal lists
 - `local.yaml` - Main Ansible playbook that orchestrates all tasks (includes validation)
 - `update.yaml` - Update playbook for refreshing all installed packages
 - `setup.yaml` - Prerequisites installation playbook
@@ -70,8 +71,8 @@ All Ansible tasks are in `ansible/tasks/`:
 
 - Development tools: `cli-tools.yaml`, `gui-tools.yaml`, `node.yaml`, `rust.yaml`
 - Terminal & editors: `iterm.yaml`, `nvim.yaml`, `zsh.yaml`, `themes.yaml`, `fonts.yaml`
-- Security: `security.yaml`, `ssh.yaml`, `gpg.yaml`
-- System config: `osx.yaml`, `dock.yaml`, `window-management.yaml`
+- Security: `ssh.yaml`, `gpg.yaml`
+- System config: `osx.yaml`, `dock.yaml`
 - AI tools: `ai-tools.yaml` (Fabric AI, Ollama, etc.)
 - Maintenance: `remove-unwanted-packages.yaml`, `dotfiles.yaml`, `update.yaml`
 - Validation: `validation.yaml` (pre-flight checks and backups)
@@ -114,13 +115,16 @@ Some tasks share tags so they run together:
 
 ### Package Management
 
-All packages are defined in `defaults.yaml` under:
+Homebrew-managed packages are defined in Brewfiles:
 
-- `cli_packages` - Command-line tools for all profiles
-- `gui_packages` - GUI applications for all profiles
-- `gui_packages_personal` - Personal-only GUI apps
-- `gui_packages_work` - Work-only GUI apps
-- `app_store_apps` - Mac App Store applications
+- `Brewfile.cli` - Command-line tools for all profiles
+- `Brewfile.gui` - GUI applications and security casks for all profiles
+- `Brewfile.app-store` - Mac App Store applications
+- `Brewfile.common` - Shared aggregate used for full common inventory checks
+- `Brewfile.personal` - Personal-only GUI apps
+- `Brewfile.work` - Work-only overlay, currently empty
+
+`defaults.yaml` still contains non-package settings plus removal lists used by `remove-unwanted-packages.yaml`.
 
 ### Idempotency
 

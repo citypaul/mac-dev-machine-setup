@@ -1,24 +1,24 @@
-- name: Install Gui tools via brew casks
-  community.general.homebrew_cask:
-    name: "{{ item }}"
-    state: latest
-    greedy: yes
-    install_options: force
+- name: Install GUI packages from Brewfile
+  ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.gui"
+  register: brew_bundle_gui
+  changed_when: >-
+    'Installing' in brew_bundle_gui.stdout or
+    'Upgrading' in brew_bundle_gui.stdout or
+    'Tapping' in brew_bundle_gui.stdout
   ignore_errors: true
-  with_items: "{{ gui_packages }}"
   tags:
     - install
     - gui
     - productivity
 
-- name: Install personal Gui tools via brew casks
-  community.general.homebrew_cask:
-    name: "{{ item }}"
-    state: latest
-    greedy: yes
-    install_options: force
+- name: Install personal GUI packages from Brewfile
+  ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.personal"
+  register: brew_bundle_personal
+  changed_when: >-
+    'Installing' in brew_bundle_personal.stdout or
+    'Upgrading' in brew_bundle_personal.stdout or
+    'Tapping' in brew_bundle_personal.stdout
   ignore_errors: true
-  with_items: "{{ gui_packages_personal }}"
   tags:
     - personal
 

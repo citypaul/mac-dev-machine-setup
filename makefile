@@ -31,6 +31,7 @@ personal:
 	@ansible-playbook local.yaml -K --tags personal
 
 work-tag: 
+	@brew bundle --file=Brewfile.work
 	@ansible-playbook local.yaml -K --tags work
 
 work: work-setup
@@ -70,6 +71,12 @@ update:
 	@ansible-playbook update.yaml -K
 
 check:
+	@echo "Checking Brewfiles..."
+	@for file in Brewfile.cli Brewfile.gui Brewfile.app-store Brewfile.common Brewfile.personal Brewfile.work; do \
+		HOMEBREW_NO_AUTO_UPDATE=1 brew bundle list --file="$$file" >/dev/null; \
+		HOMEBREW_NO_AUTO_UPDATE=1 brew bundle list --file="$$file" --cask >/dev/null; \
+		HOMEBREW_NO_AUTO_UPDATE=1 brew bundle list --file="$$file" --mas >/dev/null; \
+	done
 	@echo "Running in check mode (dry run)..."
 	@ansible-playbook local.yaml -K --check --diff
 

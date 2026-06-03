@@ -197,21 +197,25 @@ These aliases provide an interactive interface using fzf (fuzzy finder) with liv
 
 ### Modifying Package Lists
 
-Edit `defaults.yaml` to customize which packages get installed:
+Most package inventory now lives in Brewfiles:
 
-```yaml
-cli_packages:
-  - your-favorite-cli-tool
+```ruby
+# Brewfile.cli
+brew "your-favorite-cli-tool"
 
-gui_packages:
-  - your-favorite-app
+# Brewfile.gui
+cask "your-favorite-app", greedy: true
 
-gui_packages_personal:  # Only installed with 'make'
-  - personal-only-app
+# Brewfile.app-store
+mas "Your App", id: 123456789
 
-gui_packages_work:      # Only installed with 'make work'
-  - work-only-app
+# Brewfile.personal
+cask "personal-only-app", greedy: true
 ```
+
+`Brewfile.common` aggregates the shared CLI, GUI, and App Store inventory.
+`Brewfile.work` is available for work-only additions and is currently empty.
+Removal lists still live in `defaults.yaml`.
 
 ### Using Your Own Dotfiles
 
@@ -453,7 +457,8 @@ The setup includes several safety features:
 .
 ├── makefile              # Main interface for all commands
 ├── new-mac.sh           # Bootstrap script for fresh installs
-├── defaults.yaml        # Package lists and configuration
+├── Brewfile.*           # Homebrew Bundle package inventories
+├── defaults.yaml        # Non-Brewfile configuration and removal lists
 ├── local.yaml           # Main Ansible playbook
 ├── update.yaml          # Update playbook
 ├── scripts/             # Helper scripts (e.g., gpg-auto-sign.sh)

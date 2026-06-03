@@ -44,7 +44,9 @@
     - name: Ensure Homebrew is in the PATH
       become: no
       shell: |
-        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+        if ! grep -qxF 'eval "$(/opt/homebrew/bin/brew shellenv)"' ~/.zshrc; then
+          echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zshrc
+        fi
         eval "$(/opt/homebrew/bin/brew shellenv)"
       when: ansible_os_family == "Darwin"
 

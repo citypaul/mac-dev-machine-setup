@@ -20,17 +20,6 @@
         - cli
         - gui
 
-    - name: Tap Homebrew repositories
-      community.general.homebrew_tap:
-        name: "{{ item }}"
-        state: present
-      with_items: "{{ homebrew_taps }}"
-      tags:
-        - install
-        - core
-        - cli
-        - gui
-
   tasks:
     - import_tasks: ansible/tasks/git-setup.yaml
     - import_tasks: ansible/tasks/cli-tools.yaml
@@ -42,7 +31,6 @@
     - import_tasks: ansible/tasks/osx.yaml
     - import_tasks: ansible/tasks/iterm.yaml
     - import_tasks: ansible/tasks/nvim.yaml
-    - import_tasks: ansible/tasks/security.yaml
     - import_tasks: ansible/tasks/gpg.yaml
     - import_tasks: ansible/tasks/dotfiles.yaml
     - import_tasks: ansible/tasks/node.yaml
