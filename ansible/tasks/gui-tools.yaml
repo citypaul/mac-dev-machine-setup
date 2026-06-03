@@ -12,6 +12,29 @@
     - gui
     - productivity
 
+- name: Check whether SilentKnight app exists
+  ansible.builtin.stat:
+    path: /Applications/SilentKnight.app
+  register: silentknight_app
+  tags:
+    - personal
+
+- name: Check whether SilentKnight cask is registered
+  ansible.builtin.command: brew list --cask silentknight
+  environment: "{{ homebrew_environment }}"
+  register: silentknight_cask
+  changed_when: false
+  failed_when: false
+  tags:
+    - personal
+
+- name: Clear stale SilentKnight cask receipt
+  ansible.builtin.command: brew uninstall --cask --force silentknight
+  environment: "{{ homebrew_environment }}"
+  when: silentknight_cask.rc == 0 and not silentknight_app.stat.exists
+  tags:
+    - personal
+
 - name: Install personal GUI packages from Brewfile
   ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.personal"
   environment: "{{ homebrew_environment }}"

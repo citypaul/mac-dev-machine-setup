@@ -8,5 +8,5 @@ cask "jellyfin", greedy: true
 cask "protonvpn", greedy: true
 cask "shottr", greedy: true
 cask "silentknight", greedy: true
-cask "tailscale", greedy: true
+cask "tailscale-app", greedy: true
 cask "whisky", greedy: true
