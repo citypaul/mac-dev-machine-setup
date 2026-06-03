@@ -435,6 +435,7 @@ The setup includes several safety features:
 
 2. **"Permission denied" errors**
    - The makefile will prompt for sudo password when needed
+   - GUI Brewfile installs keep the sudo session alive so cask installers should not ask repeatedly
    - Some operations require admin access
 
 3. **App Store apps fail to install**
