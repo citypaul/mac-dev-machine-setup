@@ -7,7 +7,7 @@ cask "brave-browser", greedy: true
 cask "bruno", greedy: true
 cask "chatgpt", greedy: true
 cask "claude", greedy: true
-cask "claude-code", greedy: true
+cask "claude-code@latest", greedy: true
 cask "codex", greedy: true
 cask "cursor", greedy: true
 cask "deskpad", greedy: true
