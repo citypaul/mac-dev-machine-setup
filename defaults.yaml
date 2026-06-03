@@ -3,6 +3,21 @@ git_name: Paul Hammond
 
 dotfiles_repo: https://github.com/citypaul/.dotfiles.git
 
+dotfiles_stow_packages:
+  - zsh
+  - tmux
+  - gnupg
+  - alacritty
+  - zellij
+  - .oh-my-zsh
+  - karabiner
+  - ghostty
+
+claude_installer_agents:
+  - codex
+  - cursor
+claude_installer_with_opencode: true
+
 gui_packages_to_remove_if_installed:
   - bartender
   - exa

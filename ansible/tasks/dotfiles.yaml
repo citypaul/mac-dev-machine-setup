@@ -56,8 +56,126 @@
     - stow
     - cli
 
-- name: Stow dotfiles
-  shell: cd $HOME/.dotfiles && ./install.sh
+- name: Ensure GPG config directory exists in dotfiles package
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.dotfiles/gnupg/.gnupg"
+    state: directory
+    mode: "0700"
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+
+- name: Find pinentry-mac
+  ansible.builtin.command: which pinentry-mac
+  register: pinentry_mac_path
+  changed_when: false
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+
+- name: Configure GPG agent for pinentry-mac in dotfiles package
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.HOME }}/.dotfiles/gnupg/.gnupg/gpg-agent.conf"
+    line: "{{ item }}"
+    create: true
+    mode: "0600"
+  loop:
+    - "# See: https://samuelsson.dev/sign-git-commits-on-github-with-gpg-in-macos/"
+    - "pinentry-program {{ pinentry_mac_path.stdout }}"
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+
+- name: Ensure zsh autocomplete directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.zsh_autocomplete"
+    state: directory
+    mode: "0755"
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+
+- name: Generate shell completions
+  ansible.builtin.shell: |
+    zellij setup --generate-completion zsh > "{{ ansible_env.HOME }}/.zsh_autocomplete/_zellij-completion"
+    git gtr completion zsh > "{{ ansible_env.HOME }}/.zsh_autocomplete/_git-gtr"
+  args:
+    executable: /bin/bash
+  changed_when: true
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+
+- name: Back up existing files before stow
+  ansible.builtin.shell: |
+    set -euo pipefail
+    moved=false
+    for target in \
+      "{{ ansible_env.HOME }}/.zshrc" \
+      "{{ ansible_env.HOME }}/Library/Application Support/com.mitchellh.ghostty/config"
+    do
+      backup="${target}.old"
+      if [ -f "$target" ] && [ ! -L "$target" ] && [ ! -f "$backup" ]; then
+        mkdir -p "$(dirname "$backup")"
+        mv "$target" "$backup"
+        moved=true
+      fi
+    done
+    if [ "$moved" = true ]; then
+      echo moved
+    fi
+  args:
+    executable: /bin/bash
+  register: dotfiles_backup_result
+  changed_when: dotfiles_backup_result.stdout != ""
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+
+- name: Install Claude framework for multiple coding agents
+  ansible.builtin.shell: |
+    export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
+    source "$(brew --prefix nvm)/nvm.sh"
+    ./install-claude.sh{% if claude_installer_with_opencode | default(false) %} --with-opencode{% endif %}{% for agent in claude_installer_agents | default([]) %} --agent {{ agent | quote }}{% endfor %}
+  args:
+    chdir: "{{ ansible_env.HOME }}/.dotfiles"
+    executable: /bin/bash
+  changed_when: true
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+
+- name: Install personal Claude Code settings
+  ansible.builtin.copy:
+    src: "{{ ansible_env.HOME }}/.dotfiles/claude/.claude/settings.json"
+    dest: "{{ ansible_env.HOME }}/.claude/settings.json"
+    remote_src: true
+    backup: true
+    mode: "0600"
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+
+- name: Stow non-AI personal dotfiles
+  ansible.builtin.command:
+    cmd: "stow {{ dotfiles_stow_packages | join(' ') }}"
+    chdir: "{{ ansible_env.HOME }}/.dotfiles"
   changed_when: true
   tags:
     - install
