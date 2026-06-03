@@ -1,8 +1,12 @@
 .PHONY: all deps personal work dock setup keys cli gui update check gpg gpg-setup work-remove
 
-all: setup deps install personal
+WITH_SUDO_ASKPASS = scripts/with-sudo-askpass.sh
 
-work-setup: setup deps install work-tag
+all: setup deps
+	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags install,personal
+
+work-setup: setup deps
+	@$(WITH_SUDO_ASKPASS) /bin/bash -lc 'ansible-playbook local.yaml --tags install && brew bundle --file=Brewfile.work && ansible-playbook local.yaml --tags work'
 
 dotfiles:
 	@ansible-playbook local.yaml --tags dotfiles
@@ -25,31 +29,30 @@ deps:
 	fi
 
 install:
-	@ansible-playbook local.yaml -K --tags install
+	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags install
 
 personal: 
-	@ansible-playbook local.yaml -K --tags personal
+	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags personal
 
 work-tag: 
-	@brew bundle --file=Brewfile.work
-	@ansible-playbook local.yaml -K --tags work
+	@$(WITH_SUDO_ASKPASS) /bin/bash -lc 'brew bundle --file=Brewfile.work && ansible-playbook local.yaml --tags work'
 
 work: work-setup
 
 git:
-	@ansible-playbook local.yaml --tags git-personal -K
+	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags git-personal
 
 keys: 
-	@ansible-playbook personal-keys.yaml -K
+	@$(WITH_SUDO_ASKPASS) ansible-playbook personal-keys.yaml
 
 cli: 
-	@ansible-playbook local.yaml --tags cli -K
+	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags cli
 
 gui: 
-	@ansible-playbook local.yaml --tags gui -K
+	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags gui
 
 osx: 
-	@ansible-playbook local.yaml --tags osx -K 
+	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags osx
 
 dock:
 	@ansible-playbook local.yaml --tags dock 
@@ -64,11 +67,11 @@ themes:
 	@ansible-playbook local.yaml --tags themes
 
 app-store:
-	@ansible-playbook local.yaml --tags app-store -K
+	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags app-store
 
 update:
 	@echo "Updating all installed packages..."
-	@ansible-playbook update.yaml -K
+	@$(WITH_SUDO_ASKPASS) ansible-playbook update.yaml
 
 check:
 	@echo "Checking Brewfiles..."
@@ -78,16 +81,16 @@ check:
 		HOMEBREW_NO_AUTO_UPDATE=1 brew bundle list --file="$$file" --mas >/dev/null; \
 	done
 	@echo "Running in check mode (dry run)..."
-	@ansible-playbook local.yaml -K --check --diff
+	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --check --diff
 
 node:
 	@ansible-playbook local.yaml --tags node
 
 gpg:
-	@ansible-playbook local.yaml -K --tags gpg
+	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags gpg
 
 gpg-setup:
 	@./scripts/gpg-yubikey-setup.sh
 
 work-remove:
-	@ansible-playbook local.yaml -K --tags work-remove
+	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags work-remove

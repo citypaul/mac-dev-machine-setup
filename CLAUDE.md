@@ -36,7 +36,7 @@ This is an Ansible-based automation repository for setting up and maintaining Ma
 To run individual Ansible tasks with specific tags:
 
 ```bash
-ansible-playbook local.yaml -K --tags <tag_name>
+scripts/with-sudo-askpass.sh ansible-playbook local.yaml --tags <tag_name>
 ```
 
 ### Testing Changes
@@ -44,7 +44,7 @@ ansible-playbook local.yaml -K --tags <tag_name>
 To check what changes would be made without applying them:
 
 ```bash
-ansible-playbook local.yaml -K --check --diff
+scripts/with-sudo-askpass.sh ansible-playbook local.yaml --check --diff
 ```
 
 ## Architecture & Key Components

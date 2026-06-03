@@ -1,18 +1,6 @@
-- name: Refresh sudo credentials for Homebrew cask installers
-  ansible.builtin.command: /usr/bin/true
-  become: true
-  changed_when: false
-  tags:
-    - install
-    - gui
-    - productivity
-    - personal
-
 - name: Install GUI packages from Brewfile
-  ansible.builtin.command:
-    argv:
-      - "{{ playbook_dir }}/scripts/brew-bundle-with-sudo-keepalive.sh"
-      - "{{ playbook_dir }}/Brewfile.gui"
+  ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.gui"
+  environment: "{{ homebrew_environment }}"
   register: brew_bundle_gui
   changed_when: >-
     'Installing' in brew_bundle_gui.stdout or
@@ -25,10 +13,8 @@
     - productivity
 
 - name: Install personal GUI packages from Brewfile
-  ansible.builtin.command:
-    argv:
-      - "{{ playbook_dir }}/scripts/brew-bundle-with-sudo-keepalive.sh"
-      - "{{ playbook_dir }}/Brewfile.personal"
+  ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.personal"
+  environment: "{{ homebrew_environment }}"
   register: brew_bundle_personal
   changed_when: >-
     'Installing' in brew_bundle_personal.stdout or
@@ -47,6 +33,7 @@
     state: latest
     greedy: yes
     install_options: "no-quarantine"
+  environment: "{{ homebrew_environment }}"
   tags:
     - install
     - gui

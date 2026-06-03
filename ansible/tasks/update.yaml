@@ -6,16 +6,19 @@
     - name: Update Homebrew
       community.general.homebrew:
         update_homebrew: yes
+      environment: "{{ homebrew_environment }}"
       register: brew_update
 
     - name: Upgrade all Homebrew packages
       community.general.homebrew:
         upgrade_all: yes
+      environment: "{{ homebrew_environment }}"
       register: brew_upgrade
 
     - name: Upgrade all Homebrew casks
       community.general.homebrew_cask:
         upgrade_all: yes
+      environment: "{{ homebrew_environment }}"
       register: cask_upgrade
       ignore_errors: yes  # Some casks may fail if app is running
 

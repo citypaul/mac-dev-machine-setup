@@ -1,6 +1,8 @@
 - hosts: localhost
   vars_files:
     - ./defaults.yaml
+  vars:
+    homebrew_environment: "{{ {'SUDO_ASKPASS': lookup('env', 'SUDO_ASKPASS')} if lookup('env', 'SUDO_ASKPASS') else {} }}"
   pre_tasks:
     - import_tasks: ansible/tasks/validation.yaml
       tags:

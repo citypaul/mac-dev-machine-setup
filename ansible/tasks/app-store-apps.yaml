@@ -1,5 +1,6 @@
 - name: Install apps from App Store
   ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.app-store"
+  environment: "{{ homebrew_environment }}"
   register: brew_bundle_app_store
   changed_when: >-
     'Installing' in brew_bundle_app_store.stdout or

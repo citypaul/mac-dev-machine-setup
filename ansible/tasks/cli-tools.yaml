@@ -1,5 +1,6 @@
 - name: Install CLI packages from Brewfile
   ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.cli"
+  environment: "{{ homebrew_environment }}"
   register: brew_bundle_cli
   changed_when: >-
     'Installing' in brew_bundle_cli.stdout or

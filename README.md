@@ -414,8 +414,8 @@ The setup includes several safety features:
    - Restart your terminal or run: `source ~/.zshrc`
 
 2. **"Permission denied" errors**
-   - The makefile will prompt for sudo password when needed
-   - GUI Brewfile installs keep the sudo session alive so cask installers should not ask repeatedly
+   - The makefile prompts once for the sudo password when needed
+   - Homebrew cask installs use a temporary askpass helper so installers should not ask repeatedly
    - Some operations require admin access
 
 3. **App Store apps fail to install**
