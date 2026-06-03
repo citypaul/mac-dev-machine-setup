@@ -1,5 +1,5 @@
 - name: Refresh sudo credentials for Homebrew cask installers
-  ansible.builtin.command: /bin/true
+  ansible.builtin.command: /usr/bin/true
   become: true
   changed_when: false
   tags:
