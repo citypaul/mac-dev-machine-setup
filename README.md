@@ -79,7 +79,7 @@ make update
 - **CLI Tools**: fzf, ripgrep, bat, eza, zoxide, and more
 
 ### AI & Modern Tools
-- **AI Assistants**: ChatGPT, Claude, Fabric AI
+- **AI Assistants**: ChatGPT, Claude
 - **AI Development**: Ollama for local LLMs
 - **API Testing**: Bruno, Postman, HTTPie
 
@@ -224,26 +224,6 @@ Update the `dotfiles_repo` in `defaults.yaml`:
 ```yaml
 dotfiles_repo: https://github.com/yourusername/dotfiles.git
 ```
-
-### API Keys and Secrets
-
-Sensitive data is stored encrypted using Ansible Vault:
-
-1. Create your vault file:
-   ```bash
-   cp vars/api_keys.yml.example vars/api_keys.yml
-   ansible-vault encrypt vars/api_keys.yml
-   ```
-
-2. Edit the vault:
-   ```bash
-   ansible-vault edit vars/api_keys.yml
-   ```
-
-3. Install keys:
-   ```bash
-   make keys
-   ```
 
 ### GPG Signing with YubiKey
 
@@ -468,8 +448,6 @@ The setup includes several safety features:
 │   │   └── gpg/         # GPG public keys for import
 │   ├── tasks/           # Individual task files
 │   └── templates/       # Configuration templates
-└── vars/
-    └── api_keys.yml     # Encrypted secrets (create this)
 ```
 
 ## Contributing

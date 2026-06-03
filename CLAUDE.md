@@ -73,7 +73,6 @@ All Ansible tasks are in `ansible/tasks/`:
 - Terminal & editors: `iterm.yaml`, `nvim.yaml`, `zsh.yaml`, `themes.yaml`, `fonts.yaml`
 - Security: `ssh.yaml`, `gpg.yaml`
 - System config: `osx.yaml`, `dock.yaml`
-- AI tools: `ai-tools.yaml` (Fabric AI, Ollama, etc.)
 - Maintenance: `remove-unwanted-packages.yaml`, `dotfiles.yaml`, `update.yaml`
 - Validation: `validation.yaml` (pre-flight checks and backups)
 
@@ -81,7 +80,6 @@ All Ansible tasks are in `ansible/tasks/`:
 
 Templates in `ansible/templates/`:
 
-- `fabric/settings.yaml` - Fabric AI configuration
 - `iterm-dynamic-profile.json` - iTerm2 profile configuration
 
 ### Static Files
@@ -133,14 +131,6 @@ All tasks are designed to be idempotent - they can be run multiple times safely 
 ### Error Handling
 
 Tasks include error handling and often have `ignore_errors: true` for non-critical operations that might fail on some systems.
-
-## Secrets Management
-
-API keys and sensitive data are stored in `vars/api_keys.yml` using Ansible Vault encryption. To edit:
-
-```bash
-ansible-vault edit vars/api_keys.yml
-```
 
 ## External Dependencies
 

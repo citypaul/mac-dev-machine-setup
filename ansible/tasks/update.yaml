@@ -75,17 +75,6 @@
       changed_when: go_update.rc == 0
       ignore_errors: yes
 
-    - name: Update fabric patterns
-      shell: |
-        if command -v fabric &> /dev/null; then
-          fabric -U
-        fi
-      environment:
-        PATH: "{{ ansible_env.PATH }}:{{ ansible_env.HOME }}/go/bin"
-      register: fabric_update
-      changed_when: fabric_update.rc == 0
-      ignore_errors: yes
-
     - name: Update tmux plugins
       shell: |
         if [ -d "$HOME/.tmux/plugins/tpm" ]; then
@@ -118,4 +107,3 @@
           - "Mac App Store: {{ 'Updated' if mas_update.changed else 'No updates' }}"
           - "Rust: {{ 'Updated' if rust_update.changed else 'Skipped/No updates' }}"
           - "Go packages: {{ 'Updated' if go_update.changed else 'Skipped/No updates' }}"
-          - "Fabric patterns: {{ 'Updated' if fabric_update.changed else 'Skipped/No updates' }}"

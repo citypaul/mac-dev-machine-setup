@@ -40,7 +40,7 @@ git:
 	@ansible-playbook local.yaml --tags git-personal -K
 
 keys: 
-	@ansible-playbook personal-keys.yaml -K --ask-vault-pass
+	@ansible-playbook personal-keys.yaml -K
 
 cli: 
 	@ansible-playbook local.yaml --tags cli -K
