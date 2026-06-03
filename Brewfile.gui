@@ -12,14 +12,14 @@ cask "codex", greedy: true
 cask "cursor", greedy: true
 cask "deskpad", greedy: true
 cask "devtoys", greedy: true
-cask "docker", greedy: true
+cask "docker-desktop", greedy: true
 cask "fantastical", greedy: true
 cask "firefox", greedy: true
 cask "ghostty", greedy: true
 cask "google-chrome", greedy: true
 cask "granola", greedy: true
 cask "hiddenbar", greedy: true
-cask "httpie", greedy: true
+cask "httpie-desktop", greedy: true
 cask "imageoptim", greedy: true
 cask "iterm2", greedy: true
 cask "karabiner-elements", greedy: true
@@ -31,7 +31,7 @@ cask "obsidian", greedy: true
 cask "pgadmin4", greedy: true
 cask "postman", greedy: true
 cask "raycast", greedy: true
-cask "redisinsight", greedy: true
+cask "redis-insight", greedy: true
 cask "responsively", greedy: true
 cask "sourcetree", greedy: true
 cask "spotify", greedy: true
@@ -51,4 +51,3 @@ cask "zoom", greedy: true
 # Security casks used by the SSH/GPG setup flows.
 cask "1password", greedy: true
 cask "1password-cli", greedy: true
-cask "authy", greedy: true
