@@ -36,7 +36,7 @@ This is an Ansible-based automation repository for setting up and maintaining Ma
 To run individual Ansible tasks with specific tags:
 
 ```bash
-ansible-playbook local.yaml -K --tags <tag_name>
+scripts/with-sudo-askpass.sh ansible-playbook local.yaml --tags <tag_name>
 ```
 
 ### Testing Changes
@@ -44,7 +44,7 @@ ansible-playbook local.yaml -K --tags <tag_name>
 To check what changes would be made without applying them:
 
 ```bash
-ansible-playbook local.yaml -K --check --diff
+scripts/with-sudo-askpass.sh ansible-playbook local.yaml --check --diff
 ```
 
 ## Architecture & Key Components
@@ -56,7 +56,8 @@ ansible-playbook local.yaml -K --check --diff
 
 ### Core Configuration
 
-- `defaults.yaml` - Central configuration file containing all package lists and default settings
+- `Brewfile.*` - Homebrew Bundle package inventories for CLI, GUI, App Store, and profile overlays
+- `defaults.yaml` - Central configuration file for non-Brewfile settings and removal lists
 - `local.yaml` - Main Ansible playbook that orchestrates all tasks (includes validation)
 - `update.yaml` - Update playbook for refreshing all installed packages
 - `setup.yaml` - Prerequisites installation playbook
@@ -70,9 +71,8 @@ All Ansible tasks are in `ansible/tasks/`:
 
 - Development tools: `cli-tools.yaml`, `gui-tools.yaml`, `node.yaml`, `rust.yaml`
 - Terminal & editors: `iterm.yaml`, `nvim.yaml`, `zsh.yaml`, `themes.yaml`, `fonts.yaml`
-- Security: `security.yaml`, `ssh.yaml`, `gpg.yaml`
-- System config: `osx.yaml`, `dock.yaml`, `window-management.yaml`
-- AI tools: `ai-tools.yaml` (Fabric AI, Ollama, etc.)
+- Security: `ssh.yaml`, `gpg.yaml`
+- System config: `osx.yaml`, `dock.yaml`
 - Maintenance: `remove-unwanted-packages.yaml`, `dotfiles.yaml`, `update.yaml`
 - Validation: `validation.yaml` (pre-flight checks and backups)
 
@@ -80,7 +80,6 @@ All Ansible tasks are in `ansible/tasks/`:
 
 Templates in `ansible/templates/`:
 
-- `fabric/settings.yaml` - Fabric AI configuration
 - `iterm-dynamic-profile.json` - iTerm2 profile configuration
 
 ### Static Files
@@ -114,13 +113,16 @@ Some tasks share tags so they run together:
 
 ### Package Management
 
-All packages are defined in `defaults.yaml` under:
+Homebrew-managed packages are defined in Brewfiles:
 
-- `cli_packages` - Command-line tools for all profiles
-- `gui_packages` - GUI applications for all profiles
-- `gui_packages_personal` - Personal-only GUI apps
-- `gui_packages_work` - Work-only GUI apps
-- `app_store_apps` - Mac App Store applications
+- `Brewfile.cli` - Command-line tools for all profiles
+- `Brewfile.gui` - GUI applications and security casks for all profiles
+- `Brewfile.app-store` - Mac App Store applications
+- `Brewfile.common` - Shared aggregate used for full common inventory checks
+- `Brewfile.personal` - Personal-only GUI apps
+- `Brewfile.work` - Work-only overlay, currently empty
+
+`defaults.yaml` still contains non-package settings plus removal lists used by `remove-unwanted-packages.yaml`.
 
 ### Idempotency
 
@@ -129,14 +131,6 @@ All tasks are designed to be idempotent - they can be run multiple times safely 
 ### Error Handling
 
 Tasks include error handling and often have `ignore_errors: true` for non-critical operations that might fail on some systems.
-
-## Secrets Management
-
-API keys and sensitive data are stored in `vars/api_keys.yml` using Ansible Vault encryption. To edit:
-
-```bash
-ansible-vault edit vars/api_keys.yml
-```
 
 ## External Dependencies
 

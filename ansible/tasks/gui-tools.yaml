@@ -1,24 +1,49 @@
-- name: Install Gui tools via brew casks
-  community.general.homebrew_cask:
-    name: "{{ item }}"
-    state: latest
-    greedy: yes
-    install_options: force
+- name: Install GUI packages from Brewfile
+  ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.gui"
+  environment: "{{ homebrew_environment }}"
+  register: brew_bundle_gui
+  changed_when: >-
+    'Installing' in brew_bundle_gui.stdout or
+    'Upgrading' in brew_bundle_gui.stdout or
+    'Tapping' in brew_bundle_gui.stdout
   ignore_errors: true
-  with_items: "{{ gui_packages }}"
   tags:
     - install
     - gui
     - productivity
 
-- name: Install personal Gui tools via brew casks
-  community.general.homebrew_cask:
-    name: "{{ item }}"
-    state: latest
-    greedy: yes
-    install_options: force
+- name: Check whether SilentKnight app exists
+  ansible.builtin.stat:
+    path: /Applications/SilentKnight.app
+  register: silentknight_app
+  tags:
+    - personal
+
+- name: Check whether SilentKnight cask is registered
+  ansible.builtin.command: brew list --cask silentknight
+  environment: "{{ homebrew_environment }}"
+  register: silentknight_cask
+  changed_when: false
+  failed_when: false
+  tags:
+    - personal
+
+- name: Clear stale SilentKnight cask receipt
+  ansible.builtin.command: brew uninstall --cask --force silentknight
+  environment: "{{ homebrew_environment }}"
+  when: silentknight_cask.rc == 0 and not silentknight_app.stat.exists
+  tags:
+    - personal
+
+- name: Install personal GUI packages from Brewfile
+  ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.personal"
+  environment: "{{ homebrew_environment }}"
+  register: brew_bundle_personal
+  changed_when: >-
+    'Installing' in brew_bundle_personal.stdout or
+    'Upgrading' in brew_bundle_personal.stdout or
+    'Tapping' in brew_bundle_personal.stdout
   ignore_errors: true
-  with_items: "{{ gui_packages_personal }}"
   tags:
     - personal
 
@@ -31,6 +56,7 @@
     state: latest
     greedy: yes
     install_options: "no-quarantine"
+  environment: "{{ homebrew_environment }}"
   tags:
     - install
     - gui

@@ -1,34 +1,12 @@
 - name: Install apps from App Store
+  ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.app-store"
+  environment: "{{ homebrew_environment }}"
+  register: brew_bundle_app_store
+  changed_when: >-
+    'Installing' in brew_bundle_app_store.stdout or
+    'Upgrading' in brew_bundle_app_store.stdout or
+    'Tapping' in brew_bundle_app_store.stdout
+  ignore_errors: true
   tags:
     - app-store
     - install
-  vars:
-    apps:
-      - id: 441258766
-        name: Magnet
-      - id: 411643860
-        name: DaisyDisk
-      - id: 1091189122
-        name: Bear
-      - id: 1532419400
-        name: MeetingBar
-      - id: 457622435
-        name: Yoink
-      - id: 803453959
-        name: Slack
-      - id: 6714467650
-        name: Perplexity AI
-      - id: 639968404
-        name: Parcel - Delivery Tracking
-      - id: 571213070
-        name: Davinci Resolve
-      - id: 1497506650
-        name: Yubico Authenticator
-  community.general.mas:
-    id: "{{ item.id }}"
-    state: latest
-  loop: "{{ apps }}"
-  loop_control:
-    loop_var: item
-    label: "{{ item.name }}"
-  ignore_errors: true

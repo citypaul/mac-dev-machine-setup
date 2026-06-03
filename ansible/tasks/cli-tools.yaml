@@ -1,14 +1,17 @@
-- name: Install useful cli packages
-  community.general.homebrew:
-    name: "{{ item }}"
-    state: latest
-  with_items: "{{ cli_packages }}"
+- name: Install CLI packages from Brewfile
+  ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.cli"
+  environment: "{{ homebrew_environment }}"
+  register: brew_bundle_cli
+  changed_when: >-
+    'Installing' in brew_bundle_cli.stdout or
+    'Upgrading' in brew_bundle_cli.stdout or
+    'Tapping' in brew_bundle_cli.stdout
   tags:
     - install
     - productivity
     - cli
 
-# Several packages above (agent-browser, gemini-cli, opencode) pull in the
+# Several CLI packages above (agent-browser, gemini-cli, opencode) pull in the
 # unversioned `node` formula as a runtime dependency and re-link
 # /opt/homebrew/bin/node → whatever major version brew currently ships
 # (Node 25.x at time of writing). Unlink here so nvm's LTS controls the
@@ -35,4 +38,3 @@
     - install
     - productivity
     - cli
-

@@ -79,7 +79,7 @@ make update
 - **CLI Tools**: fzf, ripgrep, bat, eza, zoxide, and more
 
 ### AI & Modern Tools
-- **AI Assistants**: ChatGPT, Claude, Fabric AI
+- **AI Assistants**: ChatGPT, Claude
 - **AI Development**: Ollama for local LLMs
 - **API Testing**: Bruno, Postman, HTTPie
 
@@ -197,21 +197,25 @@ These aliases provide an interactive interface using fzf (fuzzy finder) with liv
 
 ### Modifying Package Lists
 
-Edit `defaults.yaml` to customize which packages get installed:
+Most package inventory now lives in Brewfiles:
 
-```yaml
-cli_packages:
-  - your-favorite-cli-tool
+```ruby
+# Brewfile.cli
+brew "your-favorite-cli-tool"
 
-gui_packages:
-  - your-favorite-app
+# Brewfile.gui
+cask "your-favorite-app", greedy: true
 
-gui_packages_personal:  # Only installed with 'make'
-  - personal-only-app
+# Brewfile.app-store
+mas "Your App", id: 123456789
 
-gui_packages_work:      # Only installed with 'make work'
-  - work-only-app
+# Brewfile.personal
+cask "personal-only-app", greedy: true
 ```
+
+`Brewfile.common` aggregates the shared CLI, GUI, and App Store inventory.
+`Brewfile.work` is available for work-only additions and is currently empty.
+Removal lists still live in `defaults.yaml`.
 
 ### Using Your Own Dotfiles
 
@@ -220,26 +224,6 @@ Update the `dotfiles_repo` in `defaults.yaml`:
 ```yaml
 dotfiles_repo: https://github.com/yourusername/dotfiles.git
 ```
-
-### API Keys and Secrets
-
-Sensitive data is stored encrypted using Ansible Vault:
-
-1. Create your vault file:
-   ```bash
-   cp vars/api_keys.yml.example vars/api_keys.yml
-   ansible-vault encrypt vars/api_keys.yml
-   ```
-
-2. Edit the vault:
-   ```bash
-   ansible-vault edit vars/api_keys.yml
-   ```
-
-3. Install keys:
-   ```bash
-   make keys
-   ```
 
 ### GPG Signing with YubiKey
 
@@ -430,7 +414,8 @@ The setup includes several safety features:
    - Restart your terminal or run: `source ~/.zshrc`
 
 2. **"Permission denied" errors**
-   - The makefile will prompt for sudo password when needed
+   - The makefile prompts once for the sudo password when needed
+   - Homebrew cask installs use a temporary askpass helper so installers should not ask repeatedly
    - Some operations require admin access
 
 3. **App Store apps fail to install**
@@ -453,7 +438,8 @@ The setup includes several safety features:
 .
 ├── makefile              # Main interface for all commands
 ├── new-mac.sh           # Bootstrap script for fresh installs
-├── defaults.yaml        # Package lists and configuration
+├── Brewfile.*           # Homebrew Bundle package inventories
+├── defaults.yaml        # Non-Brewfile configuration and removal lists
 ├── local.yaml           # Main Ansible playbook
 ├── update.yaml          # Update playbook
 ├── scripts/             # Helper scripts (e.g., gpg-auto-sign.sh)
@@ -462,8 +448,6 @@ The setup includes several safety features:
 │   │   └── gpg/         # GPG public keys for import
 │   ├── tasks/           # Individual task files
 │   └── templates/       # Configuration templates
-└── vars/
-    └── api_keys.yml     # Encrypted secrets (create this)
 ```
 
 ## Contributing

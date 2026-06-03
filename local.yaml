@@ -2,10 +2,7 @@
   vars_files:
     - ./defaults.yaml
   vars:
-    go_root: "/usr/local/go"
-    go_path: "{{ ansible_env.HOME }}/go"
-    fabric_version: "latest"
-    fabric_config_dir: "{{ ansible_env.HOME }}/.config/fabric"
+    homebrew_environment: "{{ {'SUDO_ASKPASS': lookup('env', 'SUDO_ASKPASS')} if lookup('env', 'SUDO_ASKPASS') else {} }}"
   pre_tasks:
     - import_tasks: ansible/tasks/validation.yaml
       tags:
@@ -14,17 +11,6 @@
     - name: Update Brew
       community.general.homebrew:
         update_homebrew: yes
-      tags:
-        - install
-        - core
-        - cli
-        - gui
-
-    - name: Tap Homebrew repositories
-      community.general.homebrew_tap:
-        name: "{{ item }}"
-        state: present
-      with_items: "{{ homebrew_taps }}"
       tags:
         - install
         - core
@@ -42,11 +28,9 @@
     - import_tasks: ansible/tasks/osx.yaml
     - import_tasks: ansible/tasks/iterm.yaml
     - import_tasks: ansible/tasks/nvim.yaml
-    - import_tasks: ansible/tasks/security.yaml
+    - import_tasks: ansible/tasks/node.yaml
     - import_tasks: ansible/tasks/gpg.yaml
     - import_tasks: ansible/tasks/dotfiles.yaml
-    - import_tasks: ansible/tasks/node.yaml
     - import_tasks: ansible/tasks/rust.yaml
     - import_tasks: ansible/tasks/remove-unwanted-packages.yaml
     - import_tasks: ansible/tasks/dock.yaml
-    - import_tasks: ansible/tasks/ai-tools.yaml

@@ -1,0 +1,11 @@
+# Mac App Store apps installed via Homebrew Bundle's mas support.
+
+mas "Magnet", id: 441258766
+mas "DaisyDisk", id: 411643860
+mas "Bear", id: 1091189122
+mas "MeetingBar", id: 1532419400
+mas "Yoink", id: 457622435
+mas "Slack", id: 803453959
+mas "Parcel - Delivery Tracking", id: 639968404
+mas "DaVinci Resolve", id: 571213070
+mas "Yubico Authenticator", id: 1497506650

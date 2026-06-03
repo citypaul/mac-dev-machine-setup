@@ -17,7 +17,6 @@
   when: not rust_installed.rc == 0
   register: rust_install_output
   changed_when: "'Rust appears to be installed now' in rust_install_output.stdout"
-  notify: print_rust_install_output
 
 - name: Print Rust already installed message
   debug:

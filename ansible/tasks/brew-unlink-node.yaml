@@ -4,7 +4,7 @@
 #
 # Why this exists
 # ----------------
-# Several Homebrew formulas in `cli_packages` (agent-browser, gemini-cli,
+# Several Homebrew formulas in `Brewfile.cli` (agent-browser, gemini-cli,
 # opencode) declare the unversioned `node` formula as a runtime dependency.
 # The unversioned `node` formula tracks the latest major release (currently
 # Node 25.x) — not an LTS. Whenever any of these dependents is installed or

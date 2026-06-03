@@ -6,16 +6,19 @@
     - name: Update Homebrew
       community.general.homebrew:
         update_homebrew: yes
+      environment: "{{ homebrew_environment }}"
       register: brew_update
 
     - name: Upgrade all Homebrew packages
       community.general.homebrew:
         upgrade_all: yes
+      environment: "{{ homebrew_environment }}"
       register: brew_upgrade
 
     - name: Upgrade all Homebrew casks
       community.general.homebrew_cask:
         upgrade_all: yes
+      environment: "{{ homebrew_environment }}"
       register: cask_upgrade
       ignore_errors: yes  # Some casks may fail if app is running
 
@@ -42,6 +45,8 @@
 
     - name: Update pnpm packages globally
       shell: |
+        export PNPM_HOME="{{ ansible_env.HOME }}/Library/pnpm"
+        export PATH="$PNPM_HOME/bin:$PNPM_HOME:$PATH"
         if command -v pnpm &> /dev/null; then
           pnpm update -g
         fi
@@ -71,17 +76,6 @@
         fi
       register: go_update
       changed_when: go_update.rc == 0
-      ignore_errors: yes
-
-    - name: Update fabric patterns
-      shell: |
-        if command -v fabric &> /dev/null; then
-          fabric -U
-        fi
-      environment:
-        PATH: "{{ ansible_env.PATH }}:{{ ansible_env.HOME }}/go/bin"
-      register: fabric_update
-      changed_when: fabric_update.rc == 0
       ignore_errors: yes
 
     - name: Update tmux plugins
@@ -116,4 +110,3 @@
           - "Mac App Store: {{ 'Updated' if mas_update.changed else 'No updates' }}"
           - "Rust: {{ 'Updated' if rust_update.changed else 'Skipped/No updates' }}"
           - "Go packages: {{ 'Updated' if go_update.changed else 'Skipped/No updates' }}"
-          - "Fabric patterns: {{ 'Updated' if fabric_update.changed else 'Skipped/No updates' }}"

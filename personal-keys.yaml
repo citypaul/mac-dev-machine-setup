@@ -3,12 +3,6 @@
   vars:
     source_ssh_key: "./.ssh/id_rsa"
     dest_ssh_key: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
-    go_root: "/usr/local/go"
-    go_path: "{{ ansible_env.HOME }}/go"
-    fabric_version: "latest"
-    fabric_config_dir: "{{ ansible_env.HOME }}/.config/fabric"
-  vars_files:
-    - ./vars/api_keys.yml
   tasks:
     - name: Ensure .ssh directory exists
       file:
@@ -31,21 +25,3 @@
         path: "{{ dest_ssh_key }}"
       register: ssh_check
       failed_when: not ssh_check.stat.exists
-
-    - name: Ensure ~/.config/fabric directory exists
-      ansible.builtin.file:
-        path: "{{ fabric_config_dir }}"
-        state: directory
-        mode: "0755"
-
-    - name: Copy Fabric AI .env file
-      ansible.builtin.template:
-        src: "./ansible/templates/fabric/.env"
-        dest: "{{ fabric_config_dir }}/.env"
-        mode: "0600"
-
-    - name: Copy Fabric settings.yaml file
-      ansible.builtin.template:
-        src: "./ansible/templates/fabric/settings.yaml"
-        dest: "{{ fabric_config_dir }}/settings.yaml"
-        mode: "0600"

@@ -3,6 +3,7 @@
     name: "{{ item }}"
     state: absent
     install_options: force
+  environment: "{{ homebrew_environment }}"
   loop: "{{ gui_packages_to_remove_if_installed }}"
   tags:
     - install
@@ -15,6 +16,7 @@
     name: "{{ item }}"
     state: absent
     install_options: force
+  environment: "{{ homebrew_environment }}"
   loop: "{{ gui_packages_to_remove_if_installed_work }}"
   tags:
     - work

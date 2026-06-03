@@ -6,6 +6,15 @@
     - install
     - node
 
+- name: Ensure nvm directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.nvm"
+    state: directory
+    mode: "0755"
+  tags:
+    - install
+    - node
+
 # See brew-unlink-node.yaml for why this is needed and why the unlink
 # also runs in cli-tools.yaml and update.yaml.
 - name: Unlink Homebrew node so nvm controls the Node version
@@ -16,21 +25,34 @@
 
 - name: Install latest lts version of node
   ansible.builtin.shell: |
-    source ~/.zshrc
+    export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
+    source "$(brew --prefix nvm)/nvm.sh"
     nvm install --lts
     nvm alias default 'lts/*'
   args:
-    executable: /bin/zsh
+    executable: /bin/bash
+  tags:
+    - install
+    - node
+
+- name: Ensure pnpm global bin directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/Library/pnpm/bin"
+    state: directory
+    mode: "0755"
   tags:
     - install
     - node
 
 - name: Install or update pnpm global packages
   ansible.builtin.shell: |
-    source ~/.zshrc
+    export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
+    export PNPM_HOME="{{ ansible_env.HOME }}/Library/pnpm"
+    export PATH="$PNPM_HOME/bin:$PNPM_HOME:$PATH"
+    source "$(brew --prefix nvm)/nvm.sh"
     pnpm add -g {{ item }}@latest
   args:
-    executable: /bin/zsh
+    executable: /bin/bash
   loop: "{{ pnpm_global_packages | default([]) }}"
   when: pnpm_global_packages is defined
   tags:
