@@ -15,7 +15,6 @@ dotfiles_stow_packages:
 
 claude_installer_agents:
   - codex
-  - cursor
 claude_installer_with_opencode: true
 
 gui_packages_to_remove_if_installed:
