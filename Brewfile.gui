@@ -9,7 +9,6 @@ cask "chatgpt", greedy: true
 cask "claude", greedy: true
 cask "claude-code@latest", greedy: true
 cask "codex", greedy: true
-cask "cursor", greedy: true
 cask "deskpad", greedy: true
 cask "devtoys", greedy: true
 cask "docker-desktop", greedy: true
