@@ -1,6 +1,8 @@
-.PHONY: all deps personal work dock setup keys cli gui update check gpg gpg-setup work-remove
+.PHONY: all deps personal work dock setup keys cli gui fabric fabric-codex fabric-codex-default update check gpg gpg-setup work-remove
 
 WITH_SUDO_ASKPASS = scripts/with-sudo-askpass.sh
+FABRIC_CODEX_MODEL ?= gpt-5.5
+FABRIC_BIN ?= $(HOME)/.local/bin/fabric
 
 all: setup deps
 	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags install,personal
@@ -50,6 +52,25 @@ cli:
 
 gui: 
 	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags gui
+
+fabric:
+	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags fabric
+	@$(FABRIC_BIN) --setup
+
+fabric-codex:
+	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags fabric
+	@printf '%s\n' 'Fabric Codex setup'
+	@printf '%s\n' 'Choose the Codex AI vendor in the Fabric setup menu.'
+	@printf '%s\n' 'Accept the default Codex base URLs unless you are deliberately testing another backend.'
+	@printf '%s\n' 'Complete the browser OpenAI login; Fabric stores CODEX_* tokens in ~/.config/fabric/.env.'
+	@printf '%s\n' 'After setup, this target sets Fabric default vendor/model to Codex/$(FABRIC_CODEX_MODEL).'
+	@printf '%s\n' ''
+	@$(FABRIC_BIN) --setup
+	@printf '%s\n' ''
+	@scripts/fabric-set-default-model.sh "$(FABRIC_CODEX_MODEL)"
+
+fabric-codex-default:
+	@scripts/fabric-set-default-model.sh "$(FABRIC_CODEX_MODEL)"
 
 osx: 
 	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags osx

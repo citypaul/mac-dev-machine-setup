@@ -23,6 +23,9 @@ This is an Ansible-based automation repository for setting up and maintaining Ma
 - `make keys` - Install private keys (requires vault password)
 - `make cli` - Install CLI tools only
 - `make gui` - Install GUI applications only
+- `make fabric` - Install/repair Fabric shell integration and run interactive Fabric setup
+- `make fabric-codex` - Install/repair Fabric and guide the Codex subscription-backed setup
+- `make fabric-codex-default` - Set Fabric's default provider/model to Codex without rerunning OAuth
 - `make osx` - Configure macOS system preferences
 - `make dock` - Configure dock items
 - `make fonts` - Install fonts
@@ -69,7 +72,7 @@ scripts/with-sudo-askpass.sh ansible-playbook local.yaml --check --diff
 
 All Ansible tasks are in `ansible/tasks/`:
 
-- Development tools: `cli-tools.yaml`, `gui-tools.yaml`, `node.yaml`, `rust.yaml`
+- Development tools: `cli-tools.yaml`, `fabric.yaml`, `gui-tools.yaml`, `node.yaml`, `rust.yaml`
 - Terminal & editors: `iterm.yaml`, `nvim.yaml`, `zsh.yaml`, `themes.yaml`, `fonts.yaml`
 - Security: `ssh.yaml`, `gpg.yaml`
 - System config: `osx.yaml`, `dock.yaml`
@@ -93,6 +96,7 @@ Static files in `ansible/files/`:
 Helper scripts in `scripts/`:
 
 - `gpg-auto-sign.sh` - GPG wrapper that auto-detects the signing key from the currently-inserted YubiKey
+- `fabric-set-default-model.sh` - Updates only `DEFAULT_VENDOR` and `DEFAULT_MODEL` in `~/.config/fabric/.env` so Codex can be the Fabric default without printing or modifying provider tokens; refuses to set Codex defaults until Fabric's Codex OAuth values exist
 
 ## Key Design Patterns
 
@@ -110,6 +114,10 @@ Some tasks share tags so they run together:
 
 - `git-setup.yaml` and `gpg.yaml` both have `git-personal` and `install` tags, so `make git` configures both git identity/aliases and GPG signing in a single command
 - `make` and `make work` both run the `install` tag, which includes git and GPG setup
+- `fabric.yaml` installs `fabric-ai`, preserves `~/.config/fabric`, adds `fabric` and `yt` shims, and keeps provider setup interactive via `make fabric`
+- `make fabric` and `make fabric-codex` call the managed `~/.local/bin/fabric` shim directly, so they do not depend on a newly provisioned shell already having `~/.local/bin` on `PATH`.
+- `make fabric-codex` is the guided fresh-install path for Fabric's `Codex` vendor after base setup dependencies are installed. It uses Fabric's browser-based OpenAI OAuth flow, not a committed API key, leaves `CODEX_*` tokens in `~/.config/fabric/.env`, then sets `DEFAULT_VENDOR=Codex` and `DEFAULT_MODEL=gpt-5.5` through `scripts/fabric-set-default-model.sh`.
+- `make fabric-codex-default` repairs only Fabric's default provider/model. Use it when pattern commands still call an old Anthropic model, Fabric's setup picked `Codex/gpt-5.1-codex` and Codex returns status 400, or `fabric --changeDefaultModel` only shows Anthropic models; Codex subscription-backed models may be hidden from Fabric's model listing. If Fabric says `could not find vendor` with `Default Vendor = Codex`, rerun `make fabric-codex` and choose the Codex vendor because defaults were set before OAuth completed.
 
 ### Package Management
 

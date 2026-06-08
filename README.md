@@ -51,6 +51,9 @@ make update
 | `make check` | Dry run to preview changes |
 | `make cli` | Install command-line tools only |
 | `make gui` | Install GUI applications only |
+| `make fabric` | Install/repair Fabric shell integration and run interactive Fabric setup |
+| `make fabric-codex` | Install/repair Fabric and guide the Codex subscription-backed setup |
+| `make fabric-codex-default` | Set Fabric's default provider/model to Codex without rerunning OAuth |
 | `make osx` | Configure macOS system preferences |
 | `make dock` | Configure dock items |
 | `make dotfiles` | Sync dotfiles from repository |
@@ -79,7 +82,7 @@ make update
 - **CLI Tools**: fzf, ripgrep, bat, eza, zoxide, and more
 
 ### AI & Modern Tools
-- **AI Assistants**: ChatGPT, Claude
+- **AI Assistants**: ChatGPT, Claude, Fabric AI
 - **AI Development**: Ollama for local LLMs
 - **API Testing**: Bruno, Postman, HTTPie
 
@@ -216,6 +219,90 @@ cask "personal-only-app", greedy: true
 `Brewfile.common` aggregates the shared CLI, GUI, and App Store inventory.
 `Brewfile.work` is available for work-only additions and is currently empty.
 Removal lists still live in `defaults.yaml`.
+
+### Fabric AI
+
+Fabric is installed through Homebrew as `fabric-ai`, not `fabric`. The `fabric` Homebrew formula is the unrelated SSH automation tool, so this setup installs `fabric-ai` and adds a `fabric` shim for day-to-day use.
+
+Run the interactive setup once after installation:
+
+```bash
+make fabric
+```
+
+The full setup installs the command and shell integration, but it does not run `fabric --setup` automatically because setup asks for personal provider choices, browser OAuth, and API keys. The make targets call the managed `~/.local/bin/fabric` shim directly, so they do not require opening a fresh shell after the Ansible task installs it. Fabric secrets should stay in `~/.config/fabric/.env`, created by Fabric itself, not in this repository or an Ansible Vault file.
+
+#### Codex subscription backend
+
+Fabric v1.4.437 and later supports a `Codex` provider that can use your ChatGPT/Codex subscription through Fabric's browser-based OpenAI OAuth flow. Use the guided setup target for that path:
+
+```bash
+make fabric-codex
+```
+
+This target is the fresh-install path for subscription-backed Fabric usage after the base setup dependencies are installed. It first runs the Fabric Ansible task, then launches Fabric's interactive setup. In Fabric's setup menu, choose the `Codex` AI vendor, accept the default Codex API and OAuth base URLs unless you are deliberately testing another backend, then complete the browser login. Fabric listens on `localhost:1455` during that OAuth callback and stores the resulting local settings as `CODEX_*` entries in `~/.config/fabric/.env`.
+
+After setup, the target sets the Fabric default to `Codex/gpt-5.5` by updating only `DEFAULT_VENDOR` and `DEFAULT_MODEL` in `~/.config/fabric/.env`. It does not touch the `CODEX_*` OAuth tokens. Override the model when needed:
+
+```bash
+make fabric-codex FABRIC_CODEX_MODEL=gpt-5.2-codex
+```
+
+Fabric's own setup summary may still report a different Codex model such as `Codex/gpt-5.1-codex` before the make target applies this repository's default. If pattern execution then fails with `codex request failed with status 400`, repair the default with `make fabric-codex-default`.
+
+Use this lighter target if Codex OAuth is already configured and you only need to repair the default:
+
+```bash
+make fabric-codex-default
+make fabric-codex-default FABRIC_CODEX_MODEL=gpt-5.2-codex
+```
+
+This repo sets the default manually because Fabric's `--changeDefaultModel` uses `fabric --listmodels`, and Codex subscription-backed models may be hidden from that listing. Seeing only Anthropic models in `fabric --changeDefaultModel` does not necessarily mean the Codex vendor is unavailable.
+
+The default helper requires Fabric's Codex OAuth setup to have completed first. If Fabric says `could not find vendor` while showing `Default Vendor = Codex`, the default value exists but the Codex vendor is not configured. Rerun `make fabric-codex`, choose the `Codex` AI vendor in Fabric's setup menu, and complete the browser login.
+
+Check the non-secret default values with:
+
+```bash
+grep -E '^(DEFAULT_VENDOR|DEFAULT_MODEL)=' ~/.config/fabric/.env
+```
+
+Avoid printing the whole `.env`; it contains provider tokens. You can also invoke Codex explicitly without changing the default:
+
+```bash
+CODEX_MODEL=your-codex-model-id
+echo "Summarize this" | fabric --vendor Codex --model "$CODEX_MODEL" --pattern summarize
+```
+
+OpenAI documents GPT-5.5 as available in Codex for ChatGPT subscription plans, and this repo uses the model ID `gpt-5.5` by default. Known upstream Codex fallback IDs include `gpt-5-codex`, `gpt-5.1-codex`, `gpt-5.1-codex-max`, and `gpt-5.2-codex`. If Fabric reports that a selected Codex model is unsupported for your account, rerun `make fabric-codex-default` with another model ID.
+
+The Fabric task preserves `~/.config/fabric`. If an older unmanaged `~/.local/bin/fabric` exists, it is moved to a timestamped `fabric.legacy.*` backup before a small shim is installed that forwards `fabric` to Homebrew's `fabric-ai` while keeping the command name as `fabric`.
+
+Shell integration is written to `~/.config/fabric/shell.zsh` and enabled from `~/.zshrc.local`. It dynamically creates pattern aliases from `~/.config/fabric/patterns` without overwriting existing commands or aliases. Set `FABRIC_ALIAS_PREFIX` in `~/.zshrc.local` before sourcing the Fabric block if you want generated aliases to be prefixed.
+
+#### YouTube transcripts
+
+Transcript-only commands do not call a chat model, so they can succeed even when the default model is stale. Pattern commands such as `extract_wisdom` do call a model, so configure Codex first or pass `--vendor` and `--model` explicitly.
+
+```bash
+fabric -y "https://www.youtube.com/watch?v=VIDEO_ID" --transcript
+fabric -y "https://www.youtube.com/watch?v=VIDEO_ID" --transcript-with-timestamps
+yt "https://www.youtube.com/watch?v=VIDEO_ID"
+yt -t "https://www.youtube.com/watch?v=VIDEO_ID"
+fabric -y "https://www.youtube.com/watch?v=VIDEO_ID" --stream --pattern extract_wisdom
+```
+
+If an old `~/.local/bin/yt` helper exists from a legacy Fabric install, the Fabric task moves it to a timestamped `yt.legacy.*` backup and installs a shim that delegates to Homebrew's `fabric-ai`.
+
+#### Fabric gotchas
+
+- Do not use `alias fabric=fabric-ai`. Fabric can interpret the executable name as a pattern in some YouTube flows and fail with `pattern 'fabric-ai' not found`. The managed `~/.local/bin/fabric` shim runs the Homebrew binary with the command name set to `fabric`.
+- If `fabric --changeDefaultModel` only shows Anthropic models, use `make fabric-codex-default` instead of selecting an Anthropic model.
+- If `make fabric-codex-default` says Codex OAuth is not configured, rerun `make fabric-codex` and make sure you choose the `Codex` AI vendor during Fabric's interactive setup.
+- If Fabric says `could not find vendor` while showing `Default Vendor = Codex`, defaults were set before Codex OAuth completed. Rerun `make fabric-codex`.
+- If Fabric says `codex request failed with status 400` after setup selected `Codex/gpt-5.1-codex`, the Codex backend likely rejected that model. Run `make fabric-codex-default` to switch to `gpt-5.5`.
+- If a pattern command fails with `model: claude-3-5-sonnet-20240620`, Fabric is still using an old Anthropic default. Run `make fabric-codex-default`.
+- If transcript extraction says no VTT files were found, the video may not expose captions in a form `yt-dlp` can retrieve; try another video or pass extra `yt-dlp` options with `--yt-dlp-args`.
 
 ### Using Your Own Dotfiles
 
@@ -422,7 +509,31 @@ The setup includes several safety features:
    - Ensure you're signed into the Mac App Store
    - Run `mas signin your-apple-id@example.com` first
 
-4. **Ansible Galaxy certificate errors**
+4. **Fabric uses old commands or flags**
+   - Run `make fabric` to reinstall the Homebrew version and rerun provider setup
+   - Restart your shell or run `source ~/.zshrc`
+   - Check `command -v fabric-ai` and `fabric-ai --version`
+
+5. **Fabric pattern commands call an old Anthropic model**
+   - Run `make fabric-codex-default`
+   - Override the Codex model with `make fabric-codex-default FABRIC_CODEX_MODEL=gpt-5.2-codex`
+   - Check only the non-secret defaults with `grep -E '^(DEFAULT_VENDOR|DEFAULT_MODEL)=' ~/.config/fabric/.env`
+
+6. **Fabric Codex pattern commands fail with status 400**
+   - Fabric's setup may have selected a Codex model your account/backend rejects, such as `gpt-5.1-codex`
+   - Run `make fabric-codex-default` to set the repository default, `Codex/gpt-5.5`
+   - If `gpt-5.5` is rejected, try `make fabric-codex-default FABRIC_CODEX_MODEL=gpt-5.2-codex`
+
+7. **Fabric's default-model selector only shows Anthropic**
+   - This can happen because Codex subscription-backed models may be hidden from `fabric --listmodels`
+   - Use `make fabric-codex-default` instead of `fabric --changeDefaultModel`
+
+8. **Fabric says `could not find vendor` with `Default Vendor = Codex`**
+   - Defaults were set, but Fabric does not have a configured Codex OAuth vendor
+   - Run `make fabric-codex`, choose the `Codex` AI vendor, and complete the browser login
+   - Then retry `make fabric-codex-default`
+
+9. **Ansible Galaxy certificate errors**
    - We've removed the insecure `ignore_certs` setting
    - If you have certificate issues, fix your system certificates
 

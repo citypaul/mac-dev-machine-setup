@@ -1,0 +1,250 @@
+- name: Install Fabric AI CLI
+  community.general.homebrew:
+    name: fabric-ai
+    state: latest
+  environment: "{{ homebrew_environment }}"
+  tags:
+    - install
+    - productivity
+    - cli
+    - ai
+    - fabric
+
+- name: Ensure Fabric config directory exists
+  ansible.builtin.file:
+    path: "{{ lookup('env', 'HOME') }}/.config/fabric"
+    state: directory
+    mode: "0755"
+  tags:
+    - install
+    - productivity
+    - cli
+    - ai
+    - fabric
+
+- name: Ensure local user bin directory exists
+  ansible.builtin.file:
+    path: "{{ lookup('env', 'HOME') }}/.local/bin"
+    state: directory
+    mode: "0755"
+  tags:
+    - install
+    - productivity
+    - cli
+    - ai
+    - fabric
+
+- name: Back up unmanaged fabric command before installing Homebrew shim
+  ansible.builtin.shell: |
+    set -euo pipefail
+    target="{{ lookup('env', 'HOME') }}/.local/bin/fabric"
+    if { [ -f "$target" ] || [ -L "$target" ]; } && ! grep -q "Managed by mac-dev-machine-setup Fabric shim" "$target" 2>/dev/null; then
+      backup="${target}.legacy.$(date +%Y%m%d%H%M%S)"
+      mv "$target" "$backup"
+      echo "$backup"
+    fi
+  args:
+    executable: /bin/bash
+  register: fabric_legacy_backup
+  changed_when: fabric_legacy_backup.stdout != ""
+  tags:
+    - install
+    - productivity
+    - cli
+    - ai
+    - fabric
+
+- name: Install fabric command shim for Homebrew fabric-ai
+  ansible.builtin.copy:
+    dest: "{{ lookup('env', 'HOME') }}/.local/bin/fabric"
+    mode: "0755"
+    content: |
+      #!/bin/bash
+      # Managed by mac-dev-machine-setup Fabric shim.
+      if command -v fabric-ai >/dev/null 2>&1; then
+        exec -a fabric fabric-ai "$@"
+      fi
+      if [ -x /opt/homebrew/bin/fabric-ai ]; then
+        exec -a fabric /opt/homebrew/bin/fabric-ai "$@"
+      fi
+      if [ -x /usr/local/bin/fabric-ai ]; then
+        exec -a fabric /usr/local/bin/fabric-ai "$@"
+      fi
+      echo "fabric-ai is not installed or not on PATH. Run: brew install fabric-ai" >&2
+      exit 127
+  tags:
+    - install
+    - productivity
+    - cli
+    - ai
+    - fabric
+
+- name: Back up unmanaged yt command before installing Fabric YouTube shim
+  ansible.builtin.shell: |
+    set -euo pipefail
+    target="{{ lookup('env', 'HOME') }}/.local/bin/yt"
+    if { [ -f "$target" ] || [ -L "$target" ]; } && ! grep -q "Managed by mac-dev-machine-setup Fabric YouTube shim" "$target" 2>/dev/null; then
+      backup="${target}.legacy.$(date +%Y%m%d%H%M%S)"
+      mv "$target" "$backup"
+      echo "$backup"
+    fi
+  args:
+    executable: /bin/bash
+  register: fabric_yt_legacy_backup
+  changed_when: fabric_yt_legacy_backup.stdout != ""
+  tags:
+    - install
+    - productivity
+    - cli
+    - ai
+    - fabric
+
+- name: Install yt command shim for Fabric YouTube transcripts
+  ansible.builtin.copy:
+    dest: "{{ lookup('env', 'HOME') }}/.local/bin/yt"
+    mode: "0755"
+    content: |
+      #!/bin/bash
+      # Managed by mac-dev-machine-setup Fabric YouTube shim.
+
+      mode="--transcript"
+
+      case "${1:-}" in
+        -h|--help)
+          echo "Usage: yt [-t|--timestamps] youtube-link"
+          exit 0
+          ;;
+        -t|--timestamps|--transcript-with-timestamps)
+          mode="--transcript-with-timestamps"
+          shift
+          ;;
+        --transcript)
+          mode="--transcript"
+          shift
+          ;;
+      esac
+
+      if [ "$#" -ne 1 ]; then
+        echo "Usage: yt [-t|--timestamps] youtube-link" >&2
+        exit 1
+      fi
+
+      if command -v fabric-ai >/dev/null 2>&1; then
+        exec -a fabric fabric-ai -y "$1" "$mode"
+      fi
+      if [ -x /opt/homebrew/bin/fabric-ai ]; then
+        exec -a fabric /opt/homebrew/bin/fabric-ai -y "$1" "$mode"
+      fi
+      if [ -x /usr/local/bin/fabric-ai ]; then
+        exec -a fabric /usr/local/bin/fabric-ai -y "$1" "$mode"
+      fi
+      echo "fabric-ai is not installed or not on PATH. Run: brew install fabric-ai" >&2
+      exit 127
+  tags:
+    - install
+    - productivity
+    - cli
+    - ai
+    - fabric
+
+- name: Install Fabric zsh integration
+  ansible.builtin.copy:
+    dest: "{{ lookup('env', 'HOME') }}/.config/fabric/shell.zsh"
+    mode: "0644"
+    content: |
+      # Managed by mac-dev-machine-setup.
+
+      case "$(alias fabric 2>/dev/null)" in
+        "fabric=fabric-ai"|"fabric='fabric-ai'")
+          unalias fabric
+          ;;
+      esac
+
+      if ! command -v fabric >/dev/null 2>&1 && command -v fabric-ai >/dev/null 2>&1; then
+        fabric() {
+          ARGV0=fabric command fabric-ai "$@"
+        }
+      fi
+
+      _fabric_command() {
+        if command -v "${FABRIC_COMMAND:-fabric}" >/dev/null 2>&1; then
+          printf '%s\n' "${FABRIC_COMMAND:-fabric}"
+          return 0
+        fi
+
+        return 1
+      }
+
+      if (( $+functions[compdef] )) && [[ -f "${HOMEBREW_PREFIX:-/opt/homebrew}/share/zsh/site-functions/_fabric-ai" ]]; then
+        compdef _fabric-ai fabric 2>/dev/null || true
+      fi
+
+      fabric_alias_patterns() {
+        emulate -L zsh
+        setopt null_glob
+
+        local pattern_dir="${FABRIC_PATTERNS_DIR:-$HOME/.config/fabric/patterns}"
+        local fabric_cmd pattern_path pattern_name alias_name prefix
+
+        fabric_cmd="$(_fabric_command)" || return 0
+        [[ -d "$pattern_dir" ]] || return 0
+
+        prefix="${FABRIC_ALIAS_PREFIX:-}"
+        for pattern_path in "$pattern_dir"/*; do
+          [[ -d "$pattern_path" ]] || continue
+          pattern_name="${pattern_path:t}"
+          alias_name="${prefix}${pattern_name}"
+
+          case "$alias_name" in
+            ""|*[!A-Za-z0-9_.-]*) continue ;;
+          esac
+
+          if ! whence -w "$alias_name" >/dev/null 2>&1; then
+            alias "$alias_name=$fabric_cmd --pattern $pattern_name"
+          fi
+        done
+      }
+
+      fabric_alias_patterns
+
+      if ! whence -w yt >/dev/null 2>&1; then
+        yt() {
+          emulate -L zsh
+          local transcript_flag="--transcript"
+          local fabric_cmd
+
+          if [[ "$1" == "-t" || "$1" == "--timestamps" ]]; then
+            transcript_flag="--transcript-with-timestamps"
+            shift
+          fi
+
+          if [[ "$#" -ne 1 ]]; then
+            echo "Usage: yt [-t|--timestamps] youtube-link" >&2
+            return 1
+          fi
+
+          fabric_cmd="$(_fabric_command)" || return 127
+          "$fabric_cmd" -y "$1" "$transcript_flag"
+        }
+      fi
+  tags:
+    - install
+    - productivity
+    - cli
+    - ai
+    - fabric
+
+- name: Enable Fabric zsh integration in machine-local shell config
+  ansible.builtin.blockinfile:
+    path: "{{ lookup('env', 'HOME') }}/.zshrc.local"
+    create: true
+    mode: "0600"
+    marker: "# {mark} mac-dev-machine-setup Fabric"
+    block: |
+      [ -f "$HOME/.config/fabric/shell.zsh" ] && source "$HOME/.config/fabric/shell.zsh"
+  tags:
+    - install
+    - productivity
+    - cli
+    - ai
+    - fabric
