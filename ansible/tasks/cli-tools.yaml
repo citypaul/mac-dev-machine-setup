@@ -1,65 +1,43 @@
-- name: Install CLI packages
-  community.general.homebrew:
-    name: "{{ item }}"
-    state: latest
-  ignore_errors: yes
-  with_items:
-    # Core Tools
-    - git
-    - worktrunk
-    - curl
-    - wget
-    - tree
-    - stow
-    # Shell & Navigation
-    - zellij
-    - fzf
-    - z
-    - starship
-    - thefuck
-    # Development Tools
-    - gh
-    - lazygit
-    - ripgrep
-    - fd
-    - jq
-    - httpie
-    - claude
-    # Package Managers
-    - yarn
-    - pnpm
-    - nvm
-    - pipx
-    - mas
-    # Infrastructure & Cloud
-    - ansible
-    - terraform
-    - mole
-    # Database
-    - mysql-client
-    - pscale
-    # Languages & Runtimes
-    - rust
-    - deno
-    - go
-    # Build Tools
-    - cmake
-    # System Monitoring
-    - glances
-    - tldr
-    # Utilities
-    - aria2
-    - asciinema
-    - eza
-    - bat
-    - axe
-    # Apple Development
-    - robotsandpencils/made/xcodes
-    - hammerspoon
-    - xcode-build-server
-    - xcbeautify
-    - swiftformat
-    - swift-format
+- name: Install CLI packages from Brewfile
+  ansible.builtin.command: brew bundle install --file "{{ playbook_dir }}/Brewfile.cli"
+  environment: "{{ homebrew_environment }}"
+  register: brew_bundle_cli
+  changed_when: >-
+    'Installing' in brew_bundle_cli.stdout or
+    'Upgrading' in brew_bundle_cli.stdout or
+    'Tapping' in brew_bundle_cli.stdout
+  tags:
+    - install
+    - productivity
+    - cli
+
+- name: Install optional CLI packages from Brewfile
+  ansible.builtin.command: brew bundle install --file "{{ playbook_dir }}/Brewfile.cli-optional"
+  environment: "{{ homebrew_environment }}"
+  register: brew_bundle_cli_optional
+  changed_when: >-
+    'Installing' in brew_bundle_cli_optional.stdout or
+    'Upgrading' in brew_bundle_cli_optional.stdout or
+    'Tapping' in brew_bundle_cli_optional.stdout
+  failed_when: false
+  tags:
+    - install
+    - productivity
+    - cli
+
+- name: Report optional CLI package failures
+  ansible.builtin.debug:
+    msg:
+      - "Optional CLI package install failed but setup will continue."
+      - "{{ brew_bundle_cli_optional.stderr | default('') }}"
+  when: brew_bundle_cli_optional.rc != 0
+  tags:
+    - install
+    - productivity
+    - cli
+
+- name: Unlink Homebrew node after CLI package installs
+  ansible.builtin.import_tasks: brew-unlink-node.yaml
   tags:
     - install
     - productivity

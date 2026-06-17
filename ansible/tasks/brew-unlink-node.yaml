@@ -1,0 +1,8 @@
+---
+# Keep nvm in control of the active Node version. Some Homebrew formulae can
+# install or relink the unversioned `node` formula as a dependency.
+- name: Unlink Homebrew node so nvm controls the Node version
+  ansible.builtin.command: brew unlink node
+  register: brew_unlink_node_result
+  changed_when: "'symlinks removed' in brew_unlink_node_result.stdout"
+  failed_when: false

@@ -1,0 +1,14 @@
+machine_type: personal
+
+git_email: github@mintuz.com
+git_name: Adam Bulmer
+
+dotfiles_repo: https://github.com/mintuz/.dotfiles.git
+dotfiles_version: master
+dotfiles_conflict_paths:
+  - .agents/.skill-lock.json
+
+personal_public_ssh_key: personal_github.pub
+work_public_ssh_key: work_github.pub
+
+pnpm_global_packages: []

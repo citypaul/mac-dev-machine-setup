@@ -27,7 +27,7 @@ This is an Ansible-based Mac development machine setup automation tool that conf
      - zsh (shell configuration)
      - app-store-apps (Mac App Store apps via `mas`)
      - osx (macOS system preferences via `defaults`)
-     - node (nvm, Node LTS, GitHub Copilot CLI)
+     - node (nvm and Node LTS)
      - dotfiles (clones and stows from github.com/mintuz/.dotfiles)
      - dock (configures Dock apps and layout with dockutil)
 

@@ -1,0 +1,37 @@
+# Mac App Store apps installed via Homebrew Bundle's mas support.
+
+mas "Drafts", id: 1435957248
+mas "Things", id: 904280696
+mas "Keynote", id: 409183694
+mas "Numbers", id: 409203825
+mas "Pages", id: 409201541
+mas "GarageBand", id: 682658836
+mas "Xcode", id: 497799835
+mas "TestFlight", id: 899247664
+mas "Developer", id: 640199958
+mas "Swift Playgrounds", id: 1496833156
+mas "Frame Array", id: 6744052024
+mas "Framous", id: 6636520519
+mas "Helm", id: 6479357934
+mas "Picasso", id: 6472062986
+mas "Darkroom", id: 953286746
+mas "Affinity Designer 2", id: 1616831348
+mas "Affinity Photo 2", id: 1616822987
+mas "Dark Noise", id: 1465439395
+mas "Amphetamine", id: 937984704
+mas "rcmd", id: 1596283165
+mas "DaisyDisk", id: 411643860
+mas "The Unarchiver", id: 425424353
+mas "Speedtest", id: 1153157709
+mas "Just Press Record", id: 1033342465
+mas "Spokenly", id: 6740315592
+mas "Auth for Tesla", id: 1552058613
+mas "1Password for Safari", id: 1569813296
+mas "1Blocker", id: 1365531024
+mas "Wipr", id: 1662217862
+mas "StopTheMadness Pro", id: 6471380298
+mas "Baking Soda", id: 1601151613
+mas "Vinegar", id: 1591303229
+mas "Sink It for Reddit", id: 6449873635
+mas "Consent-O-Matic", id: 1606897889
+mas "Hush", id: 1544743900

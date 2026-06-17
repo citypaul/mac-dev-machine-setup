@@ -1,29 +1,49 @@
 - name: Install dockutil
-  ignore_errors: yes
   community.general.homebrew:
-    name: ["hpedrorodrigues/tools/dockutil"]
+    name: dockutil
+    state: present
+  environment: "{{ homebrew_environment }}"
+  tags:
+    - install
+    - dock
+
+- name: Check dockutil is available
+  ansible.builtin.shell: command -v dockutil
+  args:
+    executable: /bin/bash
+  register: dockutil_check
+  changed_when: false
+  failed_when: false
+  tags:
+    - install
+    - dock
+
+- name: Report missing dockutil
+  ansible.builtin.debug:
+    msg: "dockutil is not available; skipping Dock configuration."
+  when: dockutil_check.rc != 0
   tags:
     - install
     - dock
 
 - name: Clear dock
-  shell: dockutil --remove all --no-restart
+  ansible.builtin.command: dockutil --remove all --no-restart
+  when: dockutil_check.rc == 0
   tags:
     - install
     - dock
 
 - name: Setup dock
-  shell: dockutil --add {{ item }} --no-restart
+  ansible.builtin.shell: dockutil --add {{ item }} --no-restart
+  args:
+    executable: /bin/bash
   with_items:
     - /Applications/Home.app
     - "'' --type spacer --section apps --after Home"
     - /Applications/Cursor.app
-    - /Applications/XCode.app
     - /Applications/Warp.app
     - "'' --type spacer --section apps --after Warp"
-    - /Applications/Vivaldi.app
     - /Applications/Safari.app
-    - /Applications/Arc.app
     - "'' --type spacer --section apps --after Arc"
     - /Applications/Drafts.app
     - /Applications/Obsidian.app
@@ -38,13 +58,17 @@
     - "'' --type spacer --section apps --after Discord"
     - /Applications/Music.app
     - /Applications/Podcasts.app
-  ignore_errors: yes
+  register: dock_add_results
+  changed_when: dock_add_results.rc == 0
+  failed_when: false
+  when: dockutil_check.rc == 0
   tags:
     - install
     - dock
 
 - name: Restart dock
-  shell: "/usr/bin/killall Dock"
+  ansible.builtin.command: /usr/bin/killall Dock
+  when: dockutil_check.rc == 0
   tags:
     - install
     - dock

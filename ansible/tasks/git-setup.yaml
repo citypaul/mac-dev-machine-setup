@@ -3,6 +3,7 @@
     name: git
     state: latest
   tags:
+    - install
     - git-personal
 
 - name: Create global .gitignore
@@ -11,30 +12,34 @@
     dest: ~/.global_gitignore
     mode: "0644"
   tags:
+    - install
     - git-personal
 
 - name: Git personal setup email
-  git_config:
+  ansible.builtin.git_config:
     name: user.email
     scope: global
-    value: "mintuz1990@gmail.com"
+    value: "{{ git_email }}"
   tags:
+    - install
     - git-personal
 
 - name: Git personal setup name
-  git_config:
+  ansible.builtin.git_config:
     name: user.name
     scope: global
-    value: "Adam Bulmer"
+    value: "{{ git_name }}"
   tags:
+    - install
     - git-personal
 
 - name: Git set pull to rebase
-  git_config:
+  ansible.builtin.git_config:
     name: pull.rebase
     scope: global
     value: "true"
   tags:
+    - install
     - git-personal
 
 - name: Set global git ignore
@@ -43,6 +48,7 @@
     scope: global
     value: ~/.global_gitignore
   tags:
+    - install
     - git-personal
 
 - name: Set git fetch to always prune
@@ -51,6 +57,7 @@
     scope: global
     value: "true"
   tags:
+    - install
     - git-personal
 
 - name: Set global git default branch name
@@ -59,6 +66,7 @@
     scope: global
     value: main
   tags:
+    - install
     - git-personal
 
 - name: Set autoSetupRemote to true to automatically set upstream branch on push
@@ -67,4 +75,5 @@
     scope: global
     value: "true"
   tags:
+    - install
     - git-personal

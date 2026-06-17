@@ -1,28 +1,30 @@
 - hosts: localhost
+  vars_files:
+    - ./defaults.yaml
   vars:
-    work_public_ssh_key: "work_github.pub"
-    personal_public_ssh_key: "personal_github.pub"
-  vars_prompt:
-    - name: machine_type
-      prompt: Machine personal or work?
-      default: personal
-      private: no
+    homebrew_environment: "{{ {'SUDO_ASKPASS': lookup('env', 'SUDO_ASKPASS')} if lookup('env', 'SUDO_ASKPASS') else {} }}"
   pre_tasks:
+    - import_tasks: ansible/tasks/validation.yaml
+      tags:
+        - always
+
     - name: Update Brew
       community.general.homebrew:
         update_homebrew: yes
+      environment: "{{ homebrew_environment }}"
       tags:
         - install
         - core
+        - cli
+        - gui
   tasks:
-    - include_tasks: ansible/tasks/security.yaml
-    - include_tasks: ansible/tasks/git-setup.yaml
-    - include_tasks: ansible/tasks/cli-tools.yaml
-    - include_tasks: ansible/tasks/gui-tools.yaml
-    - include_tasks: ansible/tasks/zsh.yaml
-    - include_tasks: ansible/tasks/app-store-apps.yaml
-    # - include: ansible/tasks/fonts.yaml
-    - include_tasks: ansible/tasks/osx.yaml
-    - include_tasks: ansible/tasks/node.yaml
-    - include_tasks: ansible/tasks/dotfiles.yaml
-    - include_tasks: ansible/tasks/dock.yaml
+    - import_tasks: ansible/tasks/security.yaml
+    - import_tasks: ansible/tasks/git-setup.yaml
+    - import_tasks: ansible/tasks/cli-tools.yaml
+    - import_tasks: ansible/tasks/gui-tools.yaml
+    - import_tasks: ansible/tasks/zsh.yaml
+    - import_tasks: ansible/tasks/app-store-apps.yaml
+    - import_tasks: ansible/tasks/osx.yaml
+    - import_tasks: ansible/tasks/node.yaml
+    - import_tasks: ansible/tasks/dotfiles.yaml
+    - import_tasks: ansible/tasks/dock.yaml

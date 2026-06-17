@@ -1,0 +1,4 @@
+# Optional GUI packages that may depend on external taps or local Homebrew trust.
+# Failures from this Brewfile are reported but do not stop the full setup.
+
+cask "tuist", greedy: true

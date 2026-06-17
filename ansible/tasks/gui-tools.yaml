@@ -1,57 +1,149 @@
-- name: Install Apps
-  community.general.homebrew_cask:
-    name: "{{ item }}"
-    state: latest
-  ignore_errors: yes
-  with_items:
-    # Mac Utilities
-    - downie
-    - cleanshot
-    - httpie
-    - bettertouchtool
-    - raycast
-    - lunar
-    - gas-mask
-    - rectangle-pro
-    - alt-tab
-    - popclip
-    - protonvpn
-    - bartender
-    - little-snitch
-    - micro-snitch
-    # Software Development
-    - warp
-    - cursor
-    - 1password-cli
-    - tuist
-    - codex
-    - claude-code
-    # App Development
-    - rotato
-    # Web Development
-    - firefox
-    - ungoogled-chromium
-    # PKM
-    - obsidian
-    - dropbox
-    # Social
-    - discord
-    - zoom
-    - slack
-    - camo-studio
-    # Design
-    - sketch
-    # Gaming
-    - steelseries-gg
-    # Misc
-    - vlc
-    - hammerspoon
-    # Fonts
-    - font-fira-code
-    - font-hack
-    - font-jetbrains-mono
-    - font-recursive-code
+- name: Read GUI casks from Brewfile
+  ansible.builtin.command: brew bundle list --file "{{ playbook_dir }}/Brewfile.gui" --cask
+  environment: "{{ homebrew_environment | combine({'HOMEBREW_NO_AUTO_UPDATE': '1'}) }}"
+  register: brewfile_gui_casks
+  changed_when: false
   tags:
     - install
     - gui
     - productivity
+
+- name: Install GUI casks from Brewfile
+  ansible.builtin.shell: |
+    set -euo pipefail
+    cask="{{ item }}"
+
+    if brew list --cask "$cask" >/dev/null 2>&1; then
+      brew upgrade --cask --greedy "$cask"
+    else
+      brew install --cask --adopt "$cask"
+    fi
+  args:
+    executable: /bin/bash
+  environment: "{{ homebrew_environment | combine({'HOMEBREW_NO_AUTO_UPDATE': '1'}) }}"
+  loop: "{{ brewfile_gui_casks.stdout_lines }}"
+  loop_control:
+    label: "{{ item }}"
+  register: gui_cask_install
+  changed_when: >-
+    'Installing' in gui_cask_install.stdout or
+    'Upgrading' in gui_cask_install.stdout or
+    'installed' in gui_cask_install.stdout
+  failed_when: false
+  when: item | length > 0
+  tags:
+    - install
+    - gui
+    - productivity
+
+- name: Report GUI cask failures
+  ansible.builtin.debug:
+    msg:
+      - "Some GUI casks failed but setup will continue."
+      - "{{ gui_cask_install.results | selectattr('rc', 'ne', 0) | map(attribute='item') | list }}"
+  when: >-
+    gui_cask_install is defined and
+    (gui_cask_install.results | selectattr('rc', 'ne', 0) | list | length) > 0
+  tags:
+    - install
+    - gui
+    - productivity
+
+- name: Read optional GUI casks from Brewfile
+  ansible.builtin.command: brew bundle list --file "{{ playbook_dir }}/Brewfile.gui-optional" --cask
+  environment: "{{ homebrew_environment | combine({'HOMEBREW_NO_AUTO_UPDATE': '1'}) }}"
+  register: brewfile_gui_optional_casks
+  changed_when: false
+  tags:
+    - install
+    - gui
+    - productivity
+
+- name: Install optional GUI casks from Brewfile
+  ansible.builtin.shell: |
+    set -euo pipefail
+    cask="{{ item }}"
+
+    if brew list --cask "$cask" >/dev/null 2>&1; then
+      brew upgrade --cask --greedy "$cask"
+    else
+      brew install --cask --adopt "$cask"
+    fi
+  args:
+    executable: /bin/bash
+  environment: "{{ homebrew_environment | combine({'HOMEBREW_NO_AUTO_UPDATE': '1'}) }}"
+  loop: "{{ brewfile_gui_optional_casks.stdout_lines }}"
+  loop_control:
+    label: "{{ item }}"
+  register: gui_optional_cask_install
+  changed_when: >-
+    'Installing' in gui_optional_cask_install.stdout or
+    'Upgrading' in gui_optional_cask_install.stdout or
+    'installed' in gui_optional_cask_install.stdout
+  failed_when: false
+  when: item | length > 0
+  tags:
+    - install
+    - gui
+    - productivity
+
+- name: Report optional GUI cask failures
+  ansible.builtin.debug:
+    msg:
+      - "Some optional GUI casks failed but setup will continue."
+      - "{{ gui_optional_cask_install.results | selectattr('rc', 'ne', 0) | map(attribute='item') | list }}"
+  when: >-
+    gui_optional_cask_install is defined and
+    (gui_optional_cask_install.results | selectattr('rc', 'ne', 0) | list | length) > 0
+  tags:
+    - install
+    - gui
+    - productivity
+
+- name: Install personal GUI packages from Brewfile
+  ansible.builtin.command: brew bundle install --file "{{ playbook_dir }}/Brewfile.personal"
+  environment: "{{ homebrew_environment }}"
+  register: brew_bundle_personal
+  changed_when: >-
+    'Installing' in brew_bundle_personal.stdout or
+    'Upgrading' in brew_bundle_personal.stdout or
+    'Tapping' in brew_bundle_personal.stdout
+  failed_when: false
+  when: machine_type == "personal"
+  tags:
+    - personal
+    - gui
+
+- name: Report personal GUI package failures
+  ansible.builtin.debug:
+    msg:
+      - "Personal GUI package install failed but setup will continue."
+      - "{{ brew_bundle_personal.stderr | default('') }}"
+  when: machine_type == "personal" and brew_bundle_personal.rc != 0
+  tags:
+    - personal
+    - gui
+
+- name: Install work GUI packages from Brewfile
+  ansible.builtin.command: brew bundle install --file "{{ playbook_dir }}/Brewfile.work"
+  environment: "{{ homebrew_environment }}"
+  register: brew_bundle_work
+  changed_when: >-
+    'Installing' in brew_bundle_work.stdout or
+    'Upgrading' in brew_bundle_work.stdout or
+    'Tapping' in brew_bundle_work.stdout
+  failed_when: false
+  when: machine_type == "work"
+  tags:
+    - work
+    - gui
+
+- name: Report work GUI package failures
+  ansible.builtin.debug:
+    msg:
+      - "Work GUI package install failed but setup will continue."
+      - "{{ brew_bundle_work.stderr | default('') }}"
+  when: machine_type == "work" and brew_bundle_work.rc != 0
+  tags:
+    - work
+    - gui

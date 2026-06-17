@@ -1,0 +1,69 @@
+---
+- name: Bootstrap Mac setup prerequisites
+  hosts: localhost
+  gather_facts: true
+  tasks:
+    - name: Check if Xcode Command Line Tools are installed
+      ansible.builtin.command: xcode-select -p
+      register: xcode_check
+      failed_when: false
+      changed_when: false
+
+    - name: Start Xcode Command Line Tools installer if missing
+      ansible.builtin.command: xcode-select --install
+      register: xcode_install
+      failed_when: false
+      changed_when: xcode_check.rc != 0
+      when: xcode_check.rc != 0
+
+    - name: Wait for Xcode Command Line Tools installation
+      ansible.builtin.pause:
+        prompt: "Complete the Xcode Command Line Tools installer, then press Enter"
+      when: xcode_check.rc != 0 and xcode_install.rc == 0
+
+    - name: Ensure setup directories exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: "0700"
+      loop:
+        - "{{ ansible_env.HOME }}/.ssh"
+        - "{{ ansible_env.HOME }}/.gnupg"
+
+    - name: Install Homebrew if missing
+      ansible.builtin.shell: |
+        if ! command -v brew >/dev/null 2>&1; then
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        fi
+      args:
+        executable: /bin/bash
+      changed_when: false
+
+    - name: Ensure Homebrew shellenv is configured
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: 'eval "$(/opt/homebrew/bin/brew shellenv)"'
+        create: true
+        mode: "0644"
+      when: ansible_machine == "arm64"
+
+    - name: Ensure Intel Homebrew shellenv is configured
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zshrc"
+        line: 'eval "$(/usr/local/bin/brew shellenv)"'
+        create: true
+        mode: "0644"
+      when: ansible_machine != "arm64"
+
+    - name: Install or update Ansible
+      ansible.builtin.shell: |
+        if [ -x /opt/homebrew/bin/brew ]; then
+          eval "$(/opt/homebrew/bin/brew shellenv)"
+        elif [ -x /usr/local/bin/brew ]; then
+          eval "$(/usr/local/bin/brew shellenv)"
+        fi
+        brew update
+        brew install ansible || brew upgrade ansible
+      args:
+        executable: /bin/bash
+      changed_when: true

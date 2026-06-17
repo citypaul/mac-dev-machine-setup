@@ -1,0 +1,6 @@
+# Optional CLI formulae that use external taps or are more likely to break.
+# Failures from this Brewfile are reported but do not stop the full setup.
+
+tap "xcodesorg/made"
+
+brew "xcodesorg/made/xcodes"

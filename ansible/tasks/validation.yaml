@@ -1,0 +1,67 @@
+---
+- name: Pre-flight validation checks
+  tags:
+    - always
+    - validation
+  block:
+    - name: Check if running on macOS
+      ansible.builtin.fail:
+        msg: "This playbook is designed for macOS only. Current OS: {{ ansible_os_family }}"
+      when: ansible_os_family != "Darwin"
+
+    - name: Check for required commands
+      ansible.builtin.command: "which {{ item }}"
+      loop:
+        - brew
+        - git
+        - curl
+      register: command_check
+      changed_when: false
+      failed_when: command_check.rc != 0
+
+    - name: Verify Homebrew is working
+      ansible.builtin.command: brew --version
+      register: brew_check
+      changed_when: false
+      failed_when: brew_check.rc != 0
+
+    - name: Check disk usage
+      ansible.builtin.shell: df -h / | tail -1 | awk '{print $5}' | sed 's/%//'
+      register: disk_usage
+      changed_when: false
+      failed_when: disk_usage.stdout | int > 90
+
+    - name: Warn if disk usage is high
+      ansible.builtin.debug:
+        msg: "Disk usage is {{ disk_usage.stdout }}%. Consider freeing up space before proceeding."
+      when: disk_usage.stdout | int > 80
+
+- name: Backup existing SSH configuration
+  tags:
+    - always
+    - backup
+    - validation
+  block:
+    - name: Check for existing SSH directory
+      ansible.builtin.stat:
+        path: "{{ ansible_env.HOME }}/.ssh"
+      register: ssh_dir_check
+
+    - name: Create backup directory
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.mac-setup-backups/{{ ansible_date_time.date }}"
+        state: directory
+        mode: "0755"
+      when: ssh_dir_check.stat.exists
+
+    - name: Backup existing SSH directory
+      ansible.builtin.command:
+        argv:
+          - rsync
+          - -a
+          - --exclude=agent/
+          - "{{ ansible_env.HOME }}/.ssh/"
+          - "{{ ansible_env.HOME }}/.mac-setup-backups/{{ ansible_date_time.date }}/ssh/"
+      register: ssh_backup_result
+      changed_when: ssh_backup_result.rc == 0
+      when: ssh_dir_check.stat.exists

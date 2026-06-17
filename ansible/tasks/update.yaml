@@ -1,0 +1,78 @@
+---
+- name: Update all installed packages
+  tags:
+    - update
+  block:
+    - name: Update Homebrew
+      community.general.homebrew:
+        update_homebrew: yes
+      environment: "{{ homebrew_environment }}"
+      register: brew_update
+
+    - name: Upgrade all Homebrew packages
+      community.general.homebrew:
+        upgrade_all: yes
+      environment: "{{ homebrew_environment }}"
+      register: brew_upgrade
+
+    - name: Upgrade all Homebrew casks
+      community.general.homebrew_cask:
+        upgrade_all: yes
+      environment: "{{ homebrew_environment }}"
+      register: cask_upgrade
+      ignore_errors: true
+
+    - name: Unlink Homebrew node after brew upgrade
+      ansible.builtin.import_tasks: brew-unlink-node.yaml
+
+    - name: Clean up Homebrew
+      ansible.builtin.command: brew cleanup -s
+      changed_when: true
+
+    - name: Update npm packages globally
+      ansible.builtin.shell: |
+        if command -v npm >/dev/null 2>&1; then
+          npm update -g
+        fi
+      register: npm_update
+      changed_when: npm_update.rc == 0
+      ignore_errors: true
+
+    - name: Update pnpm packages globally
+      ansible.builtin.shell: |
+        export PNPM_HOME="{{ ansible_env.HOME }}/Library/pnpm"
+        export PATH="$PNPM_HOME/bin:$PNPM_HOME:$PATH"
+        if command -v pnpm >/dev/null 2>&1; then
+          pnpm update -g
+        fi
+      register: pnpm_update
+      changed_when: pnpm_update.rc == 0
+      ignore_errors: true
+
+    - name: Update Mac App Store apps
+      ansible.builtin.command: mas upgrade
+      register: mas_update
+      changed_when: "'No updates available' not in mas_update.stdout"
+      ignore_errors: true
+
+    - name: Update Ollama models
+      ansible.builtin.shell: |
+        if command -v ollama >/dev/null 2>&1; then
+          for model in $(ollama list | tail -n +2 | awk '{print $1}'); do
+            ollama pull "$model"
+          done
+        fi
+      register: ollama_update
+      changed_when: ollama_update.rc == 0
+      ignore_errors: true
+
+    - name: Display update summary
+      ansible.builtin.debug:
+        msg:
+          - "Homebrew metadata: {{ 'updated' if brew_update.changed else 'unchanged' }}"
+          - "Homebrew packages: {{ 'upgraded' if brew_upgrade.changed else 'unchanged' }}"
+          - "Homebrew casks: {{ 'upgraded' if cask_upgrade.changed else 'unchanged or skipped' }}"
+          - "npm globals: {{ 'updated' if npm_update.changed else 'skipped or unchanged' }}"
+          - "pnpm globals: {{ 'updated' if pnpm_update.changed else 'skipped or unchanged' }}"
+          - "Mac App Store: {{ 'updated' if mas_update.changed else 'unchanged or skipped' }}"
+          - "Ollama models: {{ 'updated' if ollama_update.changed else 'skipped or unchanged' }}"

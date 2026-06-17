@@ -9,28 +9,47 @@
 
 - name: Cloning .dotfiles
   ansible.builtin.git:
-    repo: "https://github.com/mintuz/.dotfiles.git"
+    repo: "{{ dotfiles_repo }}"
     dest: "{{ lookup('env', 'HOME') }}/.dotfiles"
     recursive: yes
     update: yes
     accept_hostkey: yes
     force: yes
-    version: master
+    version: "{{ dotfiles_version }}"
   tags:
     - install
     - dotfiles
     - stow
     - cli
 
-- name: Cloning tpm (tmux plug manager)
-  ansible.builtin.git:
-    repo: "https://github.com/tmux-plugins/tpm"
-    dest: "{{ lookup('env', 'HOME') }}/.tmux/plugins/tpm"
-    recursive: yes
-    update: yes
-    accept_hostkey: yes
-    force: yes
-    version: master
+- name: Ensure dotfiles backup directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.mac-setup-backups/{{ ansible_date_time.iso8601_basic_short }}/dotfiles"
+    state: directory
+    mode: "0755"
+  when: dotfiles_conflict_paths | default([]) | length > 0
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+
+- name: Back up existing dotfile conflicts before stow
+  ansible.builtin.shell: |
+    set -euo pipefail
+    target="{{ ansible_env.HOME }}/{{ item }}"
+    backup="{{ ansible_env.HOME }}/.mac-setup-backups/{{ ansible_date_time.iso8601_basic_short }}/dotfiles/{{ item }}"
+
+    if [ -e "$target" ] && [ ! -L "$target" ]; then
+      mkdir -p "$(dirname "$backup")"
+      mv "$target" "$backup"
+      echo "$target -> $backup"
+    fi
+  args:
+    executable: /bin/bash
+  loop: "{{ dotfiles_conflict_paths | default([]) }}"
+  register: dotfiles_conflict_backup
+  changed_when: dotfiles_conflict_backup.stdout != ""
   tags:
     - install
     - dotfiles
@@ -38,18 +57,10 @@
     - cli
 
 - name: Stow dotfiles
-  shell: cd $HOME/.dotfiles && ./install.sh
+  ansible.builtin.shell: cd "$HOME/.dotfiles" && ./install.sh
+  args:
+    executable: /bin/bash
   changed_when: true
-  tags:
-    - install
-    - dotfiles
-    - stow
-    - cli
-
-- name: Check for presence of .tmux.conf
-  stat:
-    path: ~/.tmux.conf
-  register: tmux_conf_exists
   tags:
     - install
     - dotfiles
