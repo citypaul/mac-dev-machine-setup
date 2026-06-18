@@ -1,16 +1,14 @@
 # Homebrew casks installed for both personal and work profiles.
 
-cask "downie", greedy: true
 cask "cleanshot", greedy: true
 cask "httpie", greedy: true
 cask "bettertouchtool", greedy: true
 cask "lunar", greedy: true
+cask "clop", greedy: true
 cask "gas-mask", greedy: true
 cask "rectangle-pro", greedy: true
 cask "alt-tab", greedy: true
 cask "popclip", greedy: true
-cask "proton-mail", greedy: true
-cask "proton-drive", greedy: true
 cask "protonvpn", greedy: true
 cask "bartender", greedy: true
 cask "little-snitch", greedy: true
@@ -27,13 +25,10 @@ cask "firefox", greedy: true
 cask "ungoogled-chromium", greedy: true
 cask "obsidian", greedy: true
 cask "dropbox", greedy: true
-cask "discord", greedy: true
 cask "zoom", greedy: true
 cask "slack", greedy: true
 cask "camo-studio", greedy: true
 cask "sketch", greedy: true
-cask "steelseries-gg", greedy: true
-cask "vlc", greedy: true
 cask "hammerspoon", greedy: true
 cask "font-fira-code"
 cask "font-hack"

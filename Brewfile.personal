@@ -1,1 +1,8 @@
 # Personal-only packages can be added here.
+
+cask "proton-mail", greedy: true
+cask "proton-drive", greedy: true
+cask "discord", greedy: true
+cask "steelseries-gg", greedy: true
+cask "vlc", greedy: true
+cask "downie", greedy: true

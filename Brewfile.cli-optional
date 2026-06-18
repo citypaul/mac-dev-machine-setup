@@ -2,5 +2,4 @@
 # Failures from this Brewfile are reported but do not stop the full setup.
 
 tap "xcodesorg/made"
-
 brew "xcodesorg/made/xcodes"
