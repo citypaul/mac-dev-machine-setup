@@ -9,6 +9,12 @@
       environment: "{{ homebrew_environment }}"
       register: brew_update
 
+    # Updating Homebrew can flip on its tap-trust gate, after which
+    # `brew upgrade` refuses to load outdated formulae from third-party
+    # taps. Trust the taps first. See brew-trust-taps.yaml for context.
+    - name: Trust third-party Homebrew taps before upgrading
+      ansible.builtin.import_tasks: brew-trust-taps.yaml
+
     - name: Upgrade all Homebrew packages
       community.general.homebrew:
         upgrade_all: yes

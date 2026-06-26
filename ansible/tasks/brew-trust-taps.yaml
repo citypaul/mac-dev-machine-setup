@@ -1,0 +1,52 @@
+---
+# Reusable task: trust the non-official Homebrew taps declared in the
+# Brewfiles so `brew bundle` / `brew upgrade` can load their formulae.
+#
+# Why this exists
+# ----------------
+# Homebrew 6.0+ added a tap-trust gate (HOMEBREW_REQUIRE_TAP_TRUST).
+# When that gate is active, Homebrew refuses to load a formula from a
+# third-party tap until the tap is explicitly trusted, failing with:
+#
+#   Warning: Cannot check whether hashicorp/tap/terraform is outdated
+#   because its tap is not trusted.
+#   Error: Refusing to load formula hashicorp/tap/terraform from
+#   untrusted tap hashicorp/tap.
+#
+# `brew bundle` runs `brew update` first, which can upgrade Homebrew
+# itself and flip this gate on part-way through a `make` run, so the
+# failure can appear even on a machine that installed fine before. The
+# Brewfiles pull formulae from several third-party taps (hashicorp/tap,
+# oven-sh/bun, retlehs/tap, ankitpokhrel/jira-cli), so a single
+# untrusted tap aborts the whole CLI install.
+#
+# What this does
+# --------------
+# Reads every `tap "..."` line from the repo's Brewfiles and runs
+# `brew trust --taps <tap>` for each. Trust is recorded in
+# ~/.homebrew/trust.json and persists, so trusting here once also keeps
+# `make update` (which upgrades the same tap formulae) from being blocked.
+#
+# Why it needs to run in more than one place
+# ------------------------------------------
+# The trust gate blocks both installs and upgrades, and a fresh machine
+# may run `make update` before ever running a full install. This task
+# therefore runs:
+#
+#   - Before the cli-tools `brew bundle` (ansible/tasks/cli-tools.yaml)
+#   - Before the update flow's `brew upgrade` (ansible/tasks/update.yaml)
+#
+# Idempotent: `brew trust` prints "Trusted tap:" only when it adds a new
+# entry and "Already trusted tap:" otherwise, so changed_when reflects a
+# real change. Trusting a tap is harmless even when the gate is inactive.
+# The leading `set -euo pipefail` ensures a genuine `brew trust` error
+# still fails the task.
+- name: Trust non-official Homebrew taps declared in the Brewfiles
+  ansible.builtin.shell: |
+    set -euo pipefail
+    for tap in $(awk '/^tap "/{gsub(/"/, "", $2); print $2}' "{{ playbook_dir }}"/Brewfile.* | sort -u); do
+      brew trust --taps "$tap"
+    done
+  environment: "{{ homebrew_environment }}"
+  register: brew_trust_taps_result
+  changed_when: "'Trusted tap:' in brew_trust_taps_result.stdout"
