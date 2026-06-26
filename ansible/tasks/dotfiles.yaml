@@ -144,6 +144,11 @@
     - stow
     - cli
 
+# install-claude.sh pulls skills from several external repos. A single
+# upstream source going bad (e.g. a repo restructured without SKILL.md)
+# makes the script exit non-zero, which would otherwise abort the whole
+# `make` run over an optional, best-effort step. Treat it as non-fatal and
+# surface a warning instead so setup completes.
 - name: Install Claude framework for multiple coding agents
   ansible.builtin.shell: |
     export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
@@ -152,7 +157,23 @@
   args:
     chdir: "{{ ansible_env.HOME }}/.dotfiles"
     executable: /bin/bash
+  register: claude_framework_result
   changed_when: true
+  failed_when: false
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+
+- name: Warn if the Claude framework installer reported a problem
+  ansible.builtin.debug:
+    msg: >-
+      install-claude.sh exited with rc={{ claude_framework_result.rc }}.
+      Setup continued because this step is best-effort (usually a flaky
+      upstream skill source). Re-run `make dotfiles` later, or check the
+      installer output above.
+  when: claude_framework_result.rc | default(0) != 0
   tags:
     - install
     - dotfiles

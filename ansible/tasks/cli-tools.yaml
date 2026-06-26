@@ -1,3 +1,14 @@
+# Homebrew 6.0+ refuses to load formulae from untrusted third-party taps
+# (hashicorp/tap, oven-sh/bun, retlehs/tap, ankitpokhrel/jira-cli) when its
+# tap-trust gate is active, which aborts the bundle below. Trust the taps
+# first. See brew-trust-taps.yaml for full context.
+- name: Trust third-party Homebrew taps before cli package installs
+  ansible.builtin.import_tasks: brew-trust-taps.yaml
+  tags:
+    - install
+    - productivity
+    - cli
+
 - name: Install CLI packages from Brewfile
   ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.cli"
   environment: "{{ homebrew_environment }}"
