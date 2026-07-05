@@ -6,6 +6,11 @@
     'Installing' in brew_bundle_app_store.stdout or
     'Upgrading' in brew_bundle_app_store.stdout or
     'Tapping' in brew_bundle_app_store.stdout
+  # Retry once: brew's post-install auto-cleanup can hit a transient
+  # filesystem race that exits non-zero despite a successful install.
+  until: brew_bundle_app_store.rc == 0
+  retries: 1
+  delay: 5
   ignore_errors: true
   tags:
     - app-store

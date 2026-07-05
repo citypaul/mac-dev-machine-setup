@@ -22,6 +22,14 @@
     - productivity
     - cli
 
+  # brew's post-install auto-cleanup can hit a transient filesystem race
+  # (dir_s_rmdir on an already-removed cache file) that exits non-zero even
+  # though every package installed fine. A single retry re-runs against a
+  # settled cache and passes in seconds.
+  until: brew_bundle_cli.rc == 0
+  retries: 1
+  delay: 5
+
 # Several CLI packages above (agent-browser, gemini-cli, opencode) pull in the
 # unversioned `node` formula as a runtime dependency and re-link
 # /opt/homebrew/bin/node → whatever major version brew currently ships

@@ -6,6 +6,11 @@
     'Installing' in brew_bundle_gui.stdout or
     'Upgrading' in brew_bundle_gui.stdout or
     'Tapping' in brew_bundle_gui.stdout
+  # Retry once: brew's post-install auto-cleanup can hit a transient
+  # filesystem race that exits non-zero despite a successful install.
+  until: brew_bundle_gui.rc == 0
+  retries: 1
+  delay: 5
   ignore_errors: true
   tags:
     - install
@@ -43,6 +48,11 @@
     'Installing' in brew_bundle_personal.stdout or
     'Upgrading' in brew_bundle_personal.stdout or
     'Tapping' in brew_bundle_personal.stdout
+  # Retry once: brew's post-install auto-cleanup can hit a transient
+  # filesystem race that exits non-zero despite a successful install.
+  until: brew_bundle_personal.rc == 0
+  retries: 1
+  delay: 5
   ignore_errors: true
   tags:
     - personal
