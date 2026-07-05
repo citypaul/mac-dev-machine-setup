@@ -17,6 +17,7 @@ cask "firefox", greedy: true
 cask "ghostty", greedy: true
 cask "google-chrome", greedy: true
 cask "granola", greedy: true
+cask "handy", greedy: true
 cask "hiddenbar", greedy: true
 cask "httpie-desktop", greedy: true
 cask "imageoptim", greedy: true
