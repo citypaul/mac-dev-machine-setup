@@ -10,7 +10,6 @@
       - font-monaspace
       - font-monaspace-nerd-font
       - font-monocraft
-      - font-pt-mono
     state: present
   environment: "{{ homebrew_environment }}"
   ignore_errors: true
