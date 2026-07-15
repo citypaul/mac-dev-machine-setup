@@ -56,18 +56,3 @@
   ignore_errors: true
   tags:
     - personal
-
-# See below for an explanation of the --no-quarantine option for alacritty
-# https://github.com/alacritty/alacritty/issues/4673#issuecomment-771291615
-
-- name: Install alacritty with '--no-quarantine' option
-  community.general.homebrew_cask:
-    name: alacritty
-    state: latest
-    greedy: yes
-    install_options: "no-quarantine"
-  environment: "{{ homebrew_environment }}"
-  tags:
-    - install
-    - gui
-    - productivity

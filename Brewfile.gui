@@ -1,5 +1,6 @@
 # Homebrew casks installed for both personal and work profiles.
 
+cask "alacritty", greedy: true
 cask "arc", greedy: true
 cask "audio-hijack", greedy: true
 cask "balsamiq-wireframes", greedy: true
