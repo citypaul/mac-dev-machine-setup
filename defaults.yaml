@@ -17,6 +17,9 @@ claude_installer_agents:
   - codex
 claude_installer_with_opencode: true
 
+cli_packages_to_remove_if_installed:
+  - neofetch
+
 gui_packages_to_remove_if_installed:
   - bartender
   - exa

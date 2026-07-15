@@ -13,7 +13,7 @@ cask "deskpad", greedy: true
 cask "devtoys", greedy: true
 cask "docker-desktop", greedy: true
 cask "fantastical", greedy: true
-case "fluidvoice", greedy: true
+cask "fluidvoice", greedy: true
 cask "firefox", greedy: true
 cask "ghostty", greedy: true
 cask "google-chrome", greedy: true

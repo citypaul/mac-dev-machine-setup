@@ -1,3 +1,15 @@
+- name: Remove unwanted cli packages
+  community.general.homebrew:
+    name: "{{ item }}"
+    state: absent
+  environment: "{{ homebrew_environment }}"
+  loop: "{{ cli_packages_to_remove_if_installed }}"
+  tags:
+    - install
+    - core
+    - remove
+    - cli
+
 - name: Remove unwanted packages
   community.general.homebrew_cask:
     name: "{{ item }}"
