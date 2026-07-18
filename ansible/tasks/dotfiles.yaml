@@ -103,10 +103,15 @@
     - stow
     - cli
 
+# Each completion is guarded so a tool missing from this machine (e.g. a
+# Brewfile edit that has not been applied yet) skips its completion instead
+# of aborting the whole run.
 - name: Generate shell completions
   ansible.builtin.shell: |
-    zellij setup --generate-completion zsh > "{{ ansible_env.HOME }}/.zsh_autocomplete/_zellij-completion"
-    git gtr completion zsh > "{{ ansible_env.HOME }}/.zsh_autocomplete/_git-gtr"
+    set -euo pipefail
+    if command -v zellij >/dev/null; then
+      zellij setup --generate-completion zsh > "{{ ansible_env.HOME }}/.zsh_autocomplete/_zellij-completion"
+    fi
   args:
     executable: /bin/bash
   changed_when: true

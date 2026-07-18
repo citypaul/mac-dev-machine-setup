@@ -41,7 +41,6 @@
         - /Applications/Raycast.app
         - /Applications/ChatGPT.app
         - /Applications/Claude.app
-        - /Applications/Parcel.app
       ignore_errors: true
       tags:
         - install
@@ -52,7 +51,7 @@
     - name: Add dock items specific to personal machine
       shell: dockutil --add {{ item }} --no-restart
       with_items:
-        - "'' --type small-spacer --section apps --after Parcel"
+        - "'' --type small-spacer --section apps --after Claude"
         - /Applications/Obsidian.app
       ignore_errors: true
       tags:
