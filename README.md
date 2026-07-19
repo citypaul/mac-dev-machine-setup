@@ -193,6 +193,31 @@ These aliases provide an interactive interface using fzf (fuzzy finder) with liv
 - Arrow keys or `Ctrl-J/K` to navigate
 - `Enter` to confirm selection
 
+## Troubleshooting
+
+### Cask upgrades fail with "It seems there is already an App at …"
+
+Some Homebrew versions wrote empty install receipts, which makes `brew
+upgrade` forget how to remove the old app before installing the new one.
+Repair the receipts (no downloads involved) and re-run the update:
+
+```bash
+scripts/fix-cask-receipts.py
+make update
+```
+
+If the script reports casks from untrusted third-party taps, run the
+suggested `brew trust <tap>` command and re-run it.
+
+### Cask upgrades fail with "Failed to release … from quarantine"
+
+macOS requires the **App Management** permission to modify app bundles in
+`/Applications`. Grant it to your terminal in System Settings → Privacy &
+Security → App Management, then restart the terminal and re-run the update.
+Granting your terminal Automation access for System Events (Privacy &
+Security → Automation) also lets Homebrew quit running apps before
+upgrading them.
+
 ## Customization
 
 ### Modifying Package Lists

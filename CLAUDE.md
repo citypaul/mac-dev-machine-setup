@@ -93,6 +93,7 @@ Static files in `ansible/files/`:
 Helper scripts in `scripts/`:
 
 - `gpg-auto-sign.sh` - GPG wrapper that auto-detects the signing key from the currently-inserted YubiKey
+- `fix-cask-receipts.py` - Repairs empty Homebrew cask receipts that break `brew upgrade` with "already an App at" errors
 
 ## Key Design Patterns
 
