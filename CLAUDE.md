@@ -10,10 +10,12 @@ This is an Ansible-based automation repository for setting up and maintaining Ma
 
 ### Full Setup Commands
 
-- `make` or `make all` - Complete personal setup (runs setup → deps → install → personal)
-- `make work` - Complete work setup (runs setup → deps → install → work)
+- `make` or `make all` - Complete personal setup (runs setup → deps → permissions → install → personal)
+- `make work` - Complete work setup (runs setup → deps → permissions → install → work)
 - `make update` - Update all installed packages (brew, npm, rust, go, etc.)
 - `make check` - Dry run to preview what changes would be made
+
+All install/update targets first run `make permissions`, which verifies the terminal has the macOS TCC permissions Homebrew needs (App Management + Automation) and interactively requests them if missing — a one-time grant per machine/terminal.
 
 ### Individual Task Commands
 
@@ -30,6 +32,9 @@ This is an Ansible-based automation repository for setting up and maintaining Ma
 - `make app-store` - Install Mac App Store apps
 - `make dotfiles` - Sync dotfiles from external repository
 - `make git` - Configure git identity, aliases, and GPG signing (runs `git-personal` tag)
+- `make node` - Install Node.js tooling only
+- `make permissions` - Standalone run of the macOS TCC permission pre-flight
+- `make work-remove` - Remove work-only packages (runs `work-remove` tag)
 
 ### Running Specific Tasks
 
@@ -133,6 +138,14 @@ All tasks are designed to be idempotent - they can be run multiple times safely 
 ### Error Handling
 
 Tasks include error handling and often have `ignore_errors: true` for non-critical operations that might fail on some systems.
+
+## Known Gotchas
+
+- **macOS TCC permissions cannot be scripted.** App Management and Automation grants require a user click (or MDM enrollment) by OS design. The repo's answer is `scripts/ensure-mac-permissions.sh`: probe, trigger the prompt, wait for the one-time grant. Never attempt to write to the TCC database or suggest disabling SIP.
+- **Cask upgrades fail with "already an App at …" when install receipts are empty.** Some Homebrew versions wrote `{}` receipts, so brew forgets the old app's artifacts. `scripts/fix-cask-receipts.py` repairs them without re-downloading. See README Troubleshooting.
+- **A `com.apple.macl` xattr on an app bundle blocks all xattr writes by other processes** (quarantine release fails even with App Management granted). Fix is `brew reinstall --cask <name>` for a fresh bundle.
+- **`auto_updates` casks (e.g. dropbox) can be newer on disk than their brew receipt says.** `brew outdated --greedy` reads the actual bundle version, so a stale receipt alone doesn't mean an upgrade will run.
+- **Casks from third-party taps need `brew trust <tap>`** (Homebrew 6+) before brew will operate on them.
 
 ## External Dependencies
 

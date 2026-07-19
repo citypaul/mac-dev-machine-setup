@@ -62,6 +62,8 @@ make update
 | `make keys` | Install private keys (requires vault password) |
 | `make gpg` | Configure GPG signing for git (auto-detects key) |
 | `make gpg-setup` | Interactive YubiKey GPG key setup wizard |
+| `make node` | Install Node.js tooling only |
+| `make work-remove` | Remove work-only packages |
 
 ## What Gets Installed
 
@@ -226,6 +228,19 @@ If an individual app still fails quarantine release after the permission is
 granted, its bundle likely carries a `com.apple.macl` attribute (check with
 `xattr /Applications/<App>.app`), which macOS never lets other processes
 modify. Fix with a clean reinstall: `brew reinstall --cask <name>`.
+
+### Detecting drift (apps installed outside the Brewfiles)
+
+Apps installed ad hoc with `brew install --cask` are invisible to
+`make update` and won't exist on a freshly provisioned machine. To list
+everything installed that no Brewfile tracks (personal machine):
+
+```bash
+cat Brewfile.common Brewfile.personal | brew bundle cleanup --file=-
+```
+
+Nothing is removed without `--force`. For each listed item, either add it
+to the appropriate Brewfile or uninstall it.
 
 ## Customization
 
