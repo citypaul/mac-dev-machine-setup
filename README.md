@@ -49,6 +49,7 @@ make update
 | `make work` | Complete work setup (essential tools only) |
 | `make update` | Update all installed packages |
 | `make check` | Dry run to preview changes |
+| `make permissions` | Verify/request the macOS permissions Homebrew needs (runs automatically before installs and updates) |
 | `make cli` | Install command-line tools only |
 | `make gui` | Install GUI applications only |
 | `make osx` | Configure macOS system preferences |
@@ -212,11 +213,19 @@ suggested `brew trust <tap>` command and re-run it.
 ### Cask upgrades fail with "Failed to release … from quarantine"
 
 macOS requires the **App Management** permission to modify app bundles in
-`/Applications`. Grant it to your terminal in System Settings → Privacy &
-Security → App Management, then restart the terminal and re-run the update.
-Granting your terminal Automation access for System Events (Privacy &
-Security → Automation) also lets Homebrew quit running apps before
-upgrading them.
+`/Applications`, and TCC permissions cannot be granted programmatically
+without MDM enrollment — that is by design. The setup automates everything
+that macOS allows: `scripts/ensure-mac-permissions.sh` runs before every
+install/update target, detects missing permissions with a harmless probe,
+clears any recorded denial, triggers the system prompt, opens the exact
+System Settings pane, and waits for the one-time grant. After you grant
+**App Management** and **Automation (System Events)** to your terminal
+once, every subsequent run is fully hands-off.
+
+If an individual app still fails quarantine release after the permission is
+granted, its bundle likely carries a `com.apple.macl` attribute (check with
+`xattr /Applications/<App>.app`), which macOS never lets other processes
+modify. Fix with a clean reinstall: `brew reinstall --cask <name>`.
 
 ## Customization
 

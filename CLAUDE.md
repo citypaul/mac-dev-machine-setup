@@ -94,6 +94,7 @@ Helper scripts in `scripts/`:
 
 - `gpg-auto-sign.sh` - GPG wrapper that auto-detects the signing key from the currently-inserted YubiKey
 - `fix-cask-receipts.py` - Repairs empty Homebrew cask receipts that break `brew upgrade` with "already an App at" errors
+- `ensure-mac-permissions.sh` - Pre-flight check that the terminal has the App Management and Automation TCC permissions Homebrew needs; triggers the one-time grant prompts if missing. Runs automatically before install/update make targets (`make permissions` to run standalone)
 
 ## Key Design Patterns
 

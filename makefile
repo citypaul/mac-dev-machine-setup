@@ -1,12 +1,15 @@
-.PHONY: all deps personal work dock setup keys cli gui update check gpg gpg-setup work-remove
+.PHONY: all deps personal work dock setup keys cli gui update check gpg gpg-setup work-remove permissions
 
 WITH_SUDO_ASKPASS = scripts/with-sudo-askpass.sh
 
-all: setup deps
+all: setup deps permissions
 	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags install,personal
 
-work-setup: setup deps
+work-setup: setup deps permissions
 	@$(WITH_SUDO_ASKPASS) /bin/bash -lc 'ansible-playbook local.yaml --tags install && brew bundle --file=Brewfile.work && ansible-playbook local.yaml --tags work'
+
+permissions:
+	@./scripts/ensure-mac-permissions.sh
 
 dotfiles:
 	@ansible-playbook local.yaml --tags dotfiles
@@ -28,13 +31,13 @@ deps:
 		echo "Skipping collections install, no requirements found"; \
 	fi
 
-install:
+install: permissions
 	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags install
 
-personal: 
+personal: permissions
 	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags personal
 
-work-tag: 
+work-tag: permissions
 	@$(WITH_SUDO_ASKPASS) /bin/bash -lc 'brew bundle --file=Brewfile.work && ansible-playbook local.yaml --tags work'
 
 work: work-setup
@@ -48,7 +51,7 @@ keys:
 cli: 
 	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags cli
 
-gui: 
+gui: permissions
 	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags gui
 
 osx: 
@@ -69,7 +72,7 @@ themes:
 app-store:
 	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags app-store
 
-update:
+update: permissions
 	@echo "Updating all installed packages..."
 	@$(WITH_SUDO_ASKPASS) ansible-playbook update.yaml
 
