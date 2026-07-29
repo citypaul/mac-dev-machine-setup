@@ -50,7 +50,7 @@
     export PNPM_HOME="{{ ansible_env.HOME }}/Library/pnpm"
     export PATH="$PNPM_HOME/bin:$PNPM_HOME:$PATH"
     source "$(brew --prefix nvm)/nvm.sh"
-    pnpm add -g {{ item }}@latest
+    pnpm add -g --ignore-scripts {{ item }}@latest
   args:
     executable: /bin/bash
   loop: "{{ pnpm_global_packages | default([]) }}"
