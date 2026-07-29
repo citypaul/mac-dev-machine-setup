@@ -33,4 +33,5 @@ gui_packages_to_remove_if_installed_work:
   - protonvpn
 
 pnpm_global_packages:
+  - "@earendil-works/pi-coding-agent"
   - task-master-ai
