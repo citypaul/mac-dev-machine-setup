@@ -111,6 +111,49 @@ This runs after the dotfiles task on purpose: that task copies
 hook registration the Claude integration adds there. Running afterwards restores
 it on every converge.
 
+##### Codex needs a one-time trust prompt (not automated, deliberately)
+
+Installing the integration is not sufficient for Codex. Codex gates hooks behind
+a trust prompt, because a hook can run outside its sandbox. The first Codex
+launch after `make herdr` shows:
+
+```
+Hooks need review
+Hooks can run outside the sandbox after you trust them.
+  > Trust all and continue
+    Review hooks
+    Continue without trusting (hooks won't run)
+```
+
+Choose **Trust all and continue**. Codex records the decision in
+`~/.codex/config.toml`:
+
+```toml
+[hooks.state."/Users/<you>/.codex/hooks.json:session_start:0:0"]
+trusted_hash = "sha256:..."
+```
+
+**Trusting is too late for the session you are in.** The hook is a `SessionStart`
+hook, so it has already been skipped by the time you answer the prompt. Restart
+that Codex pane once more and the state reporting begins.
+
+This step is deliberately left manual. The `trusted_hash` is a sha256 over an
+internal Codex representation of the hook — not over `hooks.json`, the hook
+script, the command string, or the JSON entry, all four of which were tested and
+none match — so Ansible cannot pre-seed it reliably. It would also change on
+every herdr integration bump and potentially on Codex releases. And pre-seeding
+it would defeat the point: the prompt is consent for a script to run outside the
+sandbox, which is a decision worth making rather than baking into a repo.
+
+Claude Code has no equivalent gate; its hook works as soon as the session
+restarts.
+
+Verify either agent with:
+
+```bash
+herdr agent list   # a reporting pane has a populated agent_session
+```
+
 ### System Enhancements
 - **Window Management**: Karabiner Elements
 - **System Monitoring**: Stats, glances, htop
