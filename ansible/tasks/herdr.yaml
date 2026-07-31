@@ -16,6 +16,11 @@
 # copies claude/.claude/settings.json over ~/.claude/settings.json, which drops
 # the SessionStart entry the Claude integration registers there. Running
 # afterwards puts it back on every converge.
+#
+# These tasks therefore carry the `dotfiles` and `stow` tags as well as their
+# own. Ordering alone is not enough: `make dotfiles` selects --tags dotfiles, so
+# without them the settings.json copy would run and this repair would not,
+# leaving Claude state reporting silently broken until the next `make herdr`.
 
 - name: Check whether herdr is installed
   ansible.builtin.command: command -v herdr
@@ -24,6 +29,8 @@
   failed_when: false
   tags:
     - install
+    - dotfiles
+    - stow
     - cli
     - herdr
 
@@ -35,6 +42,8 @@
   when: herdr_binary.rc == 0
   tags:
     - install
+    - dotfiles
+    - stow
     - cli
     - herdr
 
@@ -57,6 +66,8 @@
     - "herdr_integration_status.stdout is search(item ~ ': not installed')"
   tags:
     - install
+    - dotfiles
+    - stow
     - cli
     - herdr
 
@@ -75,6 +86,8 @@
     - item.rc | default(0) != 0
   tags:
     - install
+    - dotfiles
+    - stow
     - cli
     - herdr
 
@@ -86,5 +99,7 @@
   when: herdr_binary.rc != 0
   tags:
     - install
+    - dotfiles
+    - stow
     - cli
     - herdr
