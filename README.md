@@ -55,7 +55,7 @@ make update
 | `make osx` | Configure macOS system preferences |
 | `make dock` | Configure dock items |
 | `make dotfiles` | Sync dotfiles from repository |
-| `make herdr` | Install the Herdr agent-state integrations (Claude Code, Codex) |
+| `make herdr` | Set up Herdr completely: state integrations, the agent skill, and the stowed config |
 | `make git` | Configure git identity, aliases, and GPG signing |
 | `make fonts` | Install developer fonts |
 | `make themes` | Install terminal themes |
@@ -99,6 +99,22 @@ breaks whenever an agent changes how it renders. `make herdr` installs a per-age
 integration instead, and the agent reports its own state over the Herdr socket.
 The agents covered are listed in `herdr_integrations` in `defaults.yaml`; run
 `herdr integration install --help` to see every supported target.
+
+`make herdr` is meant to be the single command for Herdr, so it also:
+
+- installs the **herdr agent skill** for every agent in `herdr_skill_agents`,
+  which lets an agent drive the workspace it runs inside — split a pane, run a
+  command in it, read the output back, wait on a sibling agent. `install-claude.sh`
+  installs this too as one of its external skill sources; both are idempotent and
+  the overlap is deliberate, so `make herdr` does not depend on having run the
+  full framework installer.
+- **stows the herdr config**, backing up a hand-written
+  `~/.config/herdr/config.toml` first, because stow refuses to overwrite a real
+  file and aborts the whole invocation if it finds one.
+
+The stow step needs the package to exist in `~/.dotfiles`. A clone predating it
+is reported rather than treated as a failure — run `make dotfiles` to refresh the
+clone, which runs these same steps afterwards.
 
 The hook scripts are versioned with the herdr binary, so they are installed by
 `herdr integration install` rather than checked into the dotfiles repo, where they

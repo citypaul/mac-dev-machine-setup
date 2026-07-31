@@ -16,6 +16,11 @@
 # copies claude/.claude/settings.json over ~/.claude/settings.json, which drops
 # the SessionStart entry the Claude integration registers there. Running
 # afterwards puts it back on every converge.
+#
+# These tasks therefore carry the `dotfiles` and `stow` tags as well as their
+# own. Ordering alone is not enough: `make dotfiles` selects --tags dotfiles, so
+# without them the settings.json copy would run and this repair would not,
+# leaving Claude state reporting silently broken until the next `make herdr`.
 
 - name: Check whether herdr is installed
   ansible.builtin.command: command -v herdr
@@ -24,6 +29,8 @@
   failed_when: false
   tags:
     - install
+    - dotfiles
+    - stow
     - cli
     - herdr
 
@@ -35,6 +42,8 @@
   when: herdr_binary.rc == 0
   tags:
     - install
+    - dotfiles
+    - stow
     - cli
     - herdr
 
@@ -57,6 +66,8 @@
     - "herdr_integration_status.stdout is search(item ~ ': not installed')"
   tags:
     - install
+    - dotfiles
+    - stow
     - cli
     - herdr
 
@@ -75,6 +86,8 @@
     - item.rc | default(0) != 0
   tags:
     - install
+    - dotfiles
+    - stow
     - cli
     - herdr
 
@@ -86,5 +99,117 @@
   when: herdr_binary.rc != 0
   tags:
     - install
+    - dotfiles
+    - stow
+    - cli
+    - herdr
+
+# `make herdr` is meant to deliver everything Herdr needs, not just the state
+# integrations: the skill an agent uses to drive Herdr, and the stowed config.
+#
+# install-claude.sh also installs this skill as one of its external sources, so
+# a full `make` covers it twice. Both are idempotent, and the duplication is
+# deliberate — `make herdr` should stand alone rather than depend on someone
+# having run the whole framework installer.
+- name: Install the herdr agent skill
+  ansible.builtin.shell: |
+    set -euo pipefail
+    export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
+    source "$(brew --prefix nvm)/nvm.sh"
+    npx --yes skills add herdrdev/herdr -g \
+      {% for agent in herdr_skill_agents | default([]) %}-a {{ agent | quote }} {% endfor %}-s herdr -y
+  args:
+    executable: /bin/bash
+  register: herdr_skill_install
+  changed_when: true
+  failed_when: false
+  when: herdr_skill_agents | default([]) | length > 0
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+    - herdr
+
+- name: Warn if the herdr skill could not be installed
+  ansible.builtin.debug:
+    msg: >-
+      Installing the herdr skill exited with rc={{ herdr_skill_install.rc }}.
+      Setup continued because this step is best-effort, matching how the other
+      external skill sources are treated. Re-run `make herdr` later.
+  when:
+    - herdr_skill_install.rc is defined
+    - herdr_skill_install.rc != 0
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+    - herdr
+
+# Stowing needs the package to exist in the managed clone. `make herdr` on its
+# own does not refresh that clone, so report the gap rather than fail: a stale
+# clone predating the herdr package is a normal state, not an error.
+- name: Check the herdr stow package is present in the dotfiles clone
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/.dotfiles/herdr"
+  register: herdr_stow_package
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+    - herdr
+
+# Same guard as the pre-stow backup in dotfiles.yaml: stow refuses to overwrite
+# a real file and aborts the whole invocation, so move a hand-written config
+# aside once. A symlink means it is already stowed and nothing happens.
+- name: Back up a hand-written herdr config before stowing
+  ansible.builtin.shell: |
+    set -euo pipefail
+    target="{{ ansible_env.HOME }}/.config/herdr/config.toml"
+    backup="${target}.old"
+    if [ -f "$target" ] && [ ! -L "$target" ] && [ ! -f "$backup" ]; then
+      mv "$target" "$backup"
+      echo moved
+    fi
+  args:
+    executable: /bin/bash
+  register: herdr_config_backup
+  changed_when: herdr_config_backup.stdout != ""
+  when: herdr_stow_package.stat.exists
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+    - herdr
+
+- name: Stow the herdr config package
+  ansible.builtin.command:
+    cmd: stow herdr
+    chdir: "{{ ansible_env.HOME }}/.dotfiles"
+  register: herdr_stow
+  changed_when: herdr_stow.rc == 0
+  failed_when: false
+  when: herdr_stow_package.stat.exists
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+    - herdr
+
+- name: Report that the herdr config could not be stowed yet
+  ansible.builtin.debug:
+    msg: >-
+      {{ ansible_env.HOME }}/.dotfiles does not contain the herdr package yet,
+      so ~/.config/herdr/config.toml was left as-is. The clone predates it —
+      run `make dotfiles` to refresh the clone, which also runs these steps.
+  when: not herdr_stow_package.stat.exists
+  tags:
+    - install
+    - dotfiles
+    - stow
     - cli
     - herdr
