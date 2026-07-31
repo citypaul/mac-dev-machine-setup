@@ -1,4 +1,4 @@
-.PHONY: all deps personal work dock setup keys cli gui update check gpg gpg-setup work-remove permissions
+.PHONY: all deps personal work dock setup keys cli gui update check gpg gpg-setup work-remove permissions herdr
 
 WITH_SUDO_ASKPASS = scripts/with-sudo-askpass.sh
 
@@ -13,6 +13,9 @@ permissions:
 
 dotfiles:
 	@ansible-playbook local.yaml --tags dotfiles
+
+herdr:
+	@ansible-playbook local.yaml --tags herdr
 
 deps:
 	@echo "Installing dependencies..."

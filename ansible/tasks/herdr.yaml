@@ -1,0 +1,90 @@
+# Herdr (https://herdr.dev) is the terminal workspace manager installed from
+# Brewfile.cli. Its sidebar shows each coding agent's state — working, blocked,
+# idle — which is what makes several concurrent agents legible at a glance.
+#
+# Without a per-agent integration Herdr infers that state by pattern-matching
+# the terminal screen (a spinner glyph in the window title, for example), which
+# breaks whenever an agent changes how it renders. With one installed, the agent
+# reports its own state over the Herdr socket instead.
+#
+# The hook scripts are versioned with the herdr binary, so this delegates to
+# `herdr integration install` rather than vendoring copies into .dotfiles that
+# would go stale on every herdr upgrade. Herdr owns the registration it writes
+# into ~/.claude/settings.json and ~/.codex/{hooks.json,config.toml}.
+#
+# ORDERING: this file is imported after dotfiles.yaml on purpose. That task
+# copies claude/.claude/settings.json over ~/.claude/settings.json, which drops
+# the SessionStart entry the Claude integration registers there. Running
+# afterwards puts it back on every converge.
+
+- name: Check whether herdr is installed
+  ansible.builtin.command: command -v herdr
+  register: herdr_binary
+  changed_when: false
+  failed_when: false
+  tags:
+    - install
+    - cli
+    - herdr
+
+- name: Report herdr integration status
+  ansible.builtin.command: herdr integration status
+  register: herdr_integration_status
+  changed_when: false
+  failed_when: false
+  when: herdr_binary.rc == 0
+  tags:
+    - install
+    - cli
+    - herdr
+
+# `herdr integration install <agent>` refuses to run until the agent's own
+# config directory exists, so on a fresh machine this can legitimately have
+# nothing to do yet. Treated as best-effort for the same reason install-claude.sh
+# is: an optional convenience should never abort a whole `make` run.
+- name: Install herdr agent state integrations
+  ansible.builtin.command: "herdr integration install {{ item }}"
+  loop: "{{ herdr_integrations | default([]) }}"
+  register: herdr_integration_install
+  changed_when: true
+  failed_when: false
+  # The search expression must stay quoted: the `: ` inside it would otherwise
+  # make YAML parse this list entry as a mapping, which Ansible then treats as
+  # unconditionally true and the task loses its idempotency.
+  when:
+    - herdr_binary.rc == 0
+    - herdr_integration_status.stdout is defined
+    - "herdr_integration_status.stdout is search(item ~ ': not installed')"
+  tags:
+    - install
+    - cli
+    - herdr
+
+- name: Warn if a herdr integration could not be installed
+  ansible.builtin.debug:
+    msg: >-
+      herdr integration install {{ item.item }} exited with rc={{ item.rc }}.
+      Setup continued because this step is best-effort — usually the agent's
+      config directory does not exist yet. Install the agent, then re-run
+      `make herdr`.
+  loop: "{{ herdr_integration_install.results | default([]) }}"
+  loop_control:
+    label: "{{ item.item | default('') }}"
+  when:
+    - item.skipped is not defined
+    - item.rc | default(0) != 0
+  tags:
+    - install
+    - cli
+    - herdr
+
+- name: Note that herdr is not installed
+  ansible.builtin.debug:
+    msg: >-
+      herdr was not found on PATH, so its agent integrations were skipped.
+      It is declared in Brewfile.cli — run `make cli` first, then `make herdr`.
+  when: herdr_binary.rc != 0
+  tags:
+    - install
+    - cli
+    - herdr
