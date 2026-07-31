@@ -34,36 +34,29 @@
     - cli
     - herdr
 
-- name: Report herdr integration status
-  ansible.builtin.command: herdr integration status
-  register: herdr_integration_status
-  changed_when: false
-  failed_when: false
-  when: herdr_binary.rc == 0
-  tags:
-    - install
-    - dotfiles
-    - stow
-    - cli
-    - herdr
-
 # `herdr integration install <agent>` refuses to run until the agent's own
 # config directory exists, so on a fresh machine this can legitimately have
 # nothing to do yet. Treated as best-effort for the same reason install-claude.sh
 # is: an optional convenience should never abort a whole `make` run.
+#
+# This deliberately runs on every converge rather than gating on
+# `herdr integration status`. That status describes the hook *script* on disk,
+# not its registration in ~/.claude/settings.json — so after the settings.json
+# copy above drops the SessionStart entry, status still reports "current (v7)"
+# while the hook is inert. Gating on it made this repair a no-op in precisely
+# the situation it exists to fix.
+#
+# `herdr integration install` is idempotent by design: it reports "ensured
+# <agent> settings" and converges to a single registration however many times it
+# runs. The cost of running it unconditionally is a task that always reports
+# changed, which matches how install-claude.sh is handled in dotfiles.yaml.
 - name: Install herdr agent state integrations
   ansible.builtin.command: "herdr integration install {{ item }}"
   loop: "{{ herdr_integrations | default([]) }}"
   register: herdr_integration_install
   changed_when: true
   failed_when: false
-  # The search expression must stay quoted: the `: ` inside it would otherwise
-  # make YAML parse this list entry as a mapping, which Ansible then treats as
-  # unconditionally true and the task loses its idempotency.
-  when:
-    - herdr_binary.rc == 0
-    - herdr_integration_status.stdout is defined
-    - "herdr_integration_status.stdout is search(item ~ ': not installed')"
+  when: herdr_binary.rc == 0
   tags:
     - install
     - dotfiles
