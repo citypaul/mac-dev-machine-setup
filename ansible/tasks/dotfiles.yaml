@@ -127,7 +127,8 @@
     moved=false
     for target in \
       "{{ ansible_env.HOME }}/.zshrc" \
-      "{{ ansible_env.HOME }}/Library/Application Support/com.mitchellh.ghostty/config"
+      "{{ ansible_env.HOME }}/Library/Application Support/com.mitchellh.ghostty/config" \
+      "{{ ansible_env.HOME }}/.config/herdr/config.toml"
     do
       backup="${target}.old"
       if [ -f "$target" ] && [ ! -L "$target" ] && [ ! -f "$backup" ]; then
