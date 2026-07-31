@@ -55,6 +55,7 @@ make update
 | `make osx` | Configure macOS system preferences |
 | `make dock` | Configure dock items |
 | `make dotfiles` | Sync dotfiles from repository |
+| `make herdr` | Install the Herdr agent-state integrations (Claude Code, Codex) |
 | `make git` | Configure git identity, aliases, and GPG signing |
 | `make fonts` | Install developer fonts |
 | `make themes` | Install terminal themes |
@@ -85,6 +86,30 @@ make update
 - **AI Assistants**: ChatGPT, Claude
 - **AI Development**: Ollama for local LLMs
 - **API Testing**: Bruno, Postman, HTTPie
+- **Agent Workspace**: [Herdr](https://herdr.dev), with per-agent state integrations (see below)
+
+#### Herdr agent state
+
+Herdr is a terminal workspace manager whose sidebar shows what each coding agent
+is doing — working, blocked, idle — which is what makes several concurrent agents
+legible at a glance.
+
+Left alone, Herdr infers that state by pattern-matching the terminal screen, so it
+breaks whenever an agent changes how it renders. `make herdr` installs a per-agent
+integration instead, and the agent reports its own state over the Herdr socket.
+The agents covered are listed in `herdr_integrations` in `defaults.yaml`; run
+`herdr integration install --help` to see every supported target.
+
+The hook scripts are versioned with the herdr binary, so they are installed by
+`herdr integration install` rather than checked into the dotfiles repo, where they
+would go stale on every upgrade. Herdr owns what it writes into
+`~/.claude/settings.json` and `~/.codex/`. Herdr's own configuration is a stow
+package in the dotfiles repo.
+
+This runs after the dotfiles task on purpose: that task copies
+`claude/.claude/settings.json` over `~/.claude/settings.json`, which drops the
+hook registration the Claude integration adds there. Running afterwards restores
+it on every converge.
 
 ### System Enhancements
 - **Window Management**: Karabiner Elements

@@ -12,10 +12,17 @@ dotfiles_stow_packages:
   - .oh-my-zsh
   - karabiner
   - ghostty
+  - herdr
 
 claude_installer_agents:
   - codex
 claude_installer_with_opencode: true
+
+# Coding agents that report their state to the Herdr sidebar via a hook.
+# `herdr integration install --help` lists every supported target.
+herdr_integrations:
+  - claude
+  - codex
 
 cli_packages_to_remove_if_installed:
   - neofetch

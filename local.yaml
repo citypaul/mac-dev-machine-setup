@@ -31,6 +31,7 @@
     - import_tasks: ansible/tasks/node.yaml
     - import_tasks: ansible/tasks/gpg.yaml
     - import_tasks: ansible/tasks/dotfiles.yaml
+    - import_tasks: ansible/tasks/herdr.yaml
     - import_tasks: ansible/tasks/rust.yaml
     - import_tasks: ansible/tasks/remove-unwanted-packages.yaml
     - import_tasks: ansible/tasks/dock.yaml
