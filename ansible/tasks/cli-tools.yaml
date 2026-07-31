@@ -30,6 +30,16 @@
   retries: 1
   delay: 5
 
+- name: Install GitHub Stack extension
+  ansible.builtin.command: gh extension install github/gh-stack
+  args:
+    creates: "{{ ansible_env.HOME }}/.local/share/gh/extensions/gh-stack"
+  tags:
+    - install
+    - productivity
+    - cli
+    - gh-stack
+
 # Several CLI packages above (agent-browser, gemini-cli, opencode) pull in the
 # unversioned `node` formula as a runtime dependency and re-link
 # /opt/homebrew/bin/node → whatever major version brew currently ships
