@@ -24,6 +24,12 @@ herdr_integrations:
   - claude
   - codex
 
+# Agents that get the herdr skill, which lets an agent drive the workspace it
+# is running inside. Uses skills.sh agent names, not the integration names above.
+herdr_skill_agents:
+  - claude-code
+  - codex
+
 cli_packages_to_remove_if_installed:
   - neofetch
 
