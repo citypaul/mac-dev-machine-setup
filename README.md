@@ -86,6 +86,7 @@ make update
 - **AI Assistants**: ChatGPT, Claude
 - **AI Development**: Ollama for local LLMs
 - **API Testing**: Bruno, Postman, HTTPie
+- **HTTP Debugging**: Proxyman
 - **Agent Workspace**: [Herdr](https://herdr.dev), with per-agent state integrations (see below)
 
 #### Herdr agent state

@@ -33,6 +33,7 @@ cask "obsidian", greedy: true
 cask "pgadmin4", greedy: true
 cask "podman-desktop", greedy: true
 cask "postman", greedy: true
+cask "proxyman", greedy: true
 cask "raycast", greedy: true
 cask "redis-insight", greedy: true
 cask "responsively", greedy: true
