@@ -9,6 +9,20 @@
     - productivity
     - cli
 
+# `fj` is a different Forgejo CLI that also ships `bin/fj`. If it stays
+# linked, `brew bundle` cannot install/link brew's `forgejo-cli`.
+# Removal also runs later via cli_packages_to_remove_if_installed, but
+# that is after this bundle, so uninstall here first.
+- name: Uninstall fj so forgejo-cli can own bin/fj
+  community.general.homebrew:
+    name: fj
+    state: absent
+  environment: "{{ homebrew_environment }}"
+  tags:
+    - install
+    - productivity
+    - cli
+
 - name: Install CLI packages from Brewfile
   ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.cli"
   environment: "{{ homebrew_environment }}"
