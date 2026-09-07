@@ -1,6 +1,7 @@
 ---
 # Reusable task: trust the non-official Homebrew taps declared in the
-# Brewfiles so `brew bundle` / `brew upgrade` can load their formulae.
+# Brewfiles so `brew bundle` / `brew upgrade` can load their formulae
+# and casks.
 #
 # Why this exists
 # ----------------
@@ -16,9 +17,9 @@
 # `brew bundle` runs `brew update` first, which can upgrade Homebrew
 # itself and flip this gate on part-way through a `make` run, so the
 # failure can appear even on a machine that installed fine before. The
-# Brewfiles pull formulae from several third-party taps (hashicorp/tap,
-# oven-sh/bun, retlehs/tap, ankitpokhrel/jira-cli), so a single
-# untrusted tap aborts the whole CLI install.
+# Brewfiles pull formulae and casks from several third-party taps
+# (hashicorp/tap, oven-sh/bun, retlehs/tap, ankitpokhrel/jira-cli,
+# steipete/tap), so a single untrusted tap aborts the whole bundle.
 #
 # What this does
 # --------------
@@ -34,6 +35,7 @@
 # therefore runs:
 #
 #   - Before the cli-tools `brew bundle` (ansible/tasks/cli-tools.yaml)
+#   - Before the gui-tools `brew bundle` (ansible/tasks/gui-tools.yaml)
 #   - Before the update flow's `brew upgrade` (ansible/tasks/update.yaml)
 #
 # Idempotent: `brew trust` prints "Trusted tap:" only when it adds a new

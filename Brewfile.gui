@@ -1,5 +1,7 @@
 # Homebrew casks installed for both personal and work profiles.
 
+tap "steipete/tap"
+
 cask "alacritty", greedy: true
 cask "arc", greedy: true
 cask "audio-hijack", greedy: true
@@ -10,6 +12,7 @@ cask "chatgpt", greedy: true
 cask "claude", greedy: true
 cask "claude-code@latest", greedy: true
 cask "codex", greedy: true
+cask "steipete/tap/codexbar", greedy: true
 cask "deskpad", greedy: true
 cask "devtoys", greedy: true
 cask "docker-desktop", greedy: true

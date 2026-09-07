@@ -1,3 +1,14 @@
+# Homebrew 6.0+ refuses to load casks from untrusted third-party taps
+# (steipete/tap) when its tap-trust gate is active, which aborts the
+# bundle below. Trust the taps first. See brew-trust-taps.yaml for
+# full context.
+- name: Trust third-party Homebrew taps before gui package installs
+  ansible.builtin.import_tasks: brew-trust-taps.yaml
+  tags:
+    - install
+    - productivity
+    - gui
+
 - name: Install GUI packages from Brewfile
   ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.gui"
   environment: "{{ homebrew_environment }}"
