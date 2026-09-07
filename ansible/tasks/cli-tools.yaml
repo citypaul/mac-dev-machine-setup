@@ -11,13 +11,28 @@
 
 # `fj` is a different Forgejo CLI that also ships `bin/fj`. If it stays
 # linked, `brew bundle` cannot install/link brew's `forgejo-cli`.
-# Removal also runs later via cli_packages_to_remove_if_installed, but
-# that is after this bundle, so uninstall here first.
+# Homebrew 6+ will not even *uninstall* it until rasterandstate/tap is
+# trusted, so trust → uninstall → untap here. Do not put `fj` on
+# cli_packages_to_remove_if_installed: that module loads the formula
+# without trusting the tap and fails the same way.
 - name: Uninstall fj so forgejo-cli can own bin/fj
-  community.general.homebrew:
-    name: fj
-    state: absent
+  ansible.builtin.shell: |
+    set -euo pipefail
+    prefix="$(brew --prefix)"
+    if [[ ! -d "$prefix/Cellar/fj" ]]; then
+      exit 0
+    fi
+    tap="rasterandstate/tap"
+    if brew tap | grep -qx "$tap"; then
+      brew trust --taps "$tap"
+    fi
+    brew uninstall --formula --force fj
+    if brew tap | grep -qx "$tap"; then
+      brew untap "$tap"
+    fi
   environment: "{{ homebrew_environment }}"
+  register: brew_uninstall_fj_result
+  changed_when: "'Uninstalling' in brew_uninstall_fj_result.stdout"
   tags:
     - install
     - productivity

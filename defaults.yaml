@@ -31,7 +31,6 @@ herdr_skill_agents:
   - codex
 
 cli_packages_to_remove_if_installed:
-  - fj
   - neofetch
 
 gui_packages_to_remove_if_installed:
