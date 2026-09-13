@@ -23,6 +23,7 @@ cask "google-chrome", greedy: true
 cask "httpie-desktop", greedy: true
 cask "imageoptim", greedy: true
 cask "iterm2", greedy: true
+cask "knockknock", greedy: true
 cask "loopback", greedy: true
 cask "maccy", greedy: true
 cask "mactex", greedy: true
