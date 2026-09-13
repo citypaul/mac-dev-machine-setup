@@ -6,7 +6,7 @@ all: setup deps permissions
 	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags install,personal
 
 work-setup: setup deps permissions
-	@$(WITH_SUDO_ASKPASS) /bin/bash -lc 'ansible-playbook local.yaml --tags install && brew bundle --file=Brewfile.work && ansible-playbook local.yaml --tags work'
+	@$(WITH_SUDO_ASKPASS) /bin/bash -lc 'ansible-playbook local.yaml --tags install && brew bundle --force --file=Brewfile.work && ansible-playbook local.yaml --tags work'
 
 permissions:
 	@./scripts/ensure-mac-permissions.sh
@@ -41,7 +41,7 @@ personal: permissions
 	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags personal
 
 work-tag: permissions
-	@$(WITH_SUDO_ASKPASS) /bin/bash -lc 'brew bundle --file=Brewfile.work && ansible-playbook local.yaml --tags work'
+	@$(WITH_SUDO_ASKPASS) /bin/bash -lc 'brew bundle --force --file=Brewfile.work && ansible-playbook local.yaml --tags work'
 
 work: work-setup
 

@@ -9,8 +9,11 @@
     - productivity
     - cli
 
+# --force overwrites files that conflict with a formula's links, so the
+# Brewfile wins over whatever is already on disk. The node unlink below still
+# runs afterwards.
 - name: Install CLI packages from Brewfile
-  ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.cli"
+  ansible.builtin.command: brew bundle --force --file "{{ playbook_dir }}/Brewfile.cli"
   environment: "{{ homebrew_environment }}"
   register: brew_bundle_cli
   changed_when: >-
