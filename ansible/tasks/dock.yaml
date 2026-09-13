@@ -41,7 +41,7 @@
         - /Applications/ChatGPT.app
         - /Applications/Claude.app
         - /Applications/FluidVoice.app
-        - /Applications/Talat.app 
+        - /Applications/Talat.app
 
       ignore_errors: true
       tags:
