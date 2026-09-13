@@ -43,7 +43,6 @@ cask "obs", greedy: true
 cask "obsidian", greedy: true
 cask "ollama-app", greedy: true
 cask "openvpn-connect", greedy: true
-cask "parallels", greedy: true
 cask "pearcleaner", greedy: true
 cask "podman-desktop", greedy: true
 cask "postman", greedy: true
