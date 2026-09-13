@@ -89,7 +89,7 @@ make update PROFILE=work   # work machine
 
 ### AI & Modern Tools
 - **AI Assistants**: ChatGPT, Claude
-- **AI Development**: Ollama for local LLMs
+- **AI Development**: Ollama (desktop app and CLI) for local LLMs
 - **API Testing**: Bruno, Postman, HTTPie
 - **HTTP Debugging**: Proxyman
 - **Transcription & Dictation**: Talat, FluidVoice, Spokenly
@@ -184,6 +184,7 @@ herdr agent list   # a reporting pane has a populated agent_session
 - **Security**: Little Snitch, KnockKnock persistence scanner, SSH key management, GPG signing with YubiKey
 - **Productivity**: Raycast, Obsidian, Fantastical
 - **Menu Bar Toolkit**: Vorssaint (keep-awake, system monitor, per-app volume, clipboard history and more)
+- **Menu Bar Icons**: Ice (hides and rearranges menu bar icons)
 
 ## Git Configuration
 

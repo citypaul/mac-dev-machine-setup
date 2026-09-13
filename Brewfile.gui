@@ -31,6 +31,7 @@ cask "grammarly-desktop", greedy: true
 cask "httpie-desktop", greedy: true
 cask "imageoptim", greedy: true
 cask "iterm2", greedy: true
+cask "jordanbaird-ice", greedy: true
 cask "knockknock", greedy: true
 cask "chmouel/lazyworktree/lazyworktree", greedy: true
 cask "little-snitch", greedy: true
@@ -40,6 +41,7 @@ cask "mactex", greedy: true
 cask "meetingbar", greedy: true
 cask "obs", greedy: true
 cask "obsidian", greedy: true
+cask "ollama-app", greedy: true
 cask "openvpn-connect", greedy: true
 cask "parallels", greedy: true
 cask "pearcleaner", greedy: true
