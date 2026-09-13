@@ -25,7 +25,7 @@
         - "'' --type small-spacer --section apps --after Fantastical"
         - /Applications/Alacritty.app
         - /Applications/Ghostty.app
-        - /Applications/Visual\ Studio\ Code.app
+        - /Applications/Cursor.app
         - /Applications/Audio\ Hijack.app
         - /Applications/Loopback.app
         - /Applications/Brave\ Browser.app
