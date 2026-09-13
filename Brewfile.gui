@@ -43,6 +43,7 @@ cask "stats", greedy: true
 cask "tableplus", greedy: true
 cask "visual-studio-code", greedy: true
 cask "vlc", greedy: true
+cask "vorssaint", greedy: true
 cask "waves-central", greedy: true
 cask "zed", greedy: true
 cask "zoom", greedy: true
