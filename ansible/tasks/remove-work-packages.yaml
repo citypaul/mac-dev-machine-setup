@@ -1,12 +1,21 @@
 # Imported by local.yaml under the work tags, and by update.yaml only when
-# update_profile is work, so a personal machine never removes these.
+# update_profile is work, so a personal machine never removes these. Uses
+# `brew uninstall` on installed casks only; see remove-unwanted-packages.yaml.
+- name: List installed Homebrew casks for work removals
+  ansible.builtin.command: brew list --cask -1
+  environment: "{{ homebrew_environment }}"
+  register: installed_work_casks
+  changed_when: false
+  tags:
+    - work
+    - work-remove
+
 - name: Remove unwanted gui packages from work machine
-  community.general.homebrew_cask:
-    name: "{{ item }}"
-    state: absent
-    install_options: force
+  ansible.builtin.command:
+    argv: [brew, uninstall, --cask, --force, "{{ item }}"]
   environment: "{{ homebrew_environment }}"
   loop: "{{ gui_packages_to_remove_if_installed_work }}"
+  when: item in (installed_work_casks.stdout_lines | default([]))
   tags:
     - work
     - work-remove

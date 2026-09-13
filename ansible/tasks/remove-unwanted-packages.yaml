@@ -1,9 +1,35 @@
+# Only uninstall what is actually installed, with `brew uninstall` rather than
+# the homebrew modules. The modules look every name up first, so a package
+# Homebrew has since deleted (neofetch) fails the whole run even when there is
+# nothing to remove, while `brew uninstall` works from the installed copy.
+- name: List installed Homebrew formulae
+  ansible.builtin.command: brew list --formula -1
+  environment: "{{ homebrew_environment }}"
+  register: installed_formulae
+  changed_when: false
+  tags:
+    - install
+    - core
+    - remove
+    - cli
+
+- name: List installed Homebrew casks
+  ansible.builtin.command: brew list --cask -1
+  environment: "{{ homebrew_environment }}"
+  register: installed_casks
+  changed_when: false
+  tags:
+    - install
+    - core
+    - remove
+    - gui
+
 - name: Remove unwanted cli packages
-  community.general.homebrew:
-    name: "{{ item }}"
-    state: absent
+  ansible.builtin.command:
+    argv: [brew, uninstall, --formula, "{{ item }}"]
   environment: "{{ homebrew_environment }}"
   loop: "{{ cli_packages_to_remove_if_installed }}"
+  when: item in (installed_formulae.stdout_lines | default([]))
   tags:
     - install
     - core
@@ -11,12 +37,11 @@
     - cli
 
 - name: Remove unwanted packages
-  community.general.homebrew_cask:
-    name: "{{ item }}"
-    state: absent
-    install_options: force
+  ansible.builtin.command:
+    argv: [brew, uninstall, --cask, --force, "{{ item }}"]
   environment: "{{ homebrew_environment }}"
   loop: "{{ gui_packages_to_remove_if_installed }}"
+  when: item in (installed_casks.stdout_lines | default([]))
   tags:
     - install
     - core
@@ -48,14 +73,11 @@
     - gui
 
 - name: Remove unwanted packages and their data
-  community.general.homebrew_cask:
-    name: "{{ item }}"
-    state: absent
-    install_options:
-      - force
-      - zap
+  ansible.builtin.command:
+    argv: [brew, uninstall, --cask, --force, --zap, "{{ item }}"]
   environment: "{{ homebrew_environment }}"
   loop: "{{ gui_packages_to_zap_if_installed }}"
+  when: item in (installed_casks.stdout_lines | default([]))
   tags:
     - install
     - core

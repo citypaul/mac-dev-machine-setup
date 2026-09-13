@@ -171,6 +171,7 @@ Tasks include error handling and often have `ignore_errors: true` for non-critic
 - **`auto_updates` casks (e.g. dropbox) can be newer on disk than their brew receipt says.** `brew outdated --greedy` reads the actual bundle version, so a stale receipt alone doesn't mean an upgrade will run.
 - **Casks from third-party taps need `brew trust <tap>`** (Homebrew 6+) before brew will operate on them.
 - **An app deleted outside Homebrew keeps its brew record**, so `brew bundle check` reports the Brewfile satisfied and the install is skipped. `scripts/clear-stale-cask-receipts.py` clears those records; don't add per-app checks (a hard-coded app path goes stale when a cask renames its app, as SilentKnight did).
+- **Homebrew deletes formulae and casks, and the homebrew Ansible modules fail on unknown names even with `state: absent`** (neofetch broke a full `make` this way). Removal tasks therefore check `brew list` and run `brew uninstall` only on installed packages, which also works when the package no longer exists in Homebrew. Don't switch them back to the modules.
 - **Uninstalling a Mac App Store app needs root.** `mas uninstall` refuses otherwise, so the removal task uses `become`, which gets its password from `scripts/with-sudo-askpass.sh`.
 - **`brew bundle cleanup` can't take a piped Brewfile.** `Brewfile.common` loads its parts relative to its own location, which becomes `/dev` on stdin; `make drift` writes a temporary Brewfile instead. `brew bundle cleanup` also exits 1 whenever it lists anything.
 
