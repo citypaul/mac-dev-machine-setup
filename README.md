@@ -174,7 +174,8 @@ herdr agent list   # a reporting pane has a populated agent_session
 
 ### System Enhancements
 - **System Monitoring**: Stats, glances, htop
-- **Security**: SSH key management, GPG signing with YubiKey
+- **App Cleanup**: Pearcleaner (uninstalls apps and their leftover files)
+- **Security**: KnockKnock persistence scanner, SSH key management, GPG signing with YubiKey
 - **Productivity**: Raycast, Obsidian, Fantastical
 
 ## Git Configuration
