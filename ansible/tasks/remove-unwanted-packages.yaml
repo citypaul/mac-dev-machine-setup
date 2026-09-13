@@ -1,9 +1,41 @@
+# Only uninstall what is actually installed, with `brew uninstall` rather than
+# the homebrew modules. The modules look every name up first, so a package
+# Homebrew has since deleted (neofetch) fails the whole run even when there is
+# nothing to remove, while `brew uninstall` works from the installed copy.
+- name: List installed Homebrew formulae
+  ansible.builtin.command: brew list --formula -1
+  environment: "{{ homebrew_environment }}"
+  register: installed_formulae
+  changed_when: false
+  # Read-only, so it runs in check mode too; otherwise `make check`
+  # sees nothing installed and reports no removals.
+  check_mode: false
+  tags:
+    - install
+    - core
+    - remove
+    - cli
+
+- name: List installed Homebrew casks
+  ansible.builtin.command: brew list --cask -1
+  environment: "{{ homebrew_environment }}"
+  register: installed_casks
+  changed_when: false
+  # Read-only, so it runs in check mode too; otherwise `make check`
+  # sees nothing installed and reports no removals.
+  check_mode: false
+  tags:
+    - install
+    - core
+    - remove
+    - gui
+
 - name: Remove unwanted cli packages
-  community.general.homebrew:
-    name: "{{ item }}"
-    state: absent
+  ansible.builtin.command:
+    argv: [brew, uninstall, --formula, "{{ item }}"]
   environment: "{{ homebrew_environment }}"
   loop: "{{ cli_packages_to_remove_if_installed }}"
+  when: item in (installed_formulae.stdout_lines | default([]))
   tags:
     - install
     - core
@@ -11,12 +43,11 @@
     - cli
 
 - name: Remove unwanted packages
-  community.general.homebrew_cask:
-    name: "{{ item }}"
-    state: absent
-    install_options: force
+  ansible.builtin.command:
+    argv: [brew, uninstall, --cask, --force, "{{ item }}"]
   environment: "{{ homebrew_environment }}"
   loop: "{{ gui_packages_to_remove_if_installed }}"
+  when: item in (installed_casks.stdout_lines | default([]))
   tags:
     - install
     - core
@@ -48,43 +79,93 @@
     - gui
 
 - name: Remove unwanted packages and their data
-  community.general.homebrew_cask:
-    name: "{{ item }}"
-    state: absent
-    install_options:
-      - force
-      - zap
+  ansible.builtin.command:
+    argv: [brew, uninstall, --cask, --force, --zap, "{{ item }}"]
   environment: "{{ homebrew_environment }}"
   loop: "{{ gui_packages_to_zap_if_installed }}"
+  when: item in (installed_casks.stdout_lines | default([]))
   tags:
     - install
     - core
     - remove
     - gui
 
-# `mas uninstall` refuses to run without root. sudo's secure_path drops
-# Homebrew's bin directory, so put it back for the module to find mas.
-- name: Remove unwanted App Store apps
-  community.general.mas:
-    id: "{{ item }}"
-    state: absent
-  become: true
-  environment:
-    PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}"
-  loop: "{{ app_store_apps_to_remove_if_installed }}"
+# The community.general.mas module can't parse `mas list` from mas 7, which
+# right-aligns app ids: a shorter id starts with a space and the module crashes
+# with "invalid literal for int()". Read the installed ids here instead.
+- name: List installed App Store apps
+  ansible.builtin.command: mas list
+  register: installed_app_store_apps
+  changed_when: false
+  # Read-only, so it runs in check mode too; otherwise `make check`
+  # sees nothing installed and reports no removals.
+  check_mode: false
   tags:
     - install
     - core
     - remove
     - app-store
 
-- name: Remove unwanted gui packages from work machine
-  community.general.homebrew_cask:
-    name: "{{ item }}"
-    state: absent
-    install_options: force
-  environment: "{{ homebrew_environment }}"
-  loop: "{{ gui_packages_to_remove_if_installed_work }}"
+# `mas uninstall` refuses to run without root. sudo's secure_path drops
+# Homebrew's bin directory, so put it back for sudo to find mas.
+- name: Remove unwanted App Store apps
+  ansible.builtin.command:
+    argv: [mas, uninstall, "{{ item }}"]
+  become: true
+  environment:
+    PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}"
+  loop: "{{ app_store_apps_to_remove_if_installed }}"
+  when: >-
+    (item | string) in
+    (installed_app_store_apps.stdout | default('') | regex_findall('(?m)^\\s*(\\d+)\\s'))
+  register: app_store_removals
+  # Two errors are handled rather than fatal:
+  # - "Operation not permitted": most App Store apps carry com.apple.macl,
+  #   which stops even root from taking ownership of the bundle. The next task
+  #   has Finder move those apps to the Bin instead.
+  # - "No installed apps with ADAM ID": `mas list` reads Spotlight, which can
+  #   still list an app for a moment after it has been removed.
+  failed_when: >-
+    app_store_removals.rc != 0 and
+    'Operation not permitted' not in app_store_removals.stderr and
+    'No installed apps with ADAM ID' not in app_store_removals.stderr
   tags:
-    - work
-    - work-remove
+    - install
+    - core
+    - remove
+    - app-store
+
+# Finder may delete protected App Store apps, as when dragging one to the Bin.
+# Runs as the user, not root, because it drives the user's Finder.
+- name: Move App Store apps mas could not remove to the Bin with Finder
+  ansible.builtin.shell: |
+    set -euo pipefail
+    app="$(mas uninstall --dry-run "$APP_ID" | tail -n 1 | sed 's/^[[:space:]]*//')"
+    if [ ! -d "$app" ]; then
+      echo "mas did not report an app bundle for $APP_ID: $app" >&2
+      exit 1
+    fi
+    if pgrep -f -- "$app/Contents/MacOS/" >/dev/null; then
+      osascript -e 'on run argv' -e 'tell application (item 1 of argv) to quit' -e 'end run' "$app"
+      for _ in $(seq 1 20); do
+        pgrep -f -- "$app/Contents/MacOS/" >/dev/null || break
+        sleep 0.5
+      done
+    fi
+    osascript -e 'on run argv' -e 'tell application "Finder" to delete (POSIX file (item 1 of argv) as alias)' -e 'end run' "$app" >/dev/null
+    echo "Moved $app to the Bin"
+  args:
+    executable: /bin/bash
+  environment:
+    APP_ID: "{{ item }}"
+    PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}"
+  loop: >-
+    {{ app_store_removals.results | default([])
+       | selectattr('stderr', 'defined')
+       | selectattr('stderr', 'search', 'Operation not permitted')
+       | map(attribute='item') | list }}
+  tags:
+    - install
+    - core
+    - remove
+    - app-store

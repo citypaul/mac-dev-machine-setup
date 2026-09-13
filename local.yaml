@@ -7,7 +7,7 @@
     - import_tasks: ansible/tasks/validation.yaml
       tags:
         - always
-    
+
     - name: Update Brew
       community.general.homebrew:
         update_homebrew: yes
@@ -34,4 +34,5 @@
     - import_tasks: ansible/tasks/herdr.yaml
     - import_tasks: ansible/tasks/rust.yaml
     - import_tasks: ansible/tasks/remove-unwanted-packages.yaml
+    - import_tasks: ansible/tasks/remove-work-packages.yaml
     - import_tasks: ansible/tasks/dock.yaml

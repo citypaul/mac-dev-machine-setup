@@ -31,9 +31,16 @@ herdr_skill_agents:
 
 cli_packages_to_remove_if_installed:
   - neofetch
+  # Replaced by the ollama-app cask, which installs the same `ollama` command.
+  - ollama
+  - postgresql@14
+  - python@3.9
+  - speedtest-cli
+  - youtube-dl
 
 gui_packages_to_remove_if_installed:
   - adguard
+  - aerospace
   - arc
   - bartender
   - devtoys
@@ -41,12 +48,16 @@ gui_packages_to_remove_if_installed:
   - granola
   - handy
   - hiddenbar
+  - maccy
   - ngrok
   - orbstack
   - pgadmin4
   - rewind
+  - stats
   - unclack
   - utm
+  - vincelwt-chatgpt
+  - visual-studio-code
   - visual-studio-code@insiders
   - wezterm
   - whisky
@@ -60,6 +71,7 @@ gui_packages_to_zap_if_installed:
 # Mac App Store apps, by id (`mas list` shows ids).
 app_store_apps_to_remove_if_installed:
   - 457622435 # Yoink
+  - 639968404 # Parcel Classic
 
 gui_packages_to_remove_if_installed_work:
   - brave-browser

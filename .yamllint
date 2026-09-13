@@ -1,0 +1,7 @@
+extends: relaxed
+
+ignore: |
+  .ansible/
+
+rules:
+  line-length: disable

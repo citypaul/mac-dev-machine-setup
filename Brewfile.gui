@@ -1,5 +1,6 @@
 # Homebrew casks installed for both personal and work profiles.
 
+tap "chmouel/lazyworktree"
 tap "steipete/tap"
 
 cask "alacritty", greedy: true
@@ -7,44 +8,61 @@ cask "audio-hijack", greedy: true
 cask "balsamiq-wireframes", greedy: true
 cask "brave-browser", greedy: true
 cask "bruno", greedy: true
+cask "camo-studio", greedy: true
+cask "camtasia", greedy: true
 cask "chatgpt", greedy: true
 cask "claude", greedy: true
 cask "claude-code@latest", greedy: true
+cask "cloudflare-warp", greedy: true
 cask "codex", greedy: true
 cask "cursor", greedy: true
 cask "steipete/tap/codexbar", greedy: true
 cask "deskpad", greedy: true
 cask "docker-desktop", greedy: true
+cask "elgato-control-center", greedy: true
 cask "fantastical", greedy: true
 cask "fluidvoice", greedy: true
 cask "firefox", greedy: true
+cask "focusrite-control-2", greedy: true
+cask "gather", greedy: true
 cask "ghostty", greedy: true
 cask "google-chrome", greedy: true
+cask "grammarly-desktop", greedy: true
 cask "httpie-desktop", greedy: true
 cask "imageoptim", greedy: true
 cask "iterm2", greedy: true
+cask "jordanbaird-ice", greedy: true
 cask "knockknock", greedy: true
+cask "chmouel/lazyworktree/lazyworktree", greedy: true
+cask "little-snitch", greedy: true
+cask "logi-options+", greedy: true
 cask "loopback", greedy: true
-cask "maccy", greedy: true
 cask "mactex", greedy: true
 cask "meetingbar", greedy: true
+cask "obs", greedy: true
 cask "obsidian", greedy: true
+cask "ollama-app", greedy: true
+cask "openvpn-connect", greedy: true
 cask "pearcleaner", greedy: true
 cask "podman-desktop", greedy: true
 cask "postman", greedy: true
+cask "protopie", greedy: true
 cask "proxyman", greedy: true
+cask "raindropio", greedy: true
 cask "raycast", greedy: true
 cask "redis-insight", greedy: true
 cask "responsively", greedy: true
+cask "snagit", greedy: true
 cask "sourcetree", greedy: true
+cask "spokenly", greedy: true
 cask "spotify", greedy: true
 cask "shortcat", greedy: true
-cask "stats", greedy: true
+cask "stirling-pdf", greedy: true
 cask "tableplus", greedy: true
-cask "visual-studio-code", greedy: true
 cask "vlc", greedy: true
 cask "vorssaint", greedy: true
 cask "waves-central", greedy: true
+cask "xcodes-app", greedy: true
 cask "zed", greedy: true
 cask "zoom", greedy: true
 

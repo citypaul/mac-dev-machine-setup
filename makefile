@@ -1,6 +1,9 @@
-.PHONY: all deps personal work dock setup keys cli gui update check gpg gpg-setup work-remove permissions herdr
+.PHONY: all deps personal work dock setup keys cli gui update check gpg gpg-setup work-remove permissions herdr drift lint
 
 WITH_SUDO_ASKPASS = scripts/with-sudo-askpass.sh
+
+# Profile for `make update` and `make drift`: personal (default) or work.
+PROFILE ?= personal
 
 all: setup deps permissions
 	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags install,personal
@@ -77,11 +80,11 @@ app-store:
 
 update: permissions
 	@echo "Updating all installed packages..."
-	@$(WITH_SUDO_ASKPASS) ansible-playbook update.yaml
+	@$(WITH_SUDO_ASKPASS) ansible-playbook update.yaml -e update_profile=$(PROFILE)
 
 check:
 	@echo "Checking Brewfiles..."
-	@for file in Brewfile.cli Brewfile.gui Brewfile.app-store Brewfile.common Brewfile.personal Brewfile.work; do \
+	@for file in Brewfile.cli Brewfile.gui Brewfile.app-store Brewfile.fonts Brewfile.common Brewfile.personal Brewfile.work; do \
 		HOMEBREW_NO_AUTO_UPDATE=1 brew bundle list --file="$$file" >/dev/null; \
 		HOMEBREW_NO_AUTO_UPDATE=1 brew bundle list --file="$$file" --cask >/dev/null; \
 		HOMEBREW_NO_AUTO_UPDATE=1 brew bundle list --file="$$file" --mas >/dev/null; \
@@ -100,3 +103,30 @@ gpg-setup:
 
 work-remove:
 	@$(WITH_SUDO_ASKPASS) ansible-playbook local.yaml --tags work-remove
+
+# Lists everything installed that the Brewfiles don't track. The Brewfile is
+# written to a temp file because Brewfile.common can't be read from stdin, and
+# `brew bundle cleanup` exits 1 whenever it lists something.
+drift:
+	@tmp=$$(mktemp); \
+	printf 'instance_eval File.read("Brewfile.common")\ninstance_eval File.read("Brewfile.$(PROFILE)")\n' > "$$tmp"; \
+	HOMEBREW_NO_AUTO_UPDATE=1 brew bundle cleanup --file="$$tmp" || true; \
+	rm -f "$$tmp"
+
+# The checks CI runs. Needs no sudo and changes nothing on the machine.
+lint:
+	@echo "Helper-script tests..."
+	@PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts -p 'test_*.py'
+	@echo "yamllint..."
+	@yamllint .
+	@echo "shellcheck..."
+	@shellcheck -S error scripts/*.sh
+	@echo "Playbook syntax..."
+	@for playbook in local.yaml update.yaml setup.yaml; do \
+		ansible-playbook "$$playbook" --syntax-check >/dev/null || exit 1; \
+	done
+	@echo "Brewfiles parse..."
+	@for file in Brewfile.*; do \
+		HOMEBREW_NO_AUTO_UPDATE=1 brew bundle list --all --file="$$file" >/dev/null || exit 1; \
+	done
+	@echo "All checks passed."

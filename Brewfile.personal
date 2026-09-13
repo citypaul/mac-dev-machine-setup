@@ -1,10 +1,15 @@
 # Personal-only package overlay. Run after Brewfile.common.
 
 cask "audacity", greedy: true
+cask "battle-net", greedy: true
+cask "calibre", greedy: true
 cask "discord", greedy: true
 cask "dropbox", greedy: true
 cask "jellyfin", greedy: true
 cask "protonvpn", greedy: true
 cask "shottr", greedy: true
 cask "silentknight", greedy: true
+cask "steam", greedy: true
+cask "syncthing-app", greedy: true
 cask "tailscale-app", greedy: true
+cask "whatsapp", greedy: true

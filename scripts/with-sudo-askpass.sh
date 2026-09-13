@@ -6,7 +6,9 @@ if [[ $# -eq 0 ]]; then
   exit 64
 fi
 
-if [[ ! -r /dev/tty ]]; then
+# A readable /dev/tty isn't enough: without a controlling terminal (e.g. a
+# non-interactive shell) opening it fails with "Device not configured".
+if ! { : </dev/tty; } 2>/dev/null; then
   echo "Cannot prompt for sudo password without a terminal" >&2
   exit 1
 fi

@@ -1,14 +1,4 @@
-- name: Install neovim
-  ignore_errors: true
-  community.general.homebrew:
-    name: neovim
-    state: latest
-  tags:
-    - install
-    - productivity
-    - cli
-    - nvim
-
+# neovim itself is installed from Brewfile.cli.
 - name: Setup NvChad Neovim Configuration
   ignore_errors: true
   git:
