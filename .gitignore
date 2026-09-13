@@ -2,3 +2,4 @@
 roles*
 .aider*
 !ansible/templates/fabric/.env
+__pycache__/

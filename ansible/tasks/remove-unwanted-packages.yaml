@@ -23,6 +23,61 @@
     - remove
     - gui
 
+# Karabiner's config used to be stowed from the dotfiles repo. Zapping the
+# cask trashes ~/.config/karabiner, so remove the link first to be sure the
+# trash takes the link and never the dotfiles clone's copy.
+- name: Check for the old stowed Karabiner config link
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/.config/karabiner"
+  register: karabiner_config
+  tags:
+    - install
+    - core
+    - remove
+    - gui
+
+- name: Remove the old stowed Karabiner config link
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/karabiner"
+    state: absent
+  when: karabiner_config.stat.islnk | default(false)
+  tags:
+    - install
+    - core
+    - remove
+    - gui
+
+- name: Remove unwanted packages and their data
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+    state: absent
+    install_options:
+      - force
+      - zap
+  environment: "{{ homebrew_environment }}"
+  loop: "{{ gui_packages_to_zap_if_installed }}"
+  tags:
+    - install
+    - core
+    - remove
+    - gui
+
+# `mas uninstall` refuses to run without root. sudo's secure_path drops
+# Homebrew's bin directory, so put it back for the module to find mas.
+- name: Remove unwanted App Store apps
+  community.general.mas:
+    id: "{{ item }}"
+    state: absent
+  become: true
+  environment:
+    PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}"
+  loop: "{{ app_store_apps_to_remove_if_installed }}"
+  tags:
+    - install
+    - core
+    - remove
+    - app-store
+
 - name: Remove unwanted gui packages from work machine
   community.general.homebrew_cask:
     name: "{{ item }}"

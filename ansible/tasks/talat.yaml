@@ -1,0 +1,62 @@
+# Talat isn't on Homebrew or the Mac App Store. Install it from the release
+# feed its own updater reads, only when the app is missing: once installed,
+# Talat keeps itself up to date. The feed only publishes Apple Silicon builds.
+#
+# Expects `talat_app_path` (where the app is installed).
+- name: Check whether Talat is installed
+  ansible.builtin.stat:
+    path: "{{ talat_app_path }}"
+  register: talat_app
+
+- name: Install Talat from its release feed
+  when: not talat_app.stat.exists
+  block:
+    - name: Look up the latest Talat release
+      ansible.builtin.uri:
+        url: https://releases.talat.app/latest.json
+        return_content: true
+      register: talat_release
+
+    - name: Create a temporary directory for the Talat download
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: talat
+      register: talat_download
+
+    - name: Download Talat
+      ansible.builtin.get_url:
+        url: "{{ (talat_release.content | from_json).platforms['darwin-aarch64'].url }}"
+        dest: "{{ talat_download.path }}/talat.app.tar.gz"
+        mode: "0600"
+
+    # The unarchive module needs GNU tar on macOS; the system tar handles this.
+    - name: Unpack Talat
+      ansible.builtin.command:
+        cmd: tar -xzf talat.app.tar.gz
+        chdir: "{{ talat_download.path }}"
+        creates: "{{ talat_download.path }}/talat.app"
+
+    # Downloads made here carry no quarantine flag, so Gatekeeper would never
+    # check the app on first launch. Check it before installing instead.
+    - name: Verify Talat is notarized and signed by its developer
+      ansible.builtin.shell: |
+        set -euo pipefail
+        spctl --assess --type execute "$APP"
+        codesign -dv "$APP" 2>&1 | grep -qx 'TeamIdentifier=X37TLUX6CW'
+      args:
+        executable: /bin/bash
+      environment:
+        APP: "{{ talat_download.path }}/talat.app"
+      changed_when: false
+
+    - name: Move Talat into place
+      ansible.builtin.command: mv "{{ talat_download.path }}/talat.app" "{{ talat_app_path }}"
+      args:
+        creates: "{{ talat_app_path }}"
+
+  always:
+    - name: Remove the Talat download
+      ansible.builtin.file:
+        path: "{{ talat_download.path }}"
+        state: absent
+      when: talat_download.path is defined

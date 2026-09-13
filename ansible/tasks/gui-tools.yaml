@@ -9,8 +9,27 @@
     - productivity
     - gui
 
+# The Brewfiles are the source of truth. An app deleted outside Homebrew
+# leaves brew's install record behind, and `brew bundle` trusts the record
+# and skips the cask. Clear those records first so the bundle reinstalls the
+# app. See scripts/clear-stale-cask-receipts.py.
+- name: Clear stale records for GUI casks whose files have gone missing
+  ansible.builtin.command: >-
+    "{{ playbook_dir }}/scripts/clear-stale-cask-receipts.py"
+    "{{ playbook_dir }}/Brewfile.gui"
+  environment: "{{ homebrew_environment }}"
+  register: clear_stale_gui
+  changed_when: "'CLEARED:' in clear_stale_gui.stdout"
+  ignore_errors: true
+  tags:
+    - install
+    - gui
+    - productivity
+
+# --force overwrites an app that already exists but Homebrew did not install.
+# Without it, bundle only adopts an app whose version matches the cask.
 - name: Install GUI packages from Brewfile
-  ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.gui"
+  ansible.builtin.command: brew bundle --force --file "{{ playbook_dir }}/Brewfile.gui"
   environment: "{{ homebrew_environment }}"
   register: brew_bundle_gui
   changed_when: >-
@@ -28,31 +47,28 @@
     - gui
     - productivity
 
-- name: Check whether SilentKnight app exists
-  ansible.builtin.stat:
-    path: /Applications/SilentKnight.app
-  register: silentknight_app
+- name: Install Talat
+  ansible.builtin.import_tasks: talat.yaml
+  vars:
+    talat_app_path: /Applications/Talat.app
   tags:
-    - personal
+    - install
+    - gui
+    - productivity
 
-- name: Check whether SilentKnight cask is registered
-  ansible.builtin.command: brew list --cask silentknight
+- name: Clear stale records for personal casks whose files have gone missing
+  ansible.builtin.command: >-
+    "{{ playbook_dir }}/scripts/clear-stale-cask-receipts.py"
+    "{{ playbook_dir }}/Brewfile.personal"
   environment: "{{ homebrew_environment }}"
-  register: silentknight_cask
-  changed_when: false
-  failed_when: false
-  tags:
-    - personal
-
-- name: Clear stale SilentKnight cask receipt
-  ansible.builtin.command: brew uninstall --cask --force silentknight
-  environment: "{{ homebrew_environment }}"
-  when: silentknight_cask.rc == 0 and not silentknight_app.stat.exists
+  register: clear_stale_personal
+  changed_when: "'CLEARED:' in clear_stale_personal.stdout"
+  ignore_errors: true
   tags:
     - personal
 
 - name: Install personal GUI packages from Brewfile
-  ansible.builtin.command: brew bundle --file "{{ playbook_dir }}/Brewfile.personal"
+  ansible.builtin.command: brew bundle --force --file "{{ playbook_dir }}/Brewfile.personal"
   environment: "{{ homebrew_environment }}"
   register: brew_bundle_personal
   changed_when: >-
