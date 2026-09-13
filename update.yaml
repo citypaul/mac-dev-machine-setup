@@ -3,6 +3,8 @@
   vars_files:
     - ./defaults.yaml
   vars:
+    # Which profile Brewfile to enforce: personal or work (make update PROFILE=work).
+    update_profile: personal
     homebrew_environment: "{{ {'SUDO_ASKPASS': lookup('env', 'SUDO_ASKPASS')} if lookup('env', 'SUDO_ASKPASS') else {} }}"
   tasks:
     - import_tasks: ansible/tasks/update.yaml

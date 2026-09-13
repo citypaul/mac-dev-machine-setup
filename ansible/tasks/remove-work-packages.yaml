@@ -1,0 +1,12 @@
+# Imported by local.yaml under the work tags, and by update.yaml only when
+# update_profile is work, so a personal machine never removes these.
+- name: Remove unwanted gui packages from work machine
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+    state: absent
+    install_options: force
+  environment: "{{ homebrew_environment }}"
+  loop: "{{ gui_packages_to_remove_if_installed_work }}"
+  tags:
+    - work
+    - work-remove
