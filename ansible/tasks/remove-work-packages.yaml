@@ -6,6 +6,9 @@
   environment: "{{ homebrew_environment }}"
   register: installed_work_casks
   changed_when: false
+  # Read-only, so it runs in check mode too; otherwise `make check`
+  # sees nothing installed and reports no removals.
+  check_mode: false
   tags:
     - work
     - work-remove

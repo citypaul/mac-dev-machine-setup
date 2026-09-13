@@ -7,6 +7,9 @@
   environment: "{{ homebrew_environment }}"
   register: installed_formulae
   changed_when: false
+  # Read-only, so it runs in check mode too; otherwise `make check`
+  # sees nothing installed and reports no removals.
+  check_mode: false
   tags:
     - install
     - core
@@ -18,6 +21,9 @@
   environment: "{{ homebrew_environment }}"
   register: installed_casks
   changed_when: false
+  # Read-only, so it runs in check mode too; otherwise `make check`
+  # sees nothing installed and reports no removals.
+  check_mode: false
   tags:
     - install
     - core
@@ -84,16 +90,34 @@
     - remove
     - gui
 
+# The community.general.mas module can't parse `mas list` from mas 7, which
+# right-aligns app ids: a shorter id starts with a space and the module crashes
+# with "invalid literal for int()". Read the installed ids here instead.
+- name: List installed App Store apps
+  ansible.builtin.command: mas list
+  register: installed_app_store_apps
+  changed_when: false
+  # Read-only, so it runs in check mode too; otherwise `make check`
+  # sees nothing installed and reports no removals.
+  check_mode: false
+  tags:
+    - install
+    - core
+    - remove
+    - app-store
+
 # `mas uninstall` refuses to run without root. sudo's secure_path drops
-# Homebrew's bin directory, so put it back for the module to find mas.
+# Homebrew's bin directory, so put it back for sudo to find mas.
 - name: Remove unwanted App Store apps
-  community.general.mas:
-    id: "{{ item }}"
-    state: absent
+  ansible.builtin.command:
+    argv: [mas, uninstall, "{{ item }}"]
   become: true
   environment:
     PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}"
   loop: "{{ app_store_apps_to_remove_if_installed }}"
+  when: >-
+    (item | string) in
+    (installed_app_store_apps.stdout | default('') | regex_findall('(?m)^\\s*(\\d+)\\s'))
   tags:
     - install
     - core
