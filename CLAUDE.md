@@ -52,6 +52,12 @@ To check what changes would be made without applying them:
 scripts/with-sudo-askpass.sh ansible-playbook local.yaml --check --diff
 ```
 
+Helper-script logic has stdlib unit tests (nothing to install):
+
+```bash
+python3 -m unittest discover -s scripts -p 'test_*.py'
+```
+
 ## Architecture & Key Components
 
 ### Entry Points
@@ -99,6 +105,7 @@ Helper scripts in `scripts/`:
 
 - `gpg-auto-sign.sh` - GPG wrapper that auto-detects the signing key from the currently-inserted YubiKey
 - `fix-cask-receipts.py` - Repairs empty Homebrew cask receipts that break `brew upgrade` with "already an App at" errors
+- `clear-stale-cask-receipts.py` - Clears brew's install record for any Brewfile cask whose installed files have gone missing, so the `brew bundle` that follows reinstalls it. Runs before the GUI and personal bundles; `--dry-run` only reports. Tests: `test_clear_stale_cask_receipts.py`
 - `ensure-mac-permissions.sh` - Pre-flight check that the terminal has the App Management and Automation TCC permissions Homebrew needs; triggers the one-time grant prompts if missing. Runs automatically before install/update make targets (`make permissions` to run standalone)
 
 ## Key Design Patterns
@@ -129,7 +136,17 @@ Homebrew-managed packages are defined in Brewfiles:
 - `Brewfile.personal` - Personal-only GUI apps
 - `Brewfile.work` - Work-only overlay, currently empty
 
-`defaults.yaml` still contains non-package settings plus removal lists used by `remove-unwanted-packages.yaml`.
+`defaults.yaml` contains non-package settings plus removal lists used by `remove-unwanted-packages.yaml`.
+
+### Brewfiles Are the Source of Truth
+
+Every run makes the machine match the Brewfiles:
+
+- Stale records are cleared before the GUI bundles (`clear-stale-cask-receipts.py`), so an app deleted outside Homebrew is reinstalled
+- Bundles run with `--force`, overwriting apps and files Homebrew didn't install
+- Dropping a Brewfile entry does **not** uninstall it — also add it to the matching removal list in `defaults.yaml` (`cli_packages_to_remove_if_installed`, `gui_packages_to_remove_if_installed`, `app_store_apps_to_remove_if_installed`, or `gui_packages_to_zap_if_installed` to also delete the app's data)
+- Apps not on Homebrew or the App Store get their own task file: `talat.yaml` installs Talat from its release feed when missing (it self-updates afterwards) and verifies notarization and the developer's Team ID before moving it into `/Applications`
+- Never use `brew bundle cleanup --force`: fonts (`fonts.yaml`) and `dockutil` (`dock.yaml`) are installed by Ansible tasks outside the Brewfiles, so cleanup would uninstall them
 
 ### Idempotency
 
@@ -146,6 +163,9 @@ Tasks include error handling and often have `ignore_errors: true` for non-critic
 - **A `com.apple.macl` xattr on an app bundle blocks all xattr writes by other processes** (quarantine release fails even with App Management granted). Fix is `brew reinstall --cask <name>` for a fresh bundle.
 - **`auto_updates` casks (e.g. dropbox) can be newer on disk than their brew receipt says.** `brew outdated --greedy` reads the actual bundle version, so a stale receipt alone doesn't mean an upgrade will run.
 - **Casks from third-party taps need `brew trust <tap>`** (Homebrew 6+) before brew will operate on them.
+- **An app deleted outside Homebrew keeps its brew record**, so `brew bundle check` reports the Brewfile satisfied and the install is skipped. `scripts/clear-stale-cask-receipts.py` clears those records; don't add per-app checks (a hard-coded app path goes stale when a cask renames its app, as SilentKnight did).
+- **Uninstalling a Mac App Store app needs root.** `mas uninstall` refuses otherwise, so the removal task uses `become`, which gets its password from `scripts/with-sudo-askpass.sh`.
+- **`brew bundle cleanup` can't take a piped Brewfile.** `Brewfile.common` loads its parts relative to its own location, which becomes `/dev` on stdin; use process substitution from the repo root (see README "Detecting drift").
 
 ## External Dependencies
 

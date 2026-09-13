@@ -73,10 +73,10 @@ make update
 - **Package Managers**: Homebrew, npm, pnpm, yarn, cargo
 - **Version Control**: Git, GitHub CLI, Sourcetree
 - **Containers**: Docker, Colima, lazydocker
-- **Databases**: PostgreSQL tools, Redis tools, TablePlus
+- **Databases**: Redis Insight, TablePlus
 
 ### Terminal & Productivity
-- **Terminals**: iTerm2, Alacritty, Ghostty, WezTerm
+- **Terminals**: iTerm2, Alacritty, Ghostty
 - **Shells**: Zsh with Oh My Zsh, Starship prompt
 - **Multiplexers**: tmux, Zellij
 - **Editors**: Neovim, VS Code, Cursor
@@ -87,6 +87,7 @@ make update
 - **AI Development**: Ollama for local LLMs
 - **API Testing**: Bruno, Postman, HTTPie
 - **HTTP Debugging**: Proxyman
+- **Transcription & Dictation**: Talat, FluidVoice
 - **Agent Workspace**: [Herdr](https://herdr.dev), with per-agent state integrations (see below)
 
 #### Herdr agent state
@@ -172,7 +173,6 @@ herdr agent list   # a reporting pane has a populated agent_session
 ```
 
 ### System Enhancements
-- **Window Management**: Karabiner Elements
 - **System Monitoring**: Stats, glances, htop
 - **Security**: SSH key management, GPG signing with YubiKey
 - **Productivity**: Raycast, Obsidian, Fantastical
@@ -318,14 +318,20 @@ modify. Fix with a clean reinstall: `brew reinstall --cask <name>`.
 
 Apps installed ad hoc with `brew install --cask` are invisible to
 `make update` and won't exist on a freshly provisioned machine. To list
-everything installed that no Brewfile tracks (personal machine):
+everything installed that no Brewfile tracks (personal machine), run this
+from the repository root:
 
 ```bash
-cat Brewfile.common Brewfile.personal | brew bundle cleanup --file=-
+brew bundle cleanup --file=<(printf 'instance_eval File.read("Brewfile.common")\ninstance_eval File.read("Brewfile.personal")\n')
 ```
 
-Nothing is removed without `--force`. For each listed item, either add it
-to the appropriate Brewfile or uninstall it.
+Piping the Brewfiles in on stdin doesn't work, because `Brewfile.common`
+loads its parts relative to its own location.
+
+Nothing is removed without `--force`, and you shouldn't add it: the list
+also includes the fonts and `dockutil`, which Ansible tasks install outside
+the Brewfiles. For each other listed item, either add it to the appropriate
+Brewfile or add it to a removal list in `defaults.yaml`.
 
 ## Customization
 
@@ -349,7 +355,33 @@ cask "personal-only-app", greedy: true
 
 `Brewfile.common` aggregates the shared CLI, GUI, and App Store inventory.
 `Brewfile.work` is available for work-only additions and is currently empty.
-Removal lists still live in `defaults.yaml`.
+
+### How the Brewfiles are enforced
+
+The Brewfiles are the source of truth, and every run makes the machine match
+them:
+
+- **Missing apps are reinstalled**, even when Homebrew still thinks they are
+  installed. Deleting an app outside Homebrew leaves brew's install record
+  behind, and `brew bundle` would skip it. Before each GUI bundle,
+  `scripts/clear-stale-cask-receipts.py` clears such records so the install
+  runs. Run it with `--dry-run` and a Brewfile to see which casks are affected.
+- **Existing copies are overwritten.** Bundles run with `--force`, so an app
+  already in `/Applications` that Homebrew didn't install is replaced by the
+  cask's copy.
+- **Deleting an entry does not uninstall it.** To remove a package, delete it
+  from its Brewfile *and* add it to the matching removal list in
+  `defaults.yaml`: `cli_packages_to_remove_if_installed`,
+  `gui_packages_to_remove_if_installed`, or
+  `app_store_apps_to_remove_if_installed` (by App Store id). Use
+  `gui_packages_to_zap_if_installed` instead to also delete the app's
+  settings and support files. A blanket
+  `brew bundle cleanup --force` isn't used because it would also uninstall the
+  fonts and `dockutil`, which Ansible tasks install outside the Brewfiles.
+- **Apps outside Homebrew** have their own task. Talat isn't on Homebrew or
+  the App Store, so `ansible/tasks/talat.yaml` installs it from its release
+  feed when it's missing, after checking it's notarized and signed by its
+  developer. Talat updates itself from then on.
 
 ### Using Your Own Dotfiles
 
@@ -565,6 +597,7 @@ The setup includes several safety features:
 - Run with verbose output: `ansible-playbook local.yaml -vvv`
 - Check specific task: `make cli` or `make gui`
 - Validate syntax: `ansible-playbook local.yaml --syntax-check`
+- Run the helper-script tests: `python3 -m unittest discover -s scripts -p 'test_*.py'`
 
 ## File Structure
 
