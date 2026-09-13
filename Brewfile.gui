@@ -23,12 +23,14 @@ cask "google-chrome", greedy: true
 cask "httpie-desktop", greedy: true
 cask "imageoptim", greedy: true
 cask "iterm2", greedy: true
+cask "jordanbaird-ice", greedy: true
 cask "knockknock", greedy: true
 cask "loopback", greedy: true
 cask "maccy", greedy: true
 cask "mactex", greedy: true
 cask "meetingbar", greedy: true
 cask "obsidian", greedy: true
+cask "ollama-app", greedy: true
 cask "pearcleaner", greedy: true
 cask "podman-desktop", greedy: true
 cask "postman", greedy: true
