@@ -18,8 +18,8 @@ Automated setup and maintenance for macOS development environments using Ansible
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-username/mac-dev-setup.git
-   cd mac-dev-setup
+   git clone https://github.com/citypaul/mac-dev-machine-setup.git
+   cd mac-dev-machine-setup
    ```
 
 2. Run the bootstrap script:
@@ -36,9 +36,12 @@ Automated setup and maintenance for macOS development environments using Ansible
 
 ### Existing Mac Updates
 
-Update all installed packages:
+Bring the machine back in line with the Brewfiles, then upgrade everything.
+This installs anything missing, applies the removal lists, and upgrades all
+packages, including apps that update themselves:
 ```bash
-make update
+make update                # personal machine
+make update PROFILE=work   # work machine
 ```
 
 ## Available Commands
@@ -47,8 +50,10 @@ make update
 |---------|-------------|
 | `make` | Complete personal setup (all tools + personal apps) |
 | `make work` | Complete work setup (essential tools only) |
-| `make update` | Update all installed packages |
+| `make update` | Install anything missing, apply the removal lists, then upgrade everything (`PROFILE=work` on a work machine) |
 | `make check` | Dry run to preview changes |
+| `make drift` | List installed packages that no Brewfile tracks (`PROFILE=work` on a work machine) |
+| `make lint` | Run the checks CI runs: script tests, YAML lint, shellcheck, playbook syntax, Brewfile parsing |
 | `make permissions` | Verify/request the macOS permissions Homebrew needs (runs automatically before installs and updates) |
 | `make cli` | Install command-line tools only |
 | `make gui` | Install GUI applications only |
@@ -79,7 +84,7 @@ make update
 - **Terminals**: iTerm2, Alacritty, Ghostty
 - **Shells**: Zsh with Oh My Zsh, Starship prompt
 - **Multiplexers**: tmux, Zellij
-- **Editors**: Neovim, VS Code, Cursor
+- **Editors**: Neovim, Cursor, Zed
 - **CLI Tools**: fzf, ripgrep, bat, eza, zoxide, and more
 
 ### AI & Modern Tools
@@ -87,7 +92,8 @@ make update
 - **AI Development**: Ollama for local LLMs
 - **API Testing**: Bruno, Postman, HTTPie
 - **HTTP Debugging**: Proxyman
-- **Transcription & Dictation**: Talat, FluidVoice
+- **Transcription & Dictation**: Talat, FluidVoice, Spokenly
+- **Recording & Streaming**: OBS, Camtasia, Snagit, Camo Studio, Elgato Control Center, Audio Hijack, Loopback
 - **Agent Workspace**: [Herdr](https://herdr.dev), with per-agent state integrations (see below)
 
 #### Herdr agent state
@@ -173,9 +179,9 @@ herdr agent list   # a reporting pane has a populated agent_session
 ```
 
 ### System Enhancements
-- **System Monitoring**: Stats, glances, htop
+- **System Monitoring**: glances, htop
 - **App Cleanup**: Pearcleaner (uninstalls apps and their leftover files)
-- **Security**: KnockKnock persistence scanner, SSH key management, GPG signing with YubiKey
+- **Security**: Little Snitch, KnockKnock persistence scanner, SSH key management, GPG signing with YubiKey
 - **Productivity**: Raycast, Obsidian, Fantastical
 - **Menu Bar Toolkit**: Vorssaint (keep-awake, system monitor, per-app volume, clipboard history and more)
 
@@ -318,22 +324,44 @@ modify. Fix with a clean reinstall: `brew reinstall --cask <name>`.
 
 ### Detecting drift (apps installed outside the Brewfiles)
 
-Apps installed ad hoc with `brew install --cask` are invisible to
-`make update` and won't exist on a freshly provisioned machine. To list
-everything installed that no Brewfile tracks (personal machine), run this
-from the repository root:
+Packages installed by hand (`brew install`, `mas install`) aren't in any
+Brewfile, so a freshly provisioned machine won't have them. To list
+everything installed that no Brewfile tracks:
 
 ```bash
-brew bundle cleanup --file=<(printf 'instance_eval File.read("Brewfile.common")\ninstance_eval File.read("Brewfile.personal")\n')
+make drift                 # personal machine
+make drift PROFILE=work    # work machine
 ```
 
-Piping the Brewfiles in on stdin doesn't work, because `Brewfile.common`
-loads its parts relative to its own location.
+For each listed item, either add it to the appropriate Brewfile or add it to
+a removal list in `defaults.yaml`. The list also includes the dependencies of
+untracked formulae, so don't feed it to `brew bundle cleanup --force`
+wholesale.
 
-Nothing is removed without `--force`, and you shouldn't add it: the list
-also includes the fonts and `dockutil`, which Ansible tasks install outside
-the Brewfiles. For each other listed item, either add it to the appropriate
-Brewfile or add it to a removal list in `defaults.yaml`.
+### Common Issues
+
+1. **"Homebrew not found" after new-mac.sh**
+   - Restart your terminal or run: `source ~/.zshrc`
+
+2. **"Permission denied" errors**
+   - The makefile prompts once for the sudo password when needed
+   - Homebrew cask installs use a temporary askpass helper so installers should not ask repeatedly
+   - Some operations require admin access
+
+3. **App Store apps fail to install**
+   - Ensure you're signed into the Mac App Store
+   - Run `mas signin your-apple-id@example.com` first
+
+4. **Ansible Galaxy certificate errors**
+   - We've removed the insecure `ignore_certs` setting
+   - If you have certificate issues, fix your system certificates
+
+### Logs and Debugging
+
+- Run with verbose output: `ansible-playbook local.yaml -vvv`
+- Check specific task: `make cli` or `make gui`
+- Validate syntax: `ansible-playbook local.yaml --syntax-check`
+- Run the checks CI runs: `make lint`
 
 ## Customization
 
@@ -353,15 +381,18 @@ mas "Your App", id: 123456789
 
 # Brewfile.personal
 cask "personal-only-app", greedy: true
+
+# Brewfile.fonts
+cask "font-your-favourite"
 ```
 
-`Brewfile.common` aggregates the shared CLI, GUI, and App Store inventory.
+`Brewfile.common` aggregates the shared CLI, GUI, App Store, and font inventory.
 `Brewfile.work` is available for work-only additions and is currently empty.
 
 ### How the Brewfiles are enforced
 
-The Brewfiles are the source of truth, and every run makes the machine match
-them:
+The Brewfiles are the source of truth. `make`, `make gui` and `make update`
+all make the machine match them:
 
 - **Missing apps are reinstalled**, even when Homebrew still thinks they are
   installed. Deleting an app outside Homebrew leaves brew's install record
@@ -378,8 +409,8 @@ them:
   `app_store_apps_to_remove_if_installed` (by App Store id). Use
   `gui_packages_to_zap_if_installed` instead to also delete the app's
   settings and support files. A blanket
-  `brew bundle cleanup --force` isn't used because it would also uninstall the
-  fonts and `dockutil`, which Ansible tasks install outside the Brewfiles.
+  `brew bundle cleanup --force` isn't used: `make drift` also lists packages
+  installed by hand and their dependencies, which each deserve a decision.
 - **Apps outside Homebrew** have their own task. Talat isn't on Homebrew or
   the App Store, so `ansible/tasks/talat.yaml` installs it from its release
   feed when it's missing, after checking it's notarized and signed by its
@@ -574,33 +605,6 @@ The setup includes several safety features:
 - **Internet connectivity**: Verifies connection before downloading
 - **Dry run mode**: Preview changes with `make check`
 
-## Troubleshooting
-
-### Common Issues
-
-1. **"Homebrew not found" after new-mac.sh**
-   - Restart your terminal or run: `source ~/.zshrc`
-
-2. **"Permission denied" errors**
-   - The makefile prompts once for the sudo password when needed
-   - Homebrew cask installs use a temporary askpass helper so installers should not ask repeatedly
-   - Some operations require admin access
-
-3. **App Store apps fail to install**
-   - Ensure you're signed into the Mac App Store
-   - Run `mas signin your-apple-id@example.com` first
-
-4. **Ansible Galaxy certificate errors**
-   - We've removed the insecure `ignore_certs` setting
-   - If you have certificate issues, fix your system certificates
-
-### Logs and Debugging
-
-- Run with verbose output: `ansible-playbook local.yaml -vvv`
-- Check specific task: `make cli` or `make gui`
-- Validate syntax: `ansible-playbook local.yaml --syntax-check`
-- Run the helper-script tests: `python3 -m unittest discover -s scripts -p 'test_*.py'`
-
 ## File Structure
 
 ```
@@ -611,6 +615,7 @@ The setup includes several safety features:
 ├── defaults.yaml        # Non-Brewfile configuration and removal lists
 ├── local.yaml           # Main Ansible playbook
 ├── update.yaml          # Update playbook
+├── .github/workflows/   # CI: runs `make lint` on pull requests
 ├── scripts/             # Helper scripts (e.g., gpg-auto-sign.sh)
 ├── ansible/
 │   ├── files/           # Static files deployed to target machine
@@ -623,7 +628,7 @@ The setup includes several safety features:
 
 1. Fork the repository
 2. Create a feature branch
-3. Test your changes with `make check`
+3. Run `make lint` (CI runs it on every pull request), and `make check` to preview the changes on your machine
 4. Submit a pull request
 
 ## Requirements

@@ -12,7 +12,7 @@ This is an Ansible-based automation repository for setting up and maintaining Ma
 
 - `make` or `make all` - Complete personal setup (runs setup → deps → permissions → install → personal)
 - `make work` - Complete work setup (runs setup → deps → permissions → install → work)
-- `make update` - Update all installed packages (brew, npm, rust, go, etc.)
+- `make update` - Install anything missing from the Brewfiles, apply the removal lists, then upgrade everything (brew, npm, rust, go, etc.). Use `make update PROFILE=work` on a work machine
 - `make check` - Dry run to preview what changes would be made
 
 All install/update targets first run `make permissions`, which verifies the terminal has the macOS TCC permissions Homebrew needs (App Management + Automation) and interactively requests them if missing — a one-time grant per machine/terminal.
@@ -35,6 +35,8 @@ All install/update targets first run `make permissions`, which verifies the term
 - `make node` - Install Node.js tooling only
 - `make permissions` - Standalone run of the macOS TCC permission pre-flight
 - `make work-remove` - Remove work-only packages (runs `work-remove` tag)
+- `make drift` - List installed packages no Brewfile tracks (`PROFILE=work` on a work machine)
+- `make lint` - Run the CI checks: helper-script tests, yamllint, shellcheck, playbook syntax, Brewfile parsing
 
 ### Running Specific Tasks
 
@@ -52,10 +54,10 @@ To check what changes would be made without applying them:
 scripts/with-sudo-askpass.sh ansible-playbook local.yaml --check --diff
 ```
 
-Helper-script logic has stdlib unit tests (nothing to install):
+Static checks, also run by CI (`.github/workflows/checks.yml`) on every pull request: helper-script unit tests, yamllint, shellcheck, playbook syntax and Brewfile parsing:
 
 ```bash
-python3 -m unittest discover -s scripts -p 'test_*.py'
+make lint
 ```
 
 ## Architecture & Key Components
@@ -84,7 +86,8 @@ All Ansible tasks are in `ansible/tasks/`:
 - Terminal & editors: `iterm.yaml`, `nvim.yaml`, `zsh.yaml`, `themes.yaml`, `fonts.yaml`
 - Security: `ssh.yaml`, `gpg.yaml`
 - System config: `osx.yaml`, `dock.yaml`
-- Maintenance: `remove-unwanted-packages.yaml`, `dotfiles.yaml`, `update.yaml`
+- Maintenance: `remove-unwanted-packages.yaml`, `remove-work-packages.yaml`, `dotfiles.yaml`, `update.yaml`
+- Apps outside Homebrew: `talat.yaml`
 - Validation: `validation.yaml` (pre-flight checks and backups)
 
 ### Template Files
@@ -132,6 +135,7 @@ Homebrew-managed packages are defined in Brewfiles:
 - `Brewfile.cli` - Command-line tools for all profiles
 - `Brewfile.gui` - GUI applications and security casks for all profiles
 - `Brewfile.app-store` - Mac App Store applications
+- `Brewfile.fonts` - Fonts for all profiles
 - `Brewfile.common` - Shared aggregate used for full common inventory checks
 - `Brewfile.personal` - Personal-only GUI apps
 - `Brewfile.work` - Work-only overlay, currently empty
@@ -143,10 +147,13 @@ Homebrew-managed packages are defined in Brewfiles:
 Every run makes the machine match the Brewfiles:
 
 - Stale records are cleared before the GUI bundles (`clear-stale-cask-receipts.py`), so an app deleted outside Homebrew is reinstalled
+- `make update` enforces the same before upgrading: clears stale records, installs anything missing (`--no-upgrade`), then runs the removal lists. `update_profile` (`PROFILE=`) picks the personal or work Brewfile
 - Bundles run with `--force`, overwriting apps and files Homebrew didn't install
 - Dropping a Brewfile entry does **not** uninstall it — also add it to the matching removal list in `defaults.yaml` (`cli_packages_to_remove_if_installed`, `gui_packages_to_remove_if_installed`, `app_store_apps_to_remove_if_installed`, or `gui_packages_to_zap_if_installed` to also delete the app's data)
 - Apps not on Homebrew or the App Store get their own task file: `talat.yaml` installs Talat from its release feed when missing (it self-updates afterwards) and verifies notarization and the developer's Team ID before moving it into `/Applications`
-- Never use `brew bundle cleanup --force`: fonts (`fonts.yaml`) and `dockutil` (`dock.yaml`) are installed by Ansible tasks outside the Brewfiles, so cleanup would uninstall them
+- Every Homebrew package the repo installs is in a Brewfile. The `nvm`, `stow` and `dockutil` installs left in their tasks are only prerequisites so `make node`, `make dotfiles` and `make dock` work on their own
+- Work-only removals live in `remove-work-packages.yaml`, imported only for the work profile. Never add them to `remove-unwanted-packages.yaml`, which `make update` runs on every machine
+- Don't run `brew bundle cleanup --force` wholesale: `make drift` also lists packages installed by hand and their dependencies
 
 ### Idempotency
 
@@ -165,7 +172,7 @@ Tasks include error handling and often have `ignore_errors: true` for non-critic
 - **Casks from third-party taps need `brew trust <tap>`** (Homebrew 6+) before brew will operate on them.
 - **An app deleted outside Homebrew keeps its brew record**, so `brew bundle check` reports the Brewfile satisfied and the install is skipped. `scripts/clear-stale-cask-receipts.py` clears those records; don't add per-app checks (a hard-coded app path goes stale when a cask renames its app, as SilentKnight did).
 - **Uninstalling a Mac App Store app needs root.** `mas uninstall` refuses otherwise, so the removal task uses `become`, which gets its password from `scripts/with-sudo-askpass.sh`.
-- **`brew bundle cleanup` can't take a piped Brewfile.** `Brewfile.common` loads its parts relative to its own location, which becomes `/dev` on stdin; use process substitution from the repo root (see README "Detecting drift").
+- **`brew bundle cleanup` can't take a piped Brewfile.** `Brewfile.common` loads its parts relative to its own location, which becomes `/dev` on stdin; `make drift` writes a temporary Brewfile instead. `brew bundle cleanup` also exits 1 whenever it lists anything.
 
 ## External Dependencies
 
