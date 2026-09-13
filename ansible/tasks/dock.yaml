@@ -31,7 +31,6 @@
         - /Applications/Brave\ Browser.app
         - /Applications/Google\ Chrome.app
         - /Applications/Firefox.app
-        - /Applications/Arc.app
         - /Applications/ResponsivelyApp.app
         - /Applications/Deskpad.app
         - "'' --type small-spacer --section apps --after Deskpad"
@@ -41,6 +40,9 @@
         - /Applications/Raycast.app
         - /Applications/ChatGPT.app
         - /Applications/Claude.app
+        - /Applications/FluidVoice.app
+        - /Applications/Talat.app 
+
       ignore_errors: true
       tags:
         - install

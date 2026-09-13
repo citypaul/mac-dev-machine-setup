@@ -10,7 +10,6 @@ dotfiles_stow_packages:
   - alacritty
   - zellij
   - .oh-my-zsh
-  - karabiner
   - ghostty
   - herdr
 
@@ -34,12 +33,33 @@ cli_packages_to_remove_if_installed:
   - neofetch
 
 gui_packages_to_remove_if_installed:
+  - adguard
+  - arc
   - bartender
+  - devtoys
   - exa
+  - granola
+  - handy
+  - hiddenbar
   - ngrok
   - orbstack
+  - pgadmin4
   - rewind
+  - unclack
+  - utm
+  - visual-studio-code@insiders
+  - wezterm
+  - whisky
   - zotero
+
+# Uninstalled with --zap, which also deletes the app's settings, caches and
+# support files. Only list apps whose data shouldn't survive removal.
+gui_packages_to_zap_if_installed:
+  - karabiner-elements
+
+# Mac App Store apps, by id (`mas list` shows ids).
+app_store_apps_to_remove_if_installed:
+  - 457622435 # Yoink
 
 gui_packages_to_remove_if_installed_work:
   - brave-browser

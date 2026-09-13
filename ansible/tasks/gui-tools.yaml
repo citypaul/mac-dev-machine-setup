@@ -28,6 +28,15 @@
     - gui
     - productivity
 
+- name: Install Talat
+  ansible.builtin.import_tasks: talat.yaml
+  vars:
+    talat_app_path: /Applications/Talat.app
+  tags:
+    - install
+    - gui
+    - productivity
+
 - name: Check whether SilentKnight app exists
   ansible.builtin.stat:
     path: /Applications/SilentKnight.app
