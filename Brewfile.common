@@ -3,3 +3,4 @@
 instance_eval File.read(File.expand_path("Brewfile.cli", __dir__))
 instance_eval File.read(File.expand_path("Brewfile.gui", __dir__))
 instance_eval File.read(File.expand_path("Brewfile.app-store", __dir__))
+instance_eval File.read(File.expand_path("Brewfile.fonts", __dir__))

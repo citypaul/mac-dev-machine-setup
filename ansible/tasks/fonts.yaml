@@ -1,17 +1,10 @@
-- name: Installing fonts
-  community.general.homebrew_cask:
-    name:
-      - font-fira-code
-      - font-geist
-      - font-hack-nerd-font
-      - font-iosevka
-      - font-iosevka-nerd-font
-      - font-jetbrains-mono
-      - font-monaspace
-      - font-monaspace-nerd-font
-      - font-monocraft
-    state: present
+- name: Install fonts from Brewfile
+  ansible.builtin.command: brew bundle --force --file "{{ playbook_dir }}/Brewfile.fonts"
   environment: "{{ homebrew_environment }}"
+  register: brew_bundle_fonts
+  changed_when: >-
+    'Installing' in brew_bundle_fonts.stdout or
+    'Upgrading' in brew_bundle_fonts.stdout
   ignore_errors: true
   tags:
     - install
