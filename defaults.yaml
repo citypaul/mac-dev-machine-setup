@@ -45,6 +45,8 @@ gui_packages_to_remove_if_installed:
   - orbstack
   - pgadmin4
   - rewind
+  - snagit
+  - spokenly
   - unclack
   - utm
   - visual-studio-code@insiders
