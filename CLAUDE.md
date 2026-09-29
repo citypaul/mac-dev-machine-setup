@@ -145,7 +145,7 @@ Every run makes the machine match the Brewfiles:
 - Stale records are cleared before the GUI bundles (`clear-stale-cask-receipts.py`), so an app deleted outside Homebrew is reinstalled
 - Bundles run with `--force`, overwriting apps and files Homebrew didn't install
 - Dropping a Brewfile entry does **not** uninstall it — also add it to the matching removal list in `defaults.yaml` (`cli_packages_to_remove_if_installed`, `gui_packages_to_remove_if_installed`, `app_store_apps_to_remove_if_installed`, or `gui_packages_to_zap_if_installed` to also delete the app's data)
-- Apps not on Homebrew or the App Store get their own task file: `talat.yaml` installs Talat from its release feed when missing (it self-updates afterwards) and verifies notarization and the developer's Team ID before moving it into `/Applications`
+- Apps not on Homebrew or the App Store get their own task file: `talat.yaml` (Talat, from its release feed) and `whattheport.yaml` (WhatThePort, from its DMG) install the app only when missing (each self-updates afterwards) and verify notarization and the developer's Team ID before putting it in `/Applications`
 - Never use `brew bundle cleanup --force`: fonts (`fonts.yaml`) and `dockutil` (`dock.yaml`) are installed by Ansible tasks outside the Brewfiles, so cleanup would uninstall them
 
 ### Idempotency
