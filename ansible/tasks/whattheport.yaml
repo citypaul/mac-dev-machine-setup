@@ -38,7 +38,10 @@
       ansible.builtin.shell: |
         set -euo pipefail
         spctl --assess --type execute "$APP"
-        codesign -dv "$APP" 2>&1 | grep -qx 'TeamIdentifier=FT36FY6AF3'
+        # sed reads all of codesign's output. grep -q would exit at the first
+        # match and kill codesign with SIGPIPE, which pipefail reports as a failure.
+        team=$(codesign -dv "$APP" 2>&1 | sed -n 's/^TeamIdentifier=//p')
+        [ "$team" = FT36FY6AF3 ]
       args:
         executable: /bin/bash
       environment:
