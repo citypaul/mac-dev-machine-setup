@@ -34,12 +34,12 @@
 
     # Downloads made here carry no quarantine flag, so Gatekeeper would never
     # check the app on first launch. Check it before installing instead.
+    # sed reads all of codesign's output: grep -q would exit at the first match
+    # and kill codesign with SIGPIPE, which pipefail reports as a failure.
     - name: Verify WhatThePort is notarized and signed by its developer
       ansible.builtin.shell: |
         set -euo pipefail
         spctl --assess --type execute "$APP"
-        # sed reads all of codesign's output. grep -q would exit at the first
-        # match and kill codesign with SIGPIPE, which pipefail reports as a failure.
         team=$(codesign -dv "$APP" 2>&1 | sed -n 's/^TeamIdentifier=//p')
         [ "$team" = FT36FY6AF3 ]
       args:
