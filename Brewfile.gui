@@ -41,6 +41,7 @@ cask "spotify", greedy: true
 cask "shortcat", greedy: true
 cask "stats", greedy: true
 cask "tableplus", greedy: true
+cask "thaw", greedy: true
 cask "visual-studio-code", greedy: true
 cask "vlc", greedy: true
 cask "vorssaint", greedy: true
