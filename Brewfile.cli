@@ -1,6 +1,7 @@
 # Homebrew formulae installed for both personal and work profiles.
 
 tap "ankitpokhrel/jira-cli"
+tap "can1357/tap"
 tap "hashicorp/tap"
 tap "oven-sh/bun"
 tap "retlehs/tap"
@@ -52,6 +53,7 @@ brew "mole"
 brew "mosh"
 brew "navi"
 brew "ollama"
+brew "can1357/tap/omp"
 brew "opencode"
 brew "pnpm"
 brew "podman"
