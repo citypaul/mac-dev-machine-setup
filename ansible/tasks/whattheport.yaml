@@ -1,0 +1,68 @@
+# WhatThePort isn't on Homebrew or the Mac App Store. Install it from the disk
+# image its website serves, only when the app is missing: once installed,
+# WhatThePort keeps itself up to date through Sparkle. The disk image only
+# contains an Apple Silicon build.
+#
+# Expects `whattheport_app_path` (where the app is installed).
+- name: Check whether WhatThePort is installed
+  ansible.builtin.stat:
+    path: "{{ whattheport_app_path }}"
+  register: whattheport_app
+
+- name: Install WhatThePort from its disk image
+  when: not whattheport_app.stat.exists
+  block:
+    - name: Create a temporary directory for the WhatThePort download
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: whattheport
+      register: whattheport_download
+
+    - name: Download WhatThePort
+      ansible.builtin.get_url:
+        url: https://whattheport.dev/WhatThePort.dmg
+        dest: "{{ whattheport_download.path }}/WhatThePort.dmg"
+        mode: "0600"
+
+    - name: Mount the WhatThePort disk image
+      ansible.builtin.command: >-
+        hdiutil attach -nobrowse -readonly
+        -mountpoint "{{ whattheport_download.path }}/mnt"
+        "{{ whattheport_download.path }}/WhatThePort.dmg"
+      register: whattheport_mount
+      changed_when: true
+
+    # Downloads made here carry no quarantine flag, so Gatekeeper would never
+    # check the app on first launch. Check it before installing instead.
+    # sed reads all of codesign's output: grep -q would exit at the first match
+    # and kill codesign with SIGPIPE, which pipefail reports as a failure.
+    - name: Verify WhatThePort is notarized and signed by its developer
+      ansible.builtin.shell: |
+        set -euo pipefail
+        spctl --assess --type execute "$APP"
+        team=$(codesign -dv "$APP" 2>&1 | sed -n 's/^TeamIdentifier=//p')
+        [ "$team" = FT36FY6AF3 ]
+      args:
+        executable: /bin/bash
+      environment:
+        APP: "{{ whattheport_download.path }}/mnt/WhatThePort.app"
+      changed_when: false
+
+    # The disk image is read-only, so copy rather than move. ditto keeps the
+    # bundle's signature and extended attributes intact.
+    - name: Copy WhatThePort into place
+      ansible.builtin.command: ditto "{{ whattheport_download.path }}/mnt/WhatThePort.app" "{{ whattheport_app_path }}"
+      args:
+        creates: "{{ whattheport_app_path }}"
+
+  always:
+    - name: Unmount the WhatThePort disk image
+      ansible.builtin.command: hdiutil detach "{{ whattheport_download.path }}/mnt"
+      changed_when: true
+      when: whattheport_mount is defined and whattheport_mount is succeeded
+
+    - name: Remove the WhatThePort download
+      ansible.builtin.file:
+        path: "{{ whattheport_download.path }}"
+        state: absent
+      when: whattheport_download.path is defined

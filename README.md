@@ -74,6 +74,7 @@ make update
 - **Version Control**: Git, GitHub CLI, Sourcetree
 - **Containers**: Docker, Colima, lazydocker
 - **Databases**: Redis Insight, TablePlus
+- **Dev Servers**: [WhatThePort](https://whattheport.dev), a menu bar list of running local dev servers
 
 ### Terminal & Productivity
 - **Terminals**: iTerm2, Alacritty, Ghostty
@@ -380,10 +381,11 @@ them:
   settings and support files. A blanket
   `brew bundle cleanup --force` isn't used because it would also uninstall the
   fonts and `dockutil`, which Ansible tasks install outside the Brewfiles.
-- **Apps outside Homebrew** have their own task. Talat isn't on Homebrew or
-  the App Store, so `ansible/tasks/talat.yaml` installs it from its release
-  feed when it's missing, after checking it's notarized and signed by its
-  developer. Talat updates itself from then on.
+- **Apps outside Homebrew** have their own task. Talat and WhatThePort
+  aren't on Homebrew or the App Store, so `ansible/tasks/talat.yaml` and
+  `ansible/tasks/whattheport.yaml` install them from their developers'
+  downloads when they're missing, after checking each is notarized and signed
+  by its developer. Both apps update themselves from then on.
 
 ### Using Your Own Dotfiles
 

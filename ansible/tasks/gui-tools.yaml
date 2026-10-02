@@ -56,6 +56,15 @@
     - gui
     - productivity
 
+- name: Install WhatThePort
+  ansible.builtin.import_tasks: whattheport.yaml
+  vars:
+    whattheport_app_path: /Applications/WhatThePort.app
+  tags:
+    - install
+    - gui
+    - productivity
+
 - name: Clear stale records for personal casks whose files have gone missing
   ansible.builtin.command: >-
     "{{ playbook_dir }}/scripts/clear-stale-cask-receipts.py"
