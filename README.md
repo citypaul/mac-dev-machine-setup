@@ -178,6 +178,7 @@ herdr agent list   # a reporting pane has a populated agent_session
 - **Security**: KnockKnock persistence scanner, SSH key management, GPG signing with YubiKey
 - **Productivity**: Raycast, Obsidian, Fantastical
 - **Menu Bar Toolkit**: Vorssaint (keep-awake, system monitor, per-app volume, clipboard history and more)
+- **Menu Bar Manager**: Thaw (hides and rearranges menu bar items)
 
 ## Git Configuration
 
