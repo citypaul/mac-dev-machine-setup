@@ -128,7 +128,8 @@
     for target in \
       "{{ ansible_env.HOME }}/.zshrc" \
       "{{ ansible_env.HOME }}/Library/Application Support/com.mitchellh.ghostty/config" \
-      "{{ ansible_env.HOME }}/.config/herdr/config.toml"
+      "{{ ansible_env.HOME }}/.config/herdr/config.toml" \
+      "{{ ansible_env.HOME }}/.config/rex/init.lua"
     do
       backup="${target}.old"
       if [ -f "$target" ] && [ ! -L "$target" ] && [ ! -f "$backup" ]; then
@@ -193,6 +194,20 @@
     remote_src: true
     backup: true
     mode: "0600"
+  tags:
+    - install
+    - dotfiles
+    - stow
+    - cli
+
+# Rex is the primary terminal. Without a real directory here stow would fold
+# ~/.config/rex into a single symlink to the dotfiles clone, and anything Rex
+# later wrote beside init.lua would land in the repository.
+- name: Ensure the Rex config directory exists before stow
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/rex"
+    state: directory
+    mode: "0755"
   tags:
     - install
     - dotfiles

@@ -23,6 +23,9 @@
         - /Applications/Spotify.app
         - /Applications/Fantastical.app
         - "'' --type small-spacer --section apps --after Fantastical"
+        # Rex is the primary terminal, so it leads the terminal group. It is
+        # installed by hand into ~/Applications (see README), not by Homebrew.
+        - "{{ ansible_env.HOME }}/Applications/Rex.app"
         - /Applications/Alacritty.app
         - /Applications/Ghostty.app
         - /Applications/Cursor.app

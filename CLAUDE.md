@@ -146,6 +146,7 @@ Every run makes the machine match the Brewfiles:
 - Bundles run with `--force`, overwriting apps and files Homebrew didn't install
 - Dropping a Brewfile entry does **not** uninstall it — also add it to the matching removal list in `defaults.yaml` (`cli_packages_to_remove_if_installed`, `gui_packages_to_remove_if_installed`, `app_store_apps_to_remove_if_installed`, or `gui_packages_to_zap_if_installed` to also delete the app's data)
 - Apps not on Homebrew or the App Store get their own task file: `talat.yaml` installs Talat from its release feed when missing (it self-updates afterwards) and verifies notarization and the developer's Team ID before moving it into `/Applications`
+- Rex, the primary terminal, is a beta with no Homebrew cask or public download URL, so nothing here installs it: it is installed by hand into `~/Applications`. The repo only stows its config (`rex` in `dotfiles_stow_packages`) and puts it first among the terminals in `dock.yaml`. Don't add a `cask "rex"` line; no such cask exists
 - Never use `brew bundle cleanup --force`: fonts (`fonts.yaml`) and `dockutil` (`dock.yaml`) are installed by Ansible tasks outside the Brewfiles, so cleanup would uninstall them
 
 ### Idempotency

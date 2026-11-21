@@ -76,7 +76,7 @@ make update
 - **Databases**: Redis Insight, TablePlus
 
 ### Terminal & Productivity
-- **Terminals**: iTerm2, Alacritty, Ghostty
+- **Terminals**: [Rex](https://www.superlogical.com/rex) (primary, see below), iTerm2, Alacritty, Ghostty
 - **Shells**: Zsh with Oh My Zsh, Starship prompt
 - **Multiplexers**: tmux, Zellij
 - **Editors**: Neovim, VS Code, Cursor
@@ -89,6 +89,19 @@ make update
 - **HTTP Debugging**: Proxyman
 - **Transcription & Dictation**: Talat, FluidVoice
 - **Agent Workspace**: [Herdr](https://herdr.dev), with per-agent state integrations (see below)
+
+#### Rex terminal
+
+Rex is the primary terminal: it leads the terminal group in the dock, and its
+config is the first terminal package stowed from the dotfiles repo
+(`~/.config/rex/init.lua`). That file binds nothing, so Rex's default key
+bindings always win; the tmux, Zellij, Alacritty and Ghostty configs are still
+stowed but are not carried into Rex.
+
+Rex is in beta and is not on Homebrew or the Mac App Store, so this repo does
+not install the app. Install it by hand into `~/Applications`, then run
+`make dotfiles` and `make dock`. Until it is installed the dock step skips it.
+Theme and font live in Rex's Settings window, not in `init.lua`.
 
 #### Herdr agent state
 

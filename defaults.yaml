@@ -5,6 +5,7 @@ dotfiles_repo: https://github.com/citypaul/.dotfiles.git
 
 dotfiles_stow_packages:
   - zsh
+  - rex
   - tmux
   - gnupg
   - alacritty
