@@ -1,5 +1,13 @@
 # Mac Dev Machine Setup
 
+> [!WARNING]
+> **This repository is retired.** It is replaced by
+> [citypaul/machine-setup](https://github.com/citypaul/machine-setup), which sets up macOS and
+> Linux machines with one command, using [mise](https://mise.jdx.dev) instead of Ansible and Stow.
+>
+> This repository is archived and read-only: it gets no more changes, and it takes no issues or
+> pull requests. The text below describes the old setup and stays here for reference only.
+
 Automated setup and maintenance for macOS development environments using Ansible. This repository helps you quickly set up a new Mac or keep your existing setup up-to-date with a single command.
 
 ## Features
